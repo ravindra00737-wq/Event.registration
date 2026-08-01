@@ -114,6 +114,7 @@ tr:hover { background: #f8fafc; }
   margin-top: 10px;
   border-radius: 8px;
   display: none;
+  object-fit: contain;
 }
 .upload-preview.show {
   display: block;
@@ -191,12 +192,14 @@ tr:hover { background: #f8fafc; }
       <button type="submit" class="btn btn-primary btn-full">✅ Register for Event</button>
     </form>
     
-    <!-- Download Confirmation Button (Hidden by default) -->
-    <div id="download-confirmation-section" style="display: none; margin-top: 20px; padding: 20px; background: #d1fae5; border-radius: 10px; text-align: center;">
-      <h3 style="color: var(--success); margin-bottom: 15px;">✅ Registration Successful!</h3>
-      <p style="margin-bottom: 15px;">Your registration has been confirmed.</p>
-      <button class="btn btn-success" onclick="downloadConfirmation()">📥 Download Confirmation</button>
-      <button class="btn btn-outline" onclick="resetForm()" style="margin-left: 10px;">🔄 New Registration</button>
+    <!-- Download Confirmation Section (Hidden by default) -->
+    <div id="download-confirmation-section" class="hidden" style="margin-top: 20px; padding: 25px; background: #d1fae5; border-radius: 10px; text-align: center; border: 2px solid var(--success);">
+      <h3 style="color: var(--success); margin-bottom: 10px;">✅ Registration Successful!</h3>
+      <p style="margin-bottom: 20px; color: #065f46;">Your registration has been confirmed. You can download your confirmation receipt below.</p>
+      <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+        <button class="btn btn-success" onclick="downloadConfirmation()">📥 Download Confirmation PDF</button>
+        <button class="btn btn-outline" onclick="resetForm()">🔄 New Registration</button>
+      </div>
     </div>
   </div>
 
@@ -239,9 +242,9 @@ tr:hover { background: #f8fafc; }
         <label>Logo Image</label>
         <div class="upload-area" id="logo-upload-area" onclick="document.getElementById('logo-file').click()">
           <p style="font-size: 2rem; margin-bottom: 10px;">🏨</p>
-          <p><strong>Click to upload or drag & drop</strong></p>
-          <p style="color: #64748b; font-size: 0.9rem;">PNG, JPG up to 5MB</p>
-          <input type="file" id="logo-file" accept="image/*" onchange="handleLogoUpload(event)">
+          <p><strong>Click to browse or drag & drop image here</strong></p>
+          <p style="color: #64748b; font-size: 0.85rem;">Supports PNG, JPG (Max 5MB)</p>
+          <input type="file" id="logo-file" accept="image/*" onchange="handleFileSelect('logo-file')">
           <img id="logo-preview" class="upload-preview" alt="Logo Preview">
         </div>
       </div>
@@ -251,9 +254,9 @@ tr:hover { background: #f8fafc; }
         <label>Background Image</label>
         <div class="upload-area" id="bg-upload-area" onclick="document.getElementById('bg-file').click()">
           <p style="font-size: 2rem; margin-bottom: 10px;">🌄</p>
-          <p><strong>Click to upload or drag & drop</strong></p>
-          <p style="color: #64748b; font-size: 0.9rem;">PNG, JPG up to 5MB</p>
-          <input type="file" id="bg-file" accept="image/*" onchange="handleBgUpload(event)">
+          <p><strong>Click to browse or drag & drop image here</strong></p>
+          <p style="color: #64748b; font-size: 0.85rem;">Supports PNG, JPG (Max 5MB)</p>
+          <input type="file" id="bg-file" accept="image/*" onchange="handleFileSelect('bg-file')">
           <img id="bg-preview" class="upload-preview" alt="Background Preview">
         </div>
       </div>
@@ -263,7 +266,7 @@ tr:hover { background: #f8fafc; }
 
     <div class="card">
       <h2>📋 Registrations List</h2>
-      <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+      <div style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
         <button class="btn btn-success" onclick="downloadExcelReport()">📥 Download Excel Report</button>
         <button class="btn btn-danger" onclick="clearAllRegistrations()">🗑️ Clear All Registrations</button>
       </div>
@@ -319,7 +322,6 @@ let lastRegistration = null;
 // ==========================================
 // 2. REAL-TIME DATA LISTENERS
 // ==========================================
-// Listen to Event Settings
 db.ref('event/settings').on('value', (snap) => {
   currentSettings = snap.val() || {
     eventName: 'Annual Company Event',
@@ -332,7 +334,6 @@ db.ref('event/settings').on('value', (snap) => {
   updateUI();
 });
 
-// Listen to Registrations
 db.ref('event/registrations').on('value', (snap) => {
   const data = snap.val();
   registrationsList = data ? Object.entries(data).map(([id, val]) => ({id, ...val})) : [];
@@ -344,19 +345,16 @@ db.ref('event/registrations').on('value', (snap) => {
 // 3. UI UPDATE FUNCTIONS
 // ==========================================
 function updateUI() {
-  // Update Employee View Displays
   document.getElementById('display-event-name').innerText = currentSettings.eventName;
   document.getElementById('display-event-date').innerText = currentSettings.eventDate;
   document.getElementById('reg-event-name').value = currentSettings.eventName;
   document.getElementById('reg-event-date').value = currentSettings.eventDate;
   
-  // Update Admin Form Fields
   document.getElementById('admin-event-name').value = currentSettings.eventName;
   document.getElementById('admin-event-date').value = currentSettings.eventDate;
   document.getElementById('admin-max-reg').value = currentSettings.maxRegistrations;
   document.getElementById('admin-hotel-name').value = currentSettings.hotelName;
   
-  // Show previews if images exist
   if (currentSettings.logo) {
     document.getElementById('logo-preview').src = currentSettings.logo;
     document.getElementById('logo-preview').classList.add('show');
@@ -366,7 +364,6 @@ function updateUI() {
     document.getElementById('bg-preview').classList.add('show');
   }
 
-  // Update Branding
   document.getElementById('app-hotel-name').innerText = currentSettings.hotelName || 'Event Registration';
   if (currentSettings.logo) {
     document.getElementById('app-logo').innerHTML = `<img src="${currentSettings.logo}" alt="Logo">`;
@@ -453,6 +450,11 @@ function handleFileSelect(inputId) {
   const fileInput = document.getElementById(inputId);
   const file = fileInput.files[0];
   if (file) {
+    if (file.size > 5 * 1024 * 1024) {
+      showAlert('File size must be less than 5MB', 'error');
+      fileInput.value = '';
+      return;
+    }
     const reader = new FileReader();
     reader.onload = function(e) {
       const previewId = inputId.replace('-file', '-preview');
@@ -462,14 +464,6 @@ function handleFileSelect(inputId) {
     };
     reader.readAsDataURL(file);
   }
-}
-
-function handleLogoUpload(event) {
-  handleFileSelect('logo-file');
-}
-
-function handleBgUpload(event) {
-  handleFileSelect('bg-file');
 }
 
 // ==========================================
@@ -482,20 +476,17 @@ function handleRegistration(e) {
   const name = document.getElementById('reg-name').value.trim();
   const dept = document.getElementById('reg-dept').value;
   
-  // Validation 1: Check capacity
   if (registrationsList.length >= parseInt(currentSettings.maxRegistrations)) {
     showAlert('Sorry, this event is already full.', 'error');
     return;
   }
   
-  // Validation 2: Check duplicate
   const isDuplicate = registrationsList.some(r => r.empId === empId);
   if (isDuplicate) {
     showAlert('This Employee ID is already registered for this event.', 'error');
     return;
   }
   
-  // Save to Firebase
   const newReg = {
     empId: empId,
     name: name,
@@ -509,9 +500,9 @@ function handleRegistration(e) {
     lastRegistration = { ...newReg, id: ref.key };
     showAlert('✅ Registration successful!', 'success');
     
-    // Show download confirmation section
-    document.getElementById('registration-form').style.display = 'none';
-    document.getElementById('download-confirmation-section').style.display = 'block';
+    // Hide form, show confirmation section
+    document.getElementById('registration-form').classList.add('hidden');
+    document.getElementById('download-confirmation-section').classList.remove('hidden');
   }).catch(err => {
     showAlert('Error: ' + err.message, 'error');
   });
@@ -560,7 +551,6 @@ function downloadConfirmation() {
   doc.setTextColor(100, 100, 100);
   doc.text('Thank you for registering! We look forward to seeing you.', 105, 270, {align: 'center'});
   
-  // Save PDF
   const fileName = `Registration_Confirmation_${lastRegistration.empId}.pdf`;
   doc.save(fileName);
   showAlert('✅ Confirmation downloaded!', 'success');
@@ -568,8 +558,8 @@ function downloadConfirmation() {
 
 function resetForm() {
   document.getElementById('registration-form').reset();
-  document.getElementById('registration-form').style.display = 'block';
-  document.getElementById('download-confirmation-section').style.display = 'none';
+  document.getElementById('registration-form').classList.remove('hidden');
+  document.getElementById('download-confirmation-section').classList.add('hidden');
   document.getElementById('reg-event-name').value = currentSettings.eventName;
   document.getElementById('reg-event-date').value = currentSettings.eventDate;
   lastRegistration = null;
@@ -586,7 +576,7 @@ function toggleAdmin() {
     showAlert('Exited Admin Mode', 'info');
   } else {
     const pwd = prompt('Enter Admin Password:');
-    if (pwd === 'Admin@2026') { // Change this password as needed
+    if (pwd === 'Admin@2026') {
       isAdmin = true;
       document.getElementById('employee-view').classList.add('hidden');
       document.getElementById('admin-view').classList.remove('hidden');
@@ -598,13 +588,16 @@ function toggleAdmin() {
 }
 
 function saveAdminSettings() {
+  const logoPreview = document.getElementById('logo-preview');
+  const bgPreview = document.getElementById('bg-preview');
+  
   const settings = {
     eventName: document.getElementById('admin-event-name').value.trim(),
     eventDate: document.getElementById('admin-event-date').value,
     maxRegistrations: parseInt(document.getElementById('admin-max-reg').value) || 100,
     hotelName: document.getElementById('admin-hotel-name').value.trim(),
-    logo: document.getElementById('logo-preview').src !== window.location.href ? document.getElementById('logo-preview').src : '',
-    background: document.getElementById('bg-preview').src !== window.location.href ? document.getElementById('bg-preview').src : ''
+    logo: logoPreview.classList.contains('show') ? logoPreview.src : '',
+    background: bgPreview.classList.contains('show') ? bgPreview.src : ''
   };
   
   db.ref('event/settings').set(settings).then(() => {
@@ -656,7 +649,6 @@ function downloadExcelReport() {
 // 7. UTILITIES
 // ==========================================
 function showAlert(msg, type) {
-  // Hide all alerts first
   document.querySelectorAll('.alert').forEach(el => el.style.display = 'none');
   const el = document.getElementById('alert-' + type);
   if (el) {
