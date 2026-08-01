@@ -7,6 +7,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root {
   --brand: #0f766e; --brand-light: #14b8a6; --brand-dark: #0d5c56;
@@ -89,6 +90,35 @@ tr:hover { background: #f8fafc; }
 
 .hidden { display: none !important; }
 
+/* Drag and Drop Upload Styles */
+.upload-area {
+  border: 2px dashed var(--border);
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: #fafafa;
+  margin-bottom: 15px;
+}
+.upload-area:hover, .upload-area.dragover {
+  border-color: var(--brand);
+  background: #f0fdfa;
+}
+.upload-area input[type="file"] {
+  display: none;
+}
+.upload-preview {
+  max-width: 150px;
+  max-height: 150px;
+  margin-top: 10px;
+  border-radius: 8px;
+  display: none;
+}
+.upload-preview.show {
+  display: block;
+}
+
 @media(max-width: 768px) {
   .header-info h1 { font-size: 1.5rem; }
   .container { padding: 0 15px; }
@@ -145,6 +175,9 @@ tr:hover { background: #f8fafc; }
           <option value="Sales & Marketing">Sales & Marketing</option>
           <option value="Engineering">Engineering</option>
           <option value="Finance & IT">Finance & IT</option>
+          <option value="Spa">Spa</option>
+          <option value="Finance">Finance</option>
+          <option value="Landscaping">Landscaping</option>
         </select>
       </div>
       <div class="form-group">
@@ -157,6 +190,14 @@ tr:hover { background: #f8fafc; }
       </div>
       <button type="submit" class="btn btn-primary btn-full">✅ Register for Event</button>
     </form>
+    
+    <!-- Download Confirmation Button (Hidden by default) -->
+    <div id="download-confirmation-section" style="display: none; margin-top: 20px; padding: 20px; background: #d1fae5; border-radius: 10px; text-align: center;">
+      <h3 style="color: var(--success); margin-bottom: 15px;">✅ Registration Successful!</h3>
+      <p style="margin-bottom: 15px;">Your registration has been confirmed.</p>
+      <button class="btn btn-success" onclick="downloadConfirmation()">📥 Download Confirmation</button>
+      <button class="btn btn-outline" onclick="resetForm()" style="margin-left: 10px;">🔄 New Registration</button>
+    </div>
   </div>
 
   <!-- ADMIN DASHBOARD VIEW (Hidden by default) -->
@@ -192,14 +233,31 @@ tr:hover { background: #f8fafc; }
           <input type="text" id="admin-hotel-name" placeholder="e.g., Six Senses">
         </div>
       </div>
+      
+      <!-- Drag and Drop Logo Upload -->
       <div class="form-group">
-        <label>Logo Image URL (or Base64)</label>
-        <input type="text" id="admin-logo" placeholder="https://... or data:image/...">
+        <label>Logo Image</label>
+        <div class="upload-area" id="logo-upload-area" onclick="document.getElementById('logo-file').click()">
+          <p style="font-size: 2rem; margin-bottom: 10px;">🏨</p>
+          <p><strong>Click to upload or drag & drop</strong></p>
+          <p style="color: #64748b; font-size: 0.9rem;">PNG, JPG up to 5MB</p>
+          <input type="file" id="logo-file" accept="image/*" onchange="handleLogoUpload(event)">
+          <img id="logo-preview" class="upload-preview" alt="Logo Preview">
+        </div>
       </div>
+      
+      <!-- Drag and Drop Background Upload -->
       <div class="form-group">
-        <label>Background Image URL (or Base64)</label>
-        <input type="text" id="admin-bg" placeholder="https://... or data:image/...">
+        <label>Background Image</label>
+        <div class="upload-area" id="bg-upload-area" onclick="document.getElementById('bg-file').click()">
+          <p style="font-size: 2rem; margin-bottom: 10px;">🌄</p>
+          <p><strong>Click to upload or drag & drop</strong></p>
+          <p style="color: #64748b; font-size: 0.9rem;">PNG, JPG up to 5MB</p>
+          <input type="file" id="bg-file" accept="image/*" onchange="handleBgUpload(event)">
+          <img id="bg-preview" class="upload-preview" alt="Background Preview">
+        </div>
       </div>
+      
       <button class="btn btn-primary" onclick="saveAdminSettings()">💾 Save Settings</button>
     </div>
 
@@ -256,6 +314,7 @@ const db = firebase.database();
 let isAdmin = false;
 let currentSettings = {};
 let registrationsList = [];
+let lastRegistration = null;
 
 // ==========================================
 // 2. REAL-TIME DATA LISTENERS
@@ -296,8 +355,16 @@ function updateUI() {
   document.getElementById('admin-event-date').value = currentSettings.eventDate;
   document.getElementById('admin-max-reg').value = currentSettings.maxRegistrations;
   document.getElementById('admin-hotel-name').value = currentSettings.hotelName;
-  document.getElementById('admin-logo').value = currentSettings.logo || '';
-  document.getElementById('admin-bg').value = currentSettings.background || '';
+  
+  // Show previews if images exist
+  if (currentSettings.logo) {
+    document.getElementById('logo-preview').src = currentSettings.logo;
+    document.getElementById('logo-preview').classList.add('show');
+  }
+  if (currentSettings.background) {
+    document.getElementById('bg-preview').src = currentSettings.background;
+    document.getElementById('bg-preview').classList.add('show');
+  }
 
   // Update Branding
   document.getElementById('app-hotel-name').innerText = currentSettings.hotelName || 'Event Registration';
@@ -345,7 +412,68 @@ function renderRegistrationsTable() {
 }
 
 // ==========================================
-// 4. EMPLOYEE ACTIONS
+// 4. DRAG AND DROP FILE UPLOAD FUNCTIONS
+// ==========================================
+function setupDragAndDrop(elementId, fileInputId) {
+  const uploadArea = document.getElementById(elementId);
+  const fileInput = document.getElementById(fileInputId);
+  
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, preventDefaults, false);
+  });
+  
+  function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  
+  ['dragenter', 'dragover'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, () => {
+      uploadArea.classList.add('dragover');
+    }, false);
+  });
+  
+  ['dragleave', 'drop'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, () => {
+      uploadArea.classList.remove('dragover');
+    }, false);
+  });
+  
+  uploadArea.addEventListener('drop', (e) => {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    if (files.length > 0) {
+      fileInput.files = files;
+      handleFileSelect(fileInputId);
+    }
+  }, false);
+}
+
+function handleFileSelect(inputId) {
+  const fileInput = document.getElementById(inputId);
+  const file = fileInput.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const previewId = inputId.replace('-file', '-preview');
+      const preview = document.getElementById(previewId);
+      preview.src = e.target.result;
+      preview.classList.add('show');
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+function handleLogoUpload(event) {
+  handleFileSelect('logo-file');
+}
+
+function handleBgUpload(event) {
+  handleFileSelect('bg-file');
+}
+
+// ==========================================
+// 5. EMPLOYEE ACTIONS
 // ==========================================
 function handleRegistration(e) {
   e.preventDefault();
@@ -377,19 +505,78 @@ function handleRegistration(e) {
     timestamp: Date.now()
   };
   
-  db.ref('event/registrations').push(newReg).then(() => {
-    showAlert('✅ Registration successful! See you at the event.', 'success');
-    document.getElementById('registration-form').reset();
-    // Re-fill readonly fields
-    document.getElementById('reg-event-name').value = currentSettings.eventName;
-    document.getElementById('reg-event-date').value = currentSettings.eventDate;
+  db.ref('event/registrations').push(newReg).then((ref) => {
+    lastRegistration = { ...newReg, id: ref.key };
+    showAlert('✅ Registration successful!', 'success');
+    
+    // Show download confirmation section
+    document.getElementById('registration-form').style.display = 'none';
+    document.getElementById('download-confirmation-section').style.display = 'block';
   }).catch(err => {
     showAlert('Error: ' + err.message, 'error');
   });
 }
 
+function downloadConfirmation() {
+  if (!lastRegistration) return;
+  
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  
+  // Header
+  doc.setFillColor(15, 118, 110);
+  doc.rect(0, 0, 210, 40, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(22);
+  doc.setFont(undefined, 'bold');
+  doc.text(currentSettings.hotelName || 'Event Registration', 105, 20, {align: 'center'});
+  doc.setFontSize(14);
+  doc.text('Event Registration Confirmation', 105, 32, {align: 'center'});
+  
+  // Content
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(12);
+  let y = 60;
+  
+  const details = [
+    ['Employee ID:', lastRegistration.empId],
+    ['Full Name:', lastRegistration.name],
+    ['Department:', lastRegistration.dept],
+    ['Event Name:', lastRegistration.eventName],
+    ['Event Date:', lastRegistration.eventDate],
+    ['Registration Time:', new Date(lastRegistration.timestamp).toLocaleString()]
+  ];
+  
+  details.forEach(([label, value]) => {
+    doc.setFont(undefined, 'bold');
+    doc.text(label, 20, y);
+    doc.setFont(undefined, 'normal');
+    doc.text(String(value), 80, y);
+    y += 12;
+  });
+  
+  // Footer
+  doc.setFontSize(10);
+  doc.setTextColor(100, 100, 100);
+  doc.text('Thank you for registering! We look forward to seeing you.', 105, 270, {align: 'center'});
+  
+  // Save PDF
+  const fileName = `Registration_Confirmation_${lastRegistration.empId}.pdf`;
+  doc.save(fileName);
+  showAlert('✅ Confirmation downloaded!', 'success');
+}
+
+function resetForm() {
+  document.getElementById('registration-form').reset();
+  document.getElementById('registration-form').style.display = 'block';
+  document.getElementById('download-confirmation-section').style.display = 'none';
+  document.getElementById('reg-event-name').value = currentSettings.eventName;
+  document.getElementById('reg-event-date').value = currentSettings.eventDate;
+  lastRegistration = null;
+}
+
 // ==========================================
-// 5. ADMIN ACTIONS
+// 6. ADMIN ACTIONS
 // ==========================================
 function toggleAdmin() {
   if (isAdmin) {
@@ -416,8 +603,8 @@ function saveAdminSettings() {
     eventDate: document.getElementById('admin-event-date').value,
     maxRegistrations: parseInt(document.getElementById('admin-max-reg').value) || 100,
     hotelName: document.getElementById('admin-hotel-name').value.trim(),
-    logo: document.getElementById('admin-logo').value.trim(),
-    background: document.getElementById('admin-bg').value.trim()
+    logo: document.getElementById('logo-preview').src !== window.location.href ? document.getElementById('logo-preview').src : '',
+    background: document.getElementById('bg-preview').src !== window.location.href ? document.getElementById('bg-preview').src : ''
   };
   
   db.ref('event/settings').set(settings).then(() => {
@@ -466,7 +653,7 @@ function downloadExcelReport() {
 }
 
 // ==========================================
-// 6. UTILITIES
+// 7. UTILITIES
 // ==========================================
 function showAlert(msg, type) {
   // Hide all alerts first
@@ -478,6 +665,12 @@ function showAlert(msg, type) {
     setTimeout(() => { el.style.display = 'none'; }, 4000);
   }
 }
+
+// Initialize drag and drop on page load
+document.addEventListener('DOMContentLoaded', () => {
+  setupDragAndDrop('logo-upload-area', 'logo-file');
+  setupDragAndDrop('bg-upload-area', 'bg-file');
+});
 </script>
 </body>
 </html>
