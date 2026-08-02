@@ -90,26 +90,13 @@ tr:hover { background: #f8fafc; }
 
 .hidden { display: none !important; }
 
-/* Drag and Drop Upload Styles */
 .upload-area {
-  border: 2px dashed var(--border);
-  border-radius: 10px;
-  padding: 30px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s;
-  background: #fafafa;
-  margin-bottom: 15px;
+  border: 2px dashed var(--border); border-radius: 10px; padding: 30px; text-align: center;
+  cursor: pointer; transition: all 0.3s; background: #fafafa; margin-bottom: 15px;
 }
-.upload-area:hover, .upload-area.dragover {
-  border-color: var(--brand);
-  background: #f0fdfa;
-}
+.upload-area:hover, .upload-area.dragover { border-color: var(--brand); background: #f0fdfa; }
 .upload-area input[type="file"] { display: none; }
-.upload-preview {
-  max-width: 150px; max-height: 150px; margin-top: 10px;
-  border-radius: 8px; display: none; object-fit: contain;
-}
+.upload-preview { max-width: 150px; max-height: 150px; margin-top: 10px; border-radius: 8px; display: none; object-fit: contain; }
 .upload-preview.show { display: block; }
 
 @media(max-width: 768px) {
@@ -182,14 +169,12 @@ tr:hover { background: #f8fafc; }
         </select>
       </div>
       
-      <!-- Hidden fields to store event details for the record -->
       <input type="hidden" id="reg-event-name">
       <input type="hidden" id="reg-event-date">
 
       <button type="submit" class="btn btn-primary btn-full">✅ Register for Event</button>
     </form>
     
-    <!-- Download Confirmation Section (Hidden by default) -->
     <div id="download-confirmation-section" class="hidden" style="margin-top: 20px; padding: 25px; background: #d1fae5; border-radius: 10px; text-align: center; border: 2px solid var(--success);">
       <h3 style="color: var(--success); margin-bottom: 10px;">✅ Registration Successful!</h3>
       <p style="margin-bottom: 20px; color: #065f46;">Your registration has been confirmed. You can download your confirmation receipt below.</p>
@@ -200,7 +185,7 @@ tr:hover { background: #f8fafc; }
     </div>
   </div>
 
-  <!-- ADMIN DASHBOARD VIEW (Hidden by default) -->
+  <!-- ADMIN DASHBOARD VIEW -->
   <div id="admin-view" class="hidden">
     <div class="stats-grid">
       <div class="stat-card">
@@ -255,31 +240,24 @@ tr:hover { background: #f8fafc; }
         <label>Hotel / Company Name</label>
         <input type="text" id="admin-hotel-name" placeholder="e.g., Six Senses">
       </div>
-      
-      <!-- Drag and Drop Logo Upload -->
       <div class="form-group">
         <label>Logo Image</label>
         <div class="upload-area" id="logo-upload-area" onclick="document.getElementById('logo-file').click()">
           <p style="font-size: 2rem; margin-bottom: 10px;">🏨</p>
-          <p><strong>Click to browse or drag & drop image here</strong></p>
-          <p style="color: #64748b; font-size: 0.85rem;">Supports PNG, JPG (Max 5MB)</p>
+          <p><strong>Click to browse or drag & drop</strong></p>
           <input type="file" id="logo-file" accept="image/*" onchange="handleFileSelect('logo-file')">
           <img id="logo-preview" class="upload-preview" alt="Logo Preview">
         </div>
       </div>
-      
-      <!-- Drag and Drop Background Upload -->
       <div class="form-group">
         <label>Background Image</label>
         <div class="upload-area" id="bg-upload-area" onclick="document.getElementById('bg-file').click()">
           <p style="font-size: 2rem; margin-bottom: 10px;">🌄</p>
-          <p><strong>Click to browse or drag & drop image here</strong></p>
-          <p style="color: #64748b; font-size: 0.85rem;">Supports PNG, JPG (Max 5MB)</p>
+          <p><strong>Click to browse or drag & drop</strong></p>
           <input type="file" id="bg-file" accept="image/*" onchange="handleFileSelect('bg-file')">
           <img id="bg-preview" class="upload-preview" alt="Background Preview">
         </div>
       </div>
-      
       <button class="btn btn-primary" onclick="saveAdminSettings()">💾 Save Branding Settings</button>
     </div>
 
@@ -313,9 +291,6 @@ tr:hover { background: #f8fafc; }
 <button class="admin-toggle" onclick="toggleAdmin()">⚙️ Admin Access</button>
 
 <script>
-// ==========================================
-// 1. FIREBASE CONFIGURATION
-// ==========================================
 const firebaseConfig = {
   apiKey: "AIzaSyBYjyLnyqqFlJef5E0zq3GfEhjLrMlEqDw",
   authDomain: "eventregistration-5832f.firebaseapp.com",
@@ -328,9 +303,8 @@ const firebaseConfig = {
 
 try {
   firebase.initializeApp(firebaseConfig);
-  console.log('✅ Firebase initialized');
 } catch(error) {
-  console.error('❌ Firebase error:', error);
+  console.error('Firebase error:', error);
 }
 
 const db = firebase.database();
@@ -340,9 +314,6 @@ let eventsList = [];
 let registrationsList = [];
 let lastRegistration = null;
 
-// ==========================================
-// 2. REAL-TIME DATA LISTENERS
-// ==========================================
 db.ref('event/events').on('value', (snap) => {
   const data = snap.val();
   eventsList = data ? Object.entries(data).map(([id, val]) => ({id, ...val})) : [];
@@ -352,7 +323,7 @@ db.ref('event/events').on('value', (snap) => {
 db.ref('event/registrations').on('value', (snap) => {
   const data = snap.val();
   registrationsList = data ? Object.entries(data).map(([id, val]) => ({id, ...val})) : [];
-  updateUI(); // To update available seats dynamically
+  updateUI();
   renderRegistrationsTable();
 });
 
@@ -361,11 +332,7 @@ db.ref('event/settings').on('value', (snap) => {
   updateBranding();
 });
 
-// ==========================================
-// 3. UI UPDATE FUNCTIONS
-// ==========================================
 function updateUI() {
-  // Populate Employee Event Dropdown
   const eventSelect = document.getElementById('reg-event-select');
   const currentVal = eventSelect.value;
   eventSelect.innerHTML = '<option value="">Select an Event</option>';
@@ -375,9 +342,8 @@ function updateUI() {
     option.textContent = event.eventName;
     eventSelect.appendChild(option);
   });
-  eventSelect.value = currentVal; // Maintain selection if possible
-  
-  updateEventDetails(); // Update the display based on current selection
+  eventSelect.value = currentVal;
+  updateEventDetails();
   renderAdminEventsTable();
   updateStats();
 }
@@ -391,18 +357,11 @@ function updateEventDetails() {
     document.getElementById('reg-event-name').value = event.eventName;
     document.getElementById('reg-event-date').value = event.eventDate;
     
-    // Calculate available seats for this specific event
     const eventRegistrations = registrationsList.filter(r => r.eventId === eventId).length;
     const left = Math.max(0, event.maxRegistrations - eventRegistrations);
     const seatsEl = document.getElementById('display-seats-left');
     seatsEl.innerText = `${left} / ${event.maxRegistrations}`;
-    
-    if (left === 0) {
-      seatsEl.style.color = 'var(--danger)';
-      seatsEl.innerText = 'EVENT FULL';
-    } else {
-      seatsEl.style.color = 'var(--text)';
-    }
+    seatsEl.style.color = left === 0 ? 'var(--danger)' : 'var(--text)';
   } else {
     document.getElementById('display-event-name').innerText = '-';
     document.getElementById('display-event-date').innerText = '-';
@@ -439,7 +398,6 @@ function renderAdminEventsTable() {
     tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8;">No events created yet</td></tr>';
     return;
   }
-  
   tbody.innerHTML = eventsList.map(event => {
     const regCount = registrationsList.filter(r => r.eventId === event.id).length;
     return `
@@ -460,10 +418,7 @@ function renderRegistrationsTable() {
     tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#94a3b8;">No registrations yet</td></tr>';
     return;
   }
-  
-  // Sort by newest first
   const sortedRegs = [...registrationsList].sort((a, b) => b.timestamp - a.timestamp);
-  
   tbody.innerHTML = sortedRegs.map(reg => `
     <tr>
       <td><strong>${reg.eventName}</strong></td>
@@ -476,30 +431,20 @@ function renderRegistrationsTable() {
   `).join('');
 }
 
-// ==========================================
-// 4. DRAG AND DROP FILE UPLOAD FUNCTIONS
-// ==========================================
 function setupDragAndDrop(elementId, fileInputId) {
   const uploadArea = document.getElementById(elementId);
   const fileInput = document.getElementById(fileInputId);
-  
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-    uploadArea.addEventListener(eventName, preventDefaults, false);
+    uploadArea.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }, false);
   });
-  
-  function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
-  
   ['dragenter', 'dragover'].forEach(eventName => {
     uploadArea.addEventListener(eventName, () => { uploadArea.classList.add('dragover'); }, false);
   });
-  
   ['dragleave', 'drop'].forEach(eventName => {
     uploadArea.addEventListener(eventName, () => { uploadArea.classList.remove('dragover'); }, false);
   });
-  
   uploadArea.addEventListener('drop', (e) => {
-    const dt = e.dataTransfer;
-    const files = dt.files;
+    const files = e.dataTransfer.files;
     if (files.length > 0) {
       fileInput.files = files;
       handleFileSelect(fileInputId);
@@ -519,60 +464,40 @@ function handleFileSelect(inputId) {
     const reader = new FileReader();
     reader.onload = function(e) {
       const previewId = inputId.replace('-file', '-preview');
-      const preview = document.getElementById(previewId);
-      preview.src = e.target.result;
-      preview.classList.add('show');
+      document.getElementById(previewId).src = e.target.result;
+      document.getElementById(previewId).classList.add('show');
     };
     reader.readAsDataURL(file);
   }
 }
 
-// ==========================================
-// 5. EMPLOYEE ACTIONS
-// ==========================================
 function handleRegistration(e) {
   e.preventDefault();
-  
   const eventId = document.getElementById('reg-event-select').value;
-  if (!eventId) {
-    showAlert('Please select an event.', 'error');
-    return;
-  }
+  if (!eventId) { showAlert('Please select an event.', 'error'); return; }
   
   const event = eventsList.find(e => e.id === eventId);
   const empId = document.getElementById('reg-empid').value.trim().toUpperCase();
   const name = document.getElementById('reg-name').value.trim();
   const dept = document.getElementById('reg-dept').value;
   
-  // Check capacity for this specific event
   const eventRegistrations = registrationsList.filter(r => r.eventId === eventId).length;
   if (eventRegistrations >= event.maxRegistrations) {
     showAlert('Sorry, this event is already full.', 'error');
     return;
   }
   
-  // Check duplicate for this specific event
   const isDuplicate = registrationsList.some(r => r.eventId === eventId && r.empId === empId);
   if (isDuplicate) {
     showAlert('You are already registered for this event.', 'error');
     return;
   }
   
-  const newReg = {
-    eventId: eventId,
-    eventName: event.eventName,
-    eventDate: event.eventDate,
-    empId: empId,
-    name: name,
-    dept: dept,
-    timestamp: Date.now()
-  };
+  const newReg = { eventId, eventName: event.eventName, eventDate: event.eventDate, empId, name, dept, timestamp: Date.now() };
   
   db.ref('event/registrations').push(newReg).then((ref) => {
     lastRegistration = { ...newReg, id: ref.key };
     showAlert('✅ Registration successful!', 'success');
-    
-    // Hide form, show confirmation section
     document.getElementById('registration-form').classList.add('hidden');
     document.getElementById('download-confirmation-section').classList.remove('hidden');
   }).catch(err => {
@@ -582,11 +507,8 @@ function handleRegistration(e) {
 
 function downloadConfirmation() {
   if (!lastRegistration) return;
-  
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-  
-  // Header
   doc.setFillColor(15, 118, 110);
   doc.rect(0, 0, 210, 40, 'F');
   doc.setTextColor(255, 255, 255);
@@ -596,11 +518,9 @@ function downloadConfirmation() {
   doc.setFontSize(14);
   doc.text('Event Registration Confirmation', 105, 32, {align: 'center'});
   
-  // Content
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(12);
   let y = 60;
-  
   const details = [
     ['Event Name:', lastRegistration.eventName],
     ['Event Date:', lastRegistration.eventDate],
@@ -609,7 +529,6 @@ function downloadConfirmation() {
     ['Department:', lastRegistration.dept],
     ['Registration Time:', new Date(lastRegistration.timestamp).toLocaleString()]
   ];
-  
   details.forEach(([label, value]) => {
     doc.setFont(undefined, 'bold');
     doc.text(label, 20, y);
@@ -618,13 +537,10 @@ function downloadConfirmation() {
     y += 12;
   });
   
-  // Footer
   doc.setFontSize(10);
   doc.setTextColor(100, 100, 100);
   doc.text('Thank you for registering! We look forward to seeing you.', 105, 270, {align: 'center'});
-  
-  const fileName = `Registration_${lastRegistration.empId}_${lastRegistration.eventName.replace(/\s+/g, '_')}.pdf`;
-  doc.save(fileName);
+  doc.save(`Registration_${lastRegistration.empId}_${lastRegistration.eventName.replace(/\s+/g, '_')}.pdf`);
   showAlert('✅ Confirmation downloaded!', 'success');
 }
 
@@ -632,19 +548,15 @@ function resetForm() {
   document.getElementById('registration-form').reset();
   document.getElementById('registration-form').classList.remove('hidden');
   document.getElementById('download-confirmation-section').classList.add('hidden');
-  updateEventDetails(); // Reset the display details
+  updateEventDetails();
   lastRegistration = null;
 }
 
-// ==========================================
-// 6. ADMIN ACTIONS
-// ==========================================
 function toggleAdmin() {
   if (isAdmin) {
     isAdmin = false;
     document.getElementById('admin-view').classList.add('hidden');
     document.getElementById('employee-view').classList.remove('hidden');
-    showAlert('Exited Admin Mode', 'info');
   } else {
     const pwd = prompt('Enter Admin Password:');
     if (pwd === 'Admin@2026') {
@@ -662,94 +574,53 @@ function addEvent() {
   const eventName = document.getElementById('admin-new-event-name').value.trim();
   const eventDate = document.getElementById('admin-new-event-date').value;
   const maxRegistrations = parseInt(document.getElementById('admin-new-max-reg').value) || 100;
+  if (!eventName || !eventDate) { showAlert('Please fill in event name and date.', 'error'); return; }
   
-  if (!eventName || !eventDate) {
-    showAlert('Please fill in event name and date.', 'error');
-    return;
-  }
-  
-  const newEvent = {
-    eventName,
-    eventDate,
-    maxRegistrations,
-    createdAt: Date.now()
-  };
-  
-  db.ref('event/events').push(newEvent).then(() => {
+  db.ref('event/events').push({ eventName, eventDate, maxRegistrations, createdAt: Date.now() }).then(() => {
     showAlert('✅ Event added successfully!', 'success');
     document.getElementById('admin-new-event-name').value = '';
     document.getElementById('admin-new-event-date').value = '';
     document.getElementById('admin-new-max-reg').value = '100';
-  }).catch(err => {
-    showAlert('Error: ' + err.message, 'error');
   });
 }
 
 function deleteEvent(eventId) {
-  if (!confirm('Are you sure you want to delete this event? (Existing registrations will remain in the database)')) return;
-  db.ref('event/events/' + eventId).remove().then(() => {
-    showAlert('Event deleted', 'success');
-  });
+  if (!confirm('Delete this event? (Existing registrations will remain in the database)')) return;
+  db.ref('event/events/' + eventId).remove().then(() => showAlert('Event deleted', 'success'));
 }
 
 function saveAdminSettings() {
-  const logoPreview = document.getElementById('logo-preview');
-  const bgPreview = document.getElementById('bg-preview');
-  
   const settings = {
     hotelName: document.getElementById('admin-hotel-name').value.trim(),
-    logo: logoPreview.classList.contains('show') ? logoPreview.src : '',
-    background: bgPreview.classList.contains('show') ? bgPreview.src : ''
+    logo: document.getElementById('logo-preview').classList.contains('show') ? document.getElementById('logo-preview').src : '',
+    background: document.getElementById('bg-preview').classList.contains('show') ? document.getElementById('bg-preview').src : ''
   };
-  
-  db.ref('event/settings').set(settings).then(() => {
-    showAlert('✅ Branding settings saved successfully!', 'success');
-  }).catch(err => {
-    showAlert('Error: ' + err.message, 'error');
-  });
+  db.ref('event/settings').set(settings).then(() => showAlert('✅ Branding settings saved!', 'success'));
 }
 
 function deleteRegistration(id) {
-  if (!confirm('Are you sure you want to remove this registration?')) return;
-  db.ref('event/registrations/' + id).remove().then(() => {
-    showAlert('Registration removed', 'success');
-  });
+  if (!confirm('Remove this registration?')) return;
+  db.ref('event/registrations/' + id).remove().then(() => showAlert('Registration removed', 'success'));
 }
 
 function clearAllRegistrations() {
-  if (!confirm('⚠️ WARNING: This will delete ALL registrations for ALL events. Are you sure?')) return;
-  db.ref('event/registrations').remove().then(() => {
-    showAlert('All registrations cleared', 'success');
-  });
+  if (!confirm('⚠️ WARNING: Delete ALL registrations?')) return;
+  db.ref('event/registrations').remove().then(() => showAlert('All registrations cleared', 'success'));
 }
 
 function downloadExcelReport() {
-  if (registrationsList.length === 0) {
-    showAlert('No data to export', 'warning');
-    return;
-  }
-  
+  if (registrationsList.length === 0) { showAlert('No data to export', 'warning'); return; }
   const exportData = registrationsList.map(r => ({
-    'Event Name': r.eventName,
-    'Event Date': r.eventDate,
-    'Employee ID': r.empId,
-    'Full Name': r.name,
-    'Department': r.dept,
-    'Registration Time': new Date(r.timestamp).toLocaleString()
+    'Event Name': r.eventName, 'Event Date': r.eventDate, 'Employee ID': r.empId,
+    'Full Name': r.name, 'Department': r.dept, 'Registration Time': new Date(r.timestamp).toLocaleString()
   }));
-  
   const ws = XLSX.utils.json_to_sheet(exportData);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Registrations");
-  
-  const fileName = `Event_Registrations_${new Date().toISOString().slice(0,10)}.xlsx`;
-  XLSX.writeFile(wb, fileName);
+  XLSX.writeFile(wb, `Event_Registrations_${new Date().toISOString().slice(0,10)}.xlsx`);
   showAlert('✅ Excel report downloaded!', 'success');
 }
 
-// ==========================================
-// 7. UTILITIES
-// ==========================================
 function showAlert(msg, type) {
   document.querySelectorAll('.alert').forEach(el => el.style.display = 'none');
   const el = document.getElementById('alert-' + type);
@@ -760,7 +631,6 @@ function showAlert(msg, type) {
   }
 }
 
-// Initialize drag and drop on page load
 document.addEventListener('DOMContentLoaded', () => {
   setupDragAndDrop('logo-upload-area', 'logo-file');
   setupDragAndDrop('bg-upload-area', 'bg-file');
