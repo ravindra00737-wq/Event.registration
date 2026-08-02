@@ -105,20 +105,12 @@ tr:hover { background: #f8fafc; }
   border-color: var(--brand);
   background: #f0fdfa;
 }
-.upload-area input[type="file"] {
-  display: none;
-}
+.upload-area input[type="file"] { display: none; }
 .upload-preview {
-  max-width: 150px;
-  max-height: 150px;
-  margin-top: 10px;
-  border-radius: 8px;
-  display: none;
-  object-fit: contain;
+  max-width: 150px; max-height: 150px; margin-top: 10px;
+  border-radius: 8px; display: none; object-fit: contain;
 }
-.upload-preview.show {
-  display: block;
-}
+.upload-preview.show { display: block; }
 
 @media(max-width: 768px) {
   .header-info h1 { font-size: 1.5rem; }
@@ -134,7 +126,7 @@ tr:hover { background: #f8fafc; }
     <div class="logo-circle" id="app-logo">🏨</div>
     <div class="header-info">
       <h1 id="app-hotel-name">Event Registration</h1>
-      <p id="app-tagline">Welcome to our exclusive event</p>
+      <p id="app-tagline">Welcome to our exclusive events</p>
     </div>
   </div>
 </div>
@@ -147,13 +139,21 @@ tr:hover { background: #f8fafc; }
   <!-- EMPLOYEE REGISTRATION VIEW -->
   <div id="employee-view" class="card">
     <h2>📝 Event Registration</h2>
-    <div style="background: #f0fdfa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--brand);">
-      <p><strong>Event:</strong> <span id="display-event-name">Loading...</span></p>
-      <p><strong>Date:</strong> <span id="display-event-date">Loading...</span></p>
-      <p><strong>Available Seats:</strong> <span id="display-seats-left">Loading...</span></p>
-    </div>
     
     <form id="registration-form" onsubmit="handleRegistration(event)">
+      <div class="form-group">
+        <label>Select Event *</label>
+        <select id="reg-event-select" required onchange="updateEventDetails()">
+          <option value="">Loading events...</option>
+        </select>
+      </div>
+
+      <div style="background: #f0fdfa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--brand);">
+        <p><strong>Event:</strong> <span id="display-event-name">-</span></p>
+        <p><strong>Date:</strong> <span id="display-event-date">-</span></p>
+        <p><strong>Available Seats:</strong> <span id="display-seats-left">-</span></p>
+      </div>
+    
       <div class="form-group">
         <label>Employee ID *</label>
         <input type="text" id="reg-empid" required placeholder="Enter your Employee ID">
@@ -181,14 +181,11 @@ tr:hover { background: #f8fafc; }
           <option value="Landscaping">Landscaping</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>Event Name</label>
-        <input type="text" id="reg-event-name" readonly>
-      </div>
-      <div class="form-group">
-        <label>Event Date</label>
-        <input type="text" id="reg-event-date" readonly>
-      </div>
+      
+      <!-- Hidden fields to store event details for the record -->
+      <input type="hidden" id="reg-event-name">
+      <input type="hidden" id="reg-event-date">
+
       <button type="submit" class="btn btn-primary btn-full">✅ Register for Event</button>
     </form>
     
@@ -207,34 +204,56 @@ tr:hover { background: #f8fafc; }
   <div id="admin-view" class="hidden">
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="number" id="stat-total-reg">0</div>
-        <div class="label">Total Registrations</div>
+        <div class="number" id="stat-total-events">0</div>
+        <div class="label">Total Events</div>
       </div>
       <div class="stat-card" style="background: linear-gradient(135deg, var(--gold), #fbbf24);">
-        <div class="number" id="stat-seats-left">0</div>
-        <div class="label">Seats Remaining</div>
+        <div class="number" id="stat-total-reg">0</div>
+        <div class="label">Total Registrations</div>
       </div>
     </div>
 
     <div class="card">
-      <h2>⚙️ Event & Branding Settings</h2>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-        <div class="form-group">
+      <h2>📅 Event Management</h2>
+      <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 15px; align-items: end; margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px;">
+        <div class="form-group" style="margin-bottom: 0;">
           <label>Event Name</label>
-          <input type="text" id="admin-event-name" placeholder="e.g., Annual Gala 2026">
+          <input type="text" id="admin-new-event-name" placeholder="e.g., Annual Gala 2026">
         </div>
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom: 0;">
           <label>Event Date</label>
-          <input type="date" id="admin-event-date">
+          <input type="date" id="admin-new-event-date">
         </div>
-        <div class="form-group">
-          <label>Max Registrations Allowed</label>
-          <input type="number" id="admin-max-reg" min="1" value="100">
+        <div class="form-group" style="margin-bottom: 0;">
+          <label>Max Registrations</label>
+          <input type="number" id="admin-new-max-reg" min="1" value="100">
         </div>
-        <div class="form-group">
-          <label>Hotel / Company Name</label>
-          <input type="text" id="admin-hotel-name" placeholder="e.g., Six Senses">
-        </div>
+        <button class="btn btn-primary" onclick="addEvent()" style="height: 46px;">➕ Add Event</button>
+      </div>
+      
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Event Name</th>
+              <th>Date</th>
+              <th>Registrations</th>
+              <th>Created</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="admin-events-tbody">
+            <tr><td colspan="5" style="text-align:center; color:#94a3b8;">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🎨 Branding Settings</h2>
+      <div class="form-group">
+        <label>Hotel / Company Name</label>
+        <input type="text" id="admin-hotel-name" placeholder="e.g., Six Senses">
       </div>
       
       <!-- Drag and Drop Logo Upload -->
@@ -261,11 +280,11 @@ tr:hover { background: #f8fafc; }
         </div>
       </div>
       
-      <button class="btn btn-primary" onclick="saveAdminSettings()">💾 Save Settings</button>
+      <button class="btn btn-primary" onclick="saveAdminSettings()">💾 Save Branding Settings</button>
     </div>
 
     <div class="card">
-      <h2>📋 Registrations List</h2>
+      <h2>📋 All Registrations</h2>
       <div style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
         <button class="btn btn-success" onclick="downloadExcelReport()">📥 Download Excel Report</button>
         <button class="btn btn-danger" onclick="clearAllRegistrations()">🗑️ Clear All Registrations</button>
@@ -274,6 +293,7 @@ tr:hover { background: #f8fafc; }
         <table>
           <thead>
             <tr>
+              <th>Event</th>
               <th>Employee ID</th>
               <th>Name</th>
               <th>Department</th>
@@ -282,7 +302,7 @@ tr:hover { background: #f8fafc; }
             </tr>
           </thead>
           <tbody id="registrations-tbody">
-            <tr><td colspan="5" style="text-align:center; color:#94a3b8;">Loading...</td></tr>
+            <tr><td colspan="6" style="text-align:center; color:#94a3b8;">Loading...</td></tr>
           </tbody>
         </table>
       </div>
@@ -316,90 +336,138 @@ try {
 const db = firebase.database();
 let isAdmin = false;
 let currentSettings = {};
+let eventsList = [];
 let registrationsList = [];
 let lastRegistration = null;
 
 // ==========================================
 // 2. REAL-TIME DATA LISTENERS
 // ==========================================
-db.ref('event/settings').on('value', (snap) => {
-  currentSettings = snap.val() || {
-    eventName: 'Annual Company Event',
-    eventDate: '2026-12-31',
-    maxRegistrations: 100,
-    hotelName: 'Event Registration',
-    logo: '',
-    background: ''
-  };
+db.ref('event/events').on('value', (snap) => {
+  const data = snap.val();
+  eventsList = data ? Object.entries(data).map(([id, val]) => ({id, ...val})) : [];
   updateUI();
 });
 
 db.ref('event/registrations').on('value', (snap) => {
   const data = snap.val();
   registrationsList = data ? Object.entries(data).map(([id, val]) => ({id, ...val})) : [];
-  updateStats();
+  updateUI(); // To update available seats dynamically
   renderRegistrationsTable();
+});
+
+db.ref('event/settings').on('value', (snap) => {
+  currentSettings = snap.val() || { hotelName: 'Event Registration', logo: '', background: '' };
+  updateBranding();
 });
 
 // ==========================================
 // 3. UI UPDATE FUNCTIONS
 // ==========================================
 function updateUI() {
-  document.getElementById('display-event-name').innerText = currentSettings.eventName;
-  document.getElementById('display-event-date').innerText = currentSettings.eventDate;
-  document.getElementById('reg-event-name').value = currentSettings.eventName;
-  document.getElementById('reg-event-date').value = currentSettings.eventDate;
+  // Populate Employee Event Dropdown
+  const eventSelect = document.getElementById('reg-event-select');
+  const currentVal = eventSelect.value;
+  eventSelect.innerHTML = '<option value="">Select an Event</option>';
+  eventsList.forEach(event => {
+    const option = document.createElement('option');
+    option.value = event.id;
+    option.textContent = event.eventName;
+    eventSelect.appendChild(option);
+  });
+  eventSelect.value = currentVal; // Maintain selection if possible
   
-  document.getElementById('admin-event-name').value = currentSettings.eventName;
-  document.getElementById('admin-event-date').value = currentSettings.eventDate;
-  document.getElementById('admin-max-reg').value = currentSettings.maxRegistrations;
-  document.getElementById('admin-hotel-name').value = currentSettings.hotelName;
-  
+  updateEventDetails(); // Update the display based on current selection
+  renderAdminEventsTable();
+  updateStats();
+}
+
+function updateEventDetails() {
+  const eventId = document.getElementById('reg-event-select').value;
+  const event = eventsList.find(e => e.id === eventId);
+  if (event) {
+    document.getElementById('display-event-name').innerText = event.eventName;
+    document.getElementById('display-event-date').innerText = event.eventDate;
+    document.getElementById('reg-event-name').value = event.eventName;
+    document.getElementById('reg-event-date').value = event.eventDate;
+    
+    // Calculate available seats for this specific event
+    const eventRegistrations = registrationsList.filter(r => r.eventId === eventId).length;
+    const left = Math.max(0, event.maxRegistrations - eventRegistrations);
+    const seatsEl = document.getElementById('display-seats-left');
+    seatsEl.innerText = `${left} / ${event.maxRegistrations}`;
+    
+    if (left === 0) {
+      seatsEl.style.color = 'var(--danger)';
+      seatsEl.innerText = 'EVENT FULL';
+    } else {
+      seatsEl.style.color = 'var(--text)';
+    }
+  } else {
+    document.getElementById('display-event-name').innerText = '-';
+    document.getElementById('display-event-date').innerText = '-';
+    document.getElementById('reg-event-name').value = '';
+    document.getElementById('reg-event-date').value = '';
+    document.getElementById('display-seats-left').innerText = '-';
+  }
+}
+
+function updateBranding() {
+  document.getElementById('app-hotel-name').innerText = currentSettings.hotelName || 'Event Registration';
   if (currentSettings.logo) {
+    document.getElementById('app-logo').innerHTML = `<img src="${currentSettings.logo}" alt="Logo">`;
     document.getElementById('logo-preview').src = currentSettings.logo;
     document.getElementById('logo-preview').classList.add('show');
   }
   if (currentSettings.background) {
+    document.body.style.backgroundImage = `url(${currentSettings.background})`;
     document.getElementById('bg-preview').src = currentSettings.background;
     document.getElementById('bg-preview').classList.add('show');
-  }
-
-  document.getElementById('app-hotel-name').innerText = currentSettings.hotelName || 'Event Registration';
-  if (currentSettings.logo) {
-    document.getElementById('app-logo').innerHTML = `<img src="${currentSettings.logo}" alt="Logo">`;
-  }
-  if (currentSettings.background) {
-    document.body.style.backgroundImage = `url(${currentSettings.background})`;
   } else {
     document.body.style.backgroundImage = 'none';
   }
 }
 
 function updateStats() {
-  const total = registrationsList.length;
-  const max = parseInt(currentSettings.maxRegistrations) || 100;
-  const left = Math.max(0, max - total);
-  
-  document.getElementById('stat-total-reg').innerText = total;
-  document.getElementById('stat-seats-left').innerText = left;
-  document.getElementById('display-seats-left').innerText = `${left} / ${max}`;
-  
-  if (left === 0) {
-    document.getElementById('display-seats-left').style.color = 'var(--danger)';
-    document.getElementById('display-seats-left').innerText = 'EVENT FULL';
+  document.getElementById('stat-total-events').innerText = eventsList.length;
+  document.getElementById('stat-total-reg').innerText = registrationsList.length;
+}
+
+function renderAdminEventsTable() {
+  const tbody = document.getElementById('admin-events-tbody');
+  if (eventsList.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8;">No events created yet</td></tr>';
+    return;
   }
+  
+  tbody.innerHTML = eventsList.map(event => {
+    const regCount = registrationsList.filter(r => r.eventId === event.id).length;
+    return `
+      <tr>
+        <td><strong>${event.eventName}</strong></td>
+        <td>${event.eventDate}</td>
+        <td>${regCount} / ${event.maxRegistrations}</td>
+        <td>${new Date(event.createdAt).toLocaleDateString()}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="deleteEvent('${event.id}')">Delete</button></td>
+      </tr>
+    `;
+  }).join('');
 }
 
 function renderRegistrationsTable() {
   const tbody = document.getElementById('registrations-tbody');
   if (registrationsList.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8;">No registrations yet</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#94a3b8;">No registrations yet</td></tr>';
     return;
   }
   
-  tbody.innerHTML = registrationsList.map(reg => `
+  // Sort by newest first
+  const sortedRegs = [...registrationsList].sort((a, b) => b.timestamp - a.timestamp);
+  
+  tbody.innerHTML = sortedRegs.map(reg => `
     <tr>
-      <td><strong>${reg.empId}</strong></td>
+      <td><strong>${reg.eventName}</strong></td>
+      <td>${reg.empId}</td>
       <td>${reg.name}</td>
       <td>${reg.dept}</td>
       <td>${new Date(reg.timestamp).toLocaleString()}</td>
@@ -419,21 +487,14 @@ function setupDragAndDrop(elementId, fileInputId) {
     uploadArea.addEventListener(eventName, preventDefaults, false);
   });
   
-  function preventDefaults(e) {
-    e.preventDefault();
-    e.stopPropagation();
-  }
+  function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
   
   ['dragenter', 'dragover'].forEach(eventName => {
-    uploadArea.addEventListener(eventName, () => {
-      uploadArea.classList.add('dragover');
-    }, false);
+    uploadArea.addEventListener(eventName, () => { uploadArea.classList.add('dragover'); }, false);
   });
   
   ['dragleave', 'drop'].forEach(eventName => {
-    uploadArea.addEventListener(eventName, () => {
-      uploadArea.classList.remove('dragover');
-    }, false);
+    uploadArea.addEventListener(eventName, () => { uploadArea.classList.remove('dragover'); }, false);
   });
   
   uploadArea.addEventListener('drop', (e) => {
@@ -472,27 +533,38 @@ function handleFileSelect(inputId) {
 function handleRegistration(e) {
   e.preventDefault();
   
+  const eventId = document.getElementById('reg-event-select').value;
+  if (!eventId) {
+    showAlert('Please select an event.', 'error');
+    return;
+  }
+  
+  const event = eventsList.find(e => e.id === eventId);
   const empId = document.getElementById('reg-empid').value.trim().toUpperCase();
   const name = document.getElementById('reg-name').value.trim();
   const dept = document.getElementById('reg-dept').value;
   
-  if (registrationsList.length >= parseInt(currentSettings.maxRegistrations)) {
+  // Check capacity for this specific event
+  const eventRegistrations = registrationsList.filter(r => r.eventId === eventId).length;
+  if (eventRegistrations >= event.maxRegistrations) {
     showAlert('Sorry, this event is already full.', 'error');
     return;
   }
   
-  const isDuplicate = registrationsList.some(r => r.empId === empId);
+  // Check duplicate for this specific event
+  const isDuplicate = registrationsList.some(r => r.eventId === eventId && r.empId === empId);
   if (isDuplicate) {
-    showAlert('This Employee ID is already registered for this event.', 'error');
+    showAlert('You are already registered for this event.', 'error');
     return;
   }
   
   const newReg = {
+    eventId: eventId,
+    eventName: event.eventName,
+    eventDate: event.eventDate,
     empId: empId,
     name: name,
     dept: dept,
-    eventName: currentSettings.eventName,
-    eventDate: currentSettings.eventDate,
     timestamp: Date.now()
   };
   
@@ -530,11 +602,11 @@ function downloadConfirmation() {
   let y = 60;
   
   const details = [
+    ['Event Name:', lastRegistration.eventName],
+    ['Event Date:', lastRegistration.eventDate],
     ['Employee ID:', lastRegistration.empId],
     ['Full Name:', lastRegistration.name],
     ['Department:', lastRegistration.dept],
-    ['Event Name:', lastRegistration.eventName],
-    ['Event Date:', lastRegistration.eventDate],
     ['Registration Time:', new Date(lastRegistration.timestamp).toLocaleString()]
   ];
   
@@ -551,7 +623,7 @@ function downloadConfirmation() {
   doc.setTextColor(100, 100, 100);
   doc.text('Thank you for registering! We look forward to seeing you.', 105, 270, {align: 'center'});
   
-  const fileName = `Registration_Confirmation_${lastRegistration.empId}.pdf`;
+  const fileName = `Registration_${lastRegistration.empId}_${lastRegistration.eventName.replace(/\s+/g, '_')}.pdf`;
   doc.save(fileName);
   showAlert('✅ Confirmation downloaded!', 'success');
 }
@@ -560,8 +632,7 @@ function resetForm() {
   document.getElementById('registration-form').reset();
   document.getElementById('registration-form').classList.remove('hidden');
   document.getElementById('download-confirmation-section').classList.add('hidden');
-  document.getElementById('reg-event-name').value = currentSettings.eventName;
-  document.getElementById('reg-event-date').value = currentSettings.eventDate;
+  updateEventDetails(); // Reset the display details
   lastRegistration = null;
 }
 
@@ -587,21 +658,52 @@ function toggleAdmin() {
   }
 }
 
+function addEvent() {
+  const eventName = document.getElementById('admin-new-event-name').value.trim();
+  const eventDate = document.getElementById('admin-new-event-date').value;
+  const maxRegistrations = parseInt(document.getElementById('admin-new-max-reg').value) || 100;
+  
+  if (!eventName || !eventDate) {
+    showAlert('Please fill in event name and date.', 'error');
+    return;
+  }
+  
+  const newEvent = {
+    eventName,
+    eventDate,
+    maxRegistrations,
+    createdAt: Date.now()
+  };
+  
+  db.ref('event/events').push(newEvent).then(() => {
+    showAlert('✅ Event added successfully!', 'success');
+    document.getElementById('admin-new-event-name').value = '';
+    document.getElementById('admin-new-event-date').value = '';
+    document.getElementById('admin-new-max-reg').value = '100';
+  }).catch(err => {
+    showAlert('Error: ' + err.message, 'error');
+  });
+}
+
+function deleteEvent(eventId) {
+  if (!confirm('Are you sure you want to delete this event? (Existing registrations will remain in the database)')) return;
+  db.ref('event/events/' + eventId).remove().then(() => {
+    showAlert('Event deleted', 'success');
+  });
+}
+
 function saveAdminSettings() {
   const logoPreview = document.getElementById('logo-preview');
   const bgPreview = document.getElementById('bg-preview');
   
   const settings = {
-    eventName: document.getElementById('admin-event-name').value.trim(),
-    eventDate: document.getElementById('admin-event-date').value,
-    maxRegistrations: parseInt(document.getElementById('admin-max-reg').value) || 100,
     hotelName: document.getElementById('admin-hotel-name').value.trim(),
     logo: logoPreview.classList.contains('show') ? logoPreview.src : '',
     background: bgPreview.classList.contains('show') ? bgPreview.src : ''
   };
   
   db.ref('event/settings').set(settings).then(() => {
-    showAlert('✅ Settings saved successfully!', 'success');
+    showAlert('✅ Branding settings saved successfully!', 'success');
   }).catch(err => {
     showAlert('Error: ' + err.message, 'error');
   });
@@ -615,7 +717,7 @@ function deleteRegistration(id) {
 }
 
 function clearAllRegistrations() {
-  if (!confirm('⚠️ WARNING: This will delete ALL registrations. Are you sure?')) return;
+  if (!confirm('⚠️ WARNING: This will delete ALL registrations for ALL events. Are you sure?')) return;
   db.ref('event/registrations').remove().then(() => {
     showAlert('All registrations cleared', 'success');
   });
@@ -628,11 +730,11 @@ function downloadExcelReport() {
   }
   
   const exportData = registrationsList.map(r => ({
+    'Event Name': r.eventName,
+    'Event Date': r.eventDate,
     'Employee ID': r.empId,
     'Full Name': r.name,
     'Department': r.dept,
-    'Event Name': r.eventName,
-    'Event Date': r.eventDate,
     'Registration Time': new Date(r.timestamp).toLocaleString()
   }));
   
