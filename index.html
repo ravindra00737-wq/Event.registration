@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Event Registration Platform</title>
+<title>Event & Attendance Platform</title>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -42,11 +42,11 @@ body {
 
 .form-group { margin-bottom: 20px; }
 label { display: block; margin-bottom: 6px; font-weight: 600; color: #475569; font-size: 0.9rem; }
-input, select {
+input, select, textarea {
   width: 100%; padding: 12px 15px; border: 2px solid var(--border); border-radius: 8px;
   font-family: inherit; font-size: 1rem; background: #fff; transition: all 0.3s;
 }
-input:focus, select:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
 input[readonly] { background: #f8fafc; color: #64748b; cursor: not-allowed; }
 
 .btn {
@@ -99,10 +99,19 @@ tr:hover { background: #f8fafc; }
 .upload-preview { max-width: 150px; max-height: 150px; margin-top: 10px; border-radius: 8px; display: none; object-fit: contain; }
 .upload-preview.show { display: block; }
 
+/* Employee Tab Navigation */
+.emp-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+.emp-tab-btn {
+  padding: 10px 20px; border: none; background: transparent; color: #64748b;
+  font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s;
+}
+.emp-tab-btn.active { color: var(--brand); border-bottom-color: var(--brand); }
+
 @media(max-width: 768px) {
   .header-info h1 { font-size: 1.5rem; }
   .container { padding: 0 15px; }
   .card { padding: 20px; }
+  .emp-tabs { flex-direction: column; gap: 5px; }
 }
 </style>
 </head>
@@ -112,8 +121,8 @@ tr:hover { background: #f8fafc; }
   <div class="header-content">
     <div class="logo-circle" id="app-logo">🏨</div>
     <div class="header-info">
-      <h1 id="app-hotel-name">Event Registration</h1>
-      <p id="app-tagline">Welcome to our exclusive events</p>
+      <h1 id="app-hotel-name">Event & Attendance Platform</h1>
+      <p id="app-tagline">Manage Events and Track Attendance</p>
     </div>
   </div>
 </div>
@@ -123,128 +132,172 @@ tr:hover { background: #f8fafc; }
   <div id="alert-error" class="alert alert-error"></div>
   <div id="alert-warning" class="alert alert-warning"></div>
 
-  <!-- EMPLOYEE REGISTRATION VIEW -->
+  <!-- EMPLOYEE VIEW -->
   <div id="employee-view" class="card">
-    <h2>📝 Event Registration</h2>
-    
-    <form id="registration-form" onsubmit="handleRegistration(event)">
-      <div class="form-group">
-        <label>Select Event *</label>
-        <select id="reg-event-select" required onchange="updateEventDetails()">
-          <option value="">Loading events...</option>
-        </select>
-      </div>
+    <div class="emp-tabs">
+      <button class="emp-tab-btn active" onclick="showEmpTab('registration')">📝 Event Registration</button>
+      <button class="emp-tab-btn" onclick="showEmpTab('attendance')">✅ Submit Attendance</button>
+    </div>
 
-      <div style="background: #f0fdfa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--brand);">
-        <p><strong>Event:</strong> <span id="display-event-name">-</span></p>
-        <p><strong>Date:</strong> <span id="display-event-date">-</span></p>
-        <p><strong>Available Seats:</strong> <span id="display-seats-left">-</span></p>
-      </div>
-    
-      <div class="form-group">
-        <label>Employee ID *</label>
-        <input type="text" id="reg-empid" required placeholder="Enter your Employee ID">
-      </div>
-      <div class="form-group">
-        <label>Full Name *</label>
-        <input type="text" id="reg-name" required placeholder="Enter your full name">
-      </div>
-      <div class="form-group">
-        <label>Department *</label>
-        <select id="reg-dept" required>
-          <option value="">Select Department</option>
-          <option value="Executive Office">Executive Office</option>
-          <option value="Front Office">Front Office</option>
-          <option value="Human Resources">Human Resources</option>
-          <option value="F&B Service">F&B Service</option>
-          <option value="Kitchen">Kitchen</option>
-          <option value="Housekeeping & Laundry">Housekeeping & Laundry</option>
-          <option value="Security">Security</option>
-          <option value="Sales & Marketing">Sales & Marketing</option>
-          <option value="Engineering">Engineering</option>
-          <option value="Finance & IT">Finance & IT</option>
-          <option value="Spa">Spa</option>
-          <option value="Finance">Finance</option>
-          <option value="Landscaping">Landscaping</option>
-        </select>
-      </div>
+    <!-- REGISTRATION TAB -->
+    <div id="registration-view">
+      <h2>📝 Event Registration</h2>
+      <form id="registration-form" onsubmit="handleRegistration(event)">
+        <div class="form-group">
+          <label>Select Event *</label>
+          <select id="reg-event-select" required onchange="updateEventDetails()">
+            <option value="">Loading events...</option>
+          </select>
+        </div>
+        <div style="background: #f0fdfa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--brand);">
+          <p><strong>Event:</strong> <span id="display-event-name">-</span></p>
+          <p><strong>Date:</strong> <span id="display-event-date">-</span></p>
+          <p><strong>Available Seats:</strong> <span id="display-seats-left">-</span></p>
+        </div>
+        <div class="form-group"><label>Employee ID *</label><input type="text" id="reg-empid" required placeholder="Enter your Employee ID"></div>
+        <div class="form-group"><label>Full Name *</label><input type="text" id="reg-name" required placeholder="Enter your full name"></div>
+        <div class="form-group">
+          <label>Department *</label>
+          <select id="reg-dept" required>
+            <option value="">Select Department</option>
+            <option value="Executive Office">Executive Office</option>
+            <option value="Front Office">Front Office</option>
+            <option value="Human Resources">Human Resources</option>
+            <option value="F&B Service">F&B Service</option>
+            <option value="Kitchen">Kitchen</option>
+            <option value="Housekeeping & Laundry">Housekeeping & Laundry</option>
+            <option value="Security">Security</option>
+            <option value="Sales & Marketing">Sales & Marketing</option>
+            <option value="Engineering">Engineering</option>
+            <option value="Finance & IT">Finance & IT</option>
+            <option value="Spa">Spa</option>
+            <option value="Finance">Finance</option>
+            <option value="Landscaping">Landscaping</option>
+          </select>
+        </div>
+        <input type="hidden" id="reg-event-name">
+        <input type="hidden" id="reg-event-date">
+        <button type="submit" class="btn btn-primary btn-full">✅ Register for Event</button>
+      </form>
       
-      <input type="hidden" id="reg-event-name">
-      <input type="hidden" id="reg-event-date">
-
-      <button type="submit" class="btn btn-primary btn-full">✅ Register for Event</button>
-    </form>
-    
-    <div id="download-confirmation-section" class="hidden" style="margin-top: 20px; padding: 25px; background: #d1fae5; border-radius: 10px; text-align: center; border: 2px solid var(--success);">
-      <h3 style="color: var(--success); margin-bottom: 10px;">✅ Registration Successful!</h3>
-      <p style="margin-bottom: 20px; color: #065f46;">Your registration has been confirmed. You can download your confirmation receipt below.</p>
-      <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-        <button class="btn btn-success" onclick="downloadConfirmation()">📥 Download Confirmation PDF</button>
-        <button class="btn btn-outline" onclick="resetForm()">🔄 New Registration</button>
+      <div id="download-confirmation-section" class="hidden" style="margin-top: 20px; padding: 25px; background: #d1fae5; border-radius: 10px; text-align: center; border: 2px solid var(--success);">
+        <h3 style="color: var(--success); margin-bottom: 10px;">✅ Registration Successful!</h3>
+        <p style="margin-bottom: 20px; color: #065f46;">Your registration has been confirmed.</p>
+        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+          <button class="btn btn-success" onclick="downloadConfirmation()">📥 Download Confirmation PDF</button>
+          <button class="btn btn-outline" onclick="resetRegForm()">🔄 New Registration</button>
+        </div>
       </div>
+    </div>
+
+    <!-- ATTENDANCE TAB -->
+    <div id="attendance-view" class="hidden">
+      <h2>✅ Submit Attendance</h2>
+      <form id="attendance-form" onsubmit="handleAttendance(event)">
+        <div class="form-group"><label>Employee ID *</label><input type="text" id="att-empid" required placeholder="Enter your Employee ID"></div>
+        <div class="form-group"><label>Full Name *</label><input type="text" id="att-name" required placeholder="Enter your full name"></div>
+        <div class="form-group">
+          <label>Department *</label>
+          <select id="att-dept" required>
+            <option value="">Select Department</option>
+            <option value="Executive Office">Executive Office</option>
+            <option value="Front Office">Front Office</option>
+            <option value="Human Resources">Human Resources</option>
+            <option value="F&B Service">F&B Service</option>
+            <option value="Kitchen">Kitchen</option>
+            <option value="Housekeeping & Laundry">Housekeeping & Laundry</option>
+            <option value="Security">Security</option>
+            <option value="Sales & Marketing">Sales & Marketing</option>
+            <option value="Engineering">Engineering</option>
+            <option value="Finance & IT">Finance & IT</option>
+            <option value="Spa">Spa</option>
+            <option value="Finance">Finance</option>
+            <option value="Landscaping">Landscaping</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Select Activity *</label>
+          <select id="att-activity" required onchange="showActivityRemarks()">
+            <option value="">Loading activities...</option>
+          </select>
+        </div>
+        <div id="att-remarks-display" class="hidden" style="background: #fffbeb; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--gold);">
+          <p><strong>📌 Admin Remarks:</strong> <span id="att-remarks-text">-</span></p>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">✅ Submit Attendance</button>
+      </form>
     </div>
   </div>
 
   <!-- ADMIN DASHBOARD VIEW -->
   <div id="admin-view" class="hidden">
     <div class="stats-grid">
-      <div class="stat-card">
-        <div class="number" id="stat-total-events">0</div>
-        <div class="label">Total Events</div>
-      </div>
-      <div class="stat-card" style="background: linear-gradient(135deg, var(--gold), #fbbf24);">
-        <div class="number" id="stat-total-reg">0</div>
-        <div class="label">Total Registrations</div>
-      </div>
+      <div class="stat-card"><div class="number" id="stat-total-events">0</div><div class="label">Total Events</div></div>
+      <div class="stat-card" style="background: linear-gradient(135deg, var(--gold), #fbbf24);"><div class="number" id="stat-total-reg">0</div><div class="label">Total Registrations</div></div>
+      <div class="stat-card" style="background: linear-gradient(135deg, var(--success), #34d399);"><div class="number" id="stat-total-att">0</div><div class="label">Total Attendance</div></div>
     </div>
 
+    <!-- Event Management -->
     <div class="card">
       <h2>📅 Event Management</h2>
       <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 15px; align-items: end; margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px;">
-        <div class="form-group" style="margin-bottom: 0;">
-          <label>Event Name</label>
-          <input type="text" id="admin-new-event-name" placeholder="e.g., Annual Gala 2026">
-        </div>
-        <div class="form-group" style="margin-bottom: 0;">
-          <label>Event Date</label>
-          <input type="date" id="admin-new-event-date">
-        </div>
-        <div class="form-group" style="margin-bottom: 0;">
-          <label>Max Registrations</label>
-          <input type="number" id="admin-new-max-reg" min="1" value="100">
-        </div>
+        <div class="form-group" style="margin-bottom: 0;"><label>Event Name</label><input type="text" id="admin-new-event-name" placeholder="e.g., Annual Gala"></div>
+        <div class="form-group" style="margin-bottom: 0;"><label>Event Date</label><input type="date" id="admin-new-event-date"></div>
+        <div class="form-group" style="margin-bottom: 0;"><label>Max Registrations</label><input type="number" id="admin-new-max-reg" min="1" value="100"></div>
         <button class="btn btn-primary" onclick="addEvent()" style="height: 46px;">➕ Add Event</button>
       </div>
-      
       <div style="overflow-x: auto;">
         <table>
-          <thead>
-            <tr>
-              <th>Event Name</th>
-              <th>Date</th>
-              <th>Registrations</th>
-              <th>Created</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="admin-events-tbody">
-            <tr><td colspan="5" style="text-align:center; color:#94a3b8;">Loading...</td></tr>
-          </tbody>
+          <thead><tr><th>Event Name</th><th>Date</th><th>Registrations</th><th>Created</th><th>Action</th></tr></thead>
+          <tbody id="admin-events-tbody"><tr><td colspan="5" style="text-align:center; color:#94a3b8;">Loading...</td></tr></tbody>
         </table>
       </div>
     </div>
 
+    <!-- Activity Management (For Attendance) -->
+    <div class="card">
+      <h2>📋 Activity Management (For Attendance)</h2>
+      <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 10px; align-items: end; margin-bottom: 15px; padding: 15px; background: #f8fafc; border-radius: 8px;">
+        <div class="form-group" style="margin-bottom: 0;"><label>Activity Name</label><input type="text" id="admin-act-name"></div>
+        <div class="form-group" style="margin-bottom: 0;"><label>Date</label><input type="date" id="admin-act-date"></div>
+        <div class="form-group" style="margin-bottom: 0;"><label>Start Time</label><input type="time" id="admin-act-start"></div>
+        <div class="form-group" style="margin-bottom: 0;"><label>End Time</label><input type="time" id="admin-act-end"></div>
+        <button class="btn btn-primary" onclick="addActivity()" style="height: 46px;">➕ Add</button>
+      </div>
+      <div class="form-group"><label>Remarks for Employees (Visible when they select this activity)</label><textarea id="admin-act-remarks" rows="2" placeholder="e.g., Please bring your ID card and arrive 15 mins early"></textarea></div>
+      <div style="overflow-x: auto;">
+        <table>
+          <thead><tr><th>Activity Name</th><th>Date</th><th>Time Window</th><th>Remarks</th><th>Action</th></tr></thead>
+          <tbody id="admin-activities-tbody"><tr><td colspan="5" style="text-align:center; color:#94a3b8;">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Attendance Records -->
+    <div class="card">
+      <h2>📊 Attendance Records</h2>
+      <div style="display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; align-items: end;">
+        <div class="form-group" style="margin-bottom: 0; flex: 1;"><label>Month</label><select id="admin-att-month"><option value="all">All Months</option></select></div>
+        <div class="form-group" style="margin-bottom: 0; flex: 1;"><label>Year</label><select id="admin-att-year"><option value="all">All Years</option></select></div>
+        <div class="form-group" style="margin-bottom: 0; flex: 2;"><label>Activity (Optional)</label><select id="admin-att-activity"><option value="all">All Activities</option></select></div>
+        <button class="btn btn-success" onclick="downloadAttendanceExcel()" style="height: 46px;">📥 Download Excel</button>
+      </div>
+      <div style="overflow-x: auto;">
+        <table>
+          <thead><tr><th>Activity</th><th>Employee ID</th><th>Name</th><th>Department</th><th>Submission Time</th></tr></thead>
+          <tbody id="admin-attendance-tbody"><tr><td colspan="5" style="text-align:center; color:#94a3b8;">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Branding & Registrations (Kept from original) -->
     <div class="card">
       <h2>🎨 Branding Settings</h2>
-      <div class="form-group">
-        <label>Hotel / Company Name</label>
-        <input type="text" id="admin-hotel-name" placeholder="e.g., Six Senses">
-      </div>
+      <div class="form-group"><label>Hotel / Company Name</label><input type="text" id="admin-hotel-name" placeholder="e.g., Six Senses"></div>
       <div class="form-group">
         <label>Logo Image</label>
         <div class="upload-area" id="logo-upload-area" onclick="document.getElementById('logo-file').click()">
-          <p style="font-size: 2rem; margin-bottom: 10px;">🏨</p>
-          <p><strong>Click to browse or drag & drop</strong></p>
+          <p style="font-size: 2rem; margin-bottom: 10px;">🏨</p><p><strong>Click to browse or drag & drop</strong></p>
           <input type="file" id="logo-file" accept="image/*" onchange="handleFileSelect('logo-file')">
           <img id="logo-preview" class="upload-preview" alt="Logo Preview">
         </div>
@@ -252,8 +305,7 @@ tr:hover { background: #f8fafc; }
       <div class="form-group">
         <label>Background Image</label>
         <div class="upload-area" id="bg-upload-area" onclick="document.getElementById('bg-file').click()">
-          <p style="font-size: 2rem; margin-bottom: 10px;">🌄</p>
-          <p><strong>Click to browse or drag & drop</strong></p>
+          <p style="font-size: 2rem; margin-bottom: 10px;">🌄</p><p><strong>Click to browse or drag & drop</strong></p>
           <input type="file" id="bg-file" accept="image/*" onchange="handleFileSelect('bg-file')">
           <img id="bg-preview" class="upload-preview" alt="Background Preview">
         </div>
@@ -264,24 +316,13 @@ tr:hover { background: #f8fafc; }
     <div class="card">
       <h2>📋 All Registrations</h2>
       <div style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
-        <button class="btn btn-success" onclick="downloadExcelReport()">📥 Download Excel Report</button>
+        <button class="btn btn-success" onclick="downloadExcelReport()">📥 Download Registration Excel</button>
         <button class="btn btn-danger" onclick="clearAllRegistrations()">🗑️ Clear All Registrations</button>
       </div>
       <div style="overflow-x: auto;">
         <table>
-          <thead>
-            <tr>
-              <th>Event</th>
-              <th>Employee ID</th>
-              <th>Name</th>
-              <th>Department</th>
-              <th>Registration Time</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="registrations-tbody">
-            <tr><td colspan="6" style="text-align:center; color:#94a3b8;">Loading...</td></tr>
-          </tbody>
+          <thead><tr><th>Event</th><th>Employee ID</th><th>Name</th><th>Department</th><th>Registration Time</th><th>Action</th></tr></thead>
+          <tbody id="registrations-tbody"><tr><td colspan="6" style="text-align:center; color:#94a3b8;">Loading...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -301,11 +342,7 @@ const firebaseConfig = {
   measurementId: "G-MYSFG9GXF5"
 };
 
-try {
-  firebase.initializeApp(firebaseConfig);
-} catch(error) {
-  console.error('Firebase error:', error);
-}
+try { firebase.initializeApp(firebaseConfig); } catch(error) { console.error('Firebase error:', error); }
 
 const db = firebase.database();
 let isAdmin = false;
@@ -313,25 +350,42 @@ let currentSettings = {};
 let eventsList = [];
 let registrationsList = [];
 let lastRegistration = null;
+let activitiesList = [];
+let attendanceList = [];
 
+// ==========================================
+// REAL-TIME DATA LISTENERS
+// ==========================================
 db.ref('event/events').on('value', (snap) => {
-  const data = snap.val();
-  eventsList = data ? Object.entries(data).map(([id, val]) => ({id, ...val})) : [];
+  eventsList = snap.val() ? Object.entries(snap.val()).map(([id, val]) => ({id, ...val})) : [];
   updateUI();
 });
 
 db.ref('event/registrations').on('value', (snap) => {
-  const data = snap.val();
-  registrationsList = data ? Object.entries(data).map(([id, val]) => ({id, ...val})) : [];
+  registrationsList = snap.val() ? Object.entries(snap.val()).map(([id, val]) => ({id, ...val})) : [];
   updateUI();
   renderRegistrationsTable();
 });
 
+db.ref('event/activities').on('value', (snap) => {
+  activitiesList = snap.val() ? Object.entries(snap.val()).map(([id, val]) => ({id, ...val})) : [];
+  updateAttendanceUI();
+});
+
+db.ref('event/attendance').on('value', (snap) => {
+  attendanceList = snap.val() ? Object.entries(snap.val()).map(([id, val]) => ({id, ...val})) : [];
+  updateAttendanceUI();
+  renderAdminAttendanceTable();
+});
+
 db.ref('event/settings').on('value', (snap) => {
-  currentSettings = snap.val() || { hotelName: 'Event Registration', logo: '', background: '' };
+  currentSettings = snap.val() || { hotelName: 'Event & Attendance Platform', logo: '', background: '' };
   updateBranding();
 });
 
+// ==========================================
+// UI UPDATE FUNCTIONS
+// ==========================================
 function updateUI() {
   const eventSelect = document.getElementById('reg-event-select');
   const currentVal = eventSelect.value;
@@ -345,7 +399,8 @@ function updateUI() {
   eventSelect.value = currentVal;
   updateEventDetails();
   renderAdminEventsTable();
-  updateStats();
+  document.getElementById('stat-total-events').innerText = eventsList.length;
+  document.getElementById('stat-total-reg').innerText = registrationsList.length;
 }
 
 function updateEventDetails() {
@@ -356,7 +411,6 @@ function updateEventDetails() {
     document.getElementById('display-event-date').innerText = event.eventDate;
     document.getElementById('reg-event-name').value = event.eventName;
     document.getElementById('reg-event-date').value = event.eventDate;
-    
     const eventRegistrations = registrationsList.filter(r => r.eventId === eventId).length;
     const left = Math.max(0, event.maxRegistrations - eventRegistrations);
     const seatsEl = document.getElementById('display-seats-left');
@@ -371,8 +425,56 @@ function updateEventDetails() {
   }
 }
 
+function updateAttendanceUI() {
+  const actSelect = document.getElementById('att-activity');
+  actSelect.innerHTML = '<option value="">Select an Activity</option>';
+  activitiesList.forEach(act => {
+    const option = document.createElement('option');
+    option.value = act.id;
+    option.textContent = `${act.activityName} (${act.activityDate})`;
+    actSelect.appendChild(option);
+  });
+  
+  const adminActSelect = document.getElementById('admin-att-activity');
+  adminActSelect.innerHTML = '<option value="all">All Activities</option>';
+  activitiesList.forEach(act => {
+    const option = document.createElement('option');
+    option.value = act.activityName;
+    option.textContent = act.activityName;
+    adminActSelect.appendChild(option);
+  });
+
+  // Populate Month/Year filters
+  const months = [...new Set(attendanceList.map(a => a.month))].sort().reverse();
+  const years = [...new Set(attendanceList.map(a => a.year))].sort().reverse();
+  
+  const monthSelect = document.getElementById('admin-att-month');
+  monthSelect.innerHTML = '<option value="all">All Months</option>';
+  months.forEach(m => { const opt = document.createElement('option'); opt.value = m; opt.textContent = m; monthSelect.appendChild(opt); });
+
+  const yearSelect = document.getElementById('admin-att-year');
+  yearSelect.innerHTML = '<option value="all">All Years</option>';
+  years.forEach(y => { const opt = document.createElement('option'); opt.value = y; opt.textContent = y; yearSelect.appendChild(opt); });
+
+  document.getElementById('stat-total-att').innerText = attendanceList.length;
+  renderAdminActivitiesTable();
+  renderAdminAttendanceTable();
+}
+
+function showActivityRemarks() {
+  const actId = document.getElementById('att-activity').value;
+  const activity = activitiesList.find(a => a.id === actId);
+  const remarksDisplay = document.getElementById('att-remarks-display');
+  if (activity && activity.remarks) {
+    document.getElementById('att-remarks-text').innerText = activity.remarks;
+    remarksDisplay.classList.remove('hidden');
+  } else {
+    remarksDisplay.classList.add('hidden');
+  }
+}
+
 function updateBranding() {
-  document.getElementById('app-hotel-name').innerText = currentSettings.hotelName || 'Event Registration';
+  document.getElementById('app-hotel-name').innerText = currentSettings.hotelName || 'Event & Attendance Platform';
   if (currentSettings.logo) {
     document.getElementById('app-logo').innerHTML = `<img src="${currentSettings.logo}" alt="Logo">`;
     document.getElementById('logo-preview').src = currentSettings.logo;
@@ -387,50 +489,54 @@ function updateBranding() {
   }
 }
 
-function updateStats() {
-  document.getElementById('stat-total-events').innerText = eventsList.length;
-  document.getElementById('stat-total-reg').innerText = registrationsList.length;
-}
-
 function renderAdminEventsTable() {
   const tbody = document.getElementById('admin-events-tbody');
-  if (eventsList.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8;">No events created yet</td></tr>';
-    return;
-  }
+  if (eventsList.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8;">No events created yet</td></tr>'; return; }
   tbody.innerHTML = eventsList.map(event => {
     const regCount = registrationsList.filter(r => r.eventId === event.id).length;
-    return `
-      <tr>
-        <td><strong>${event.eventName}</strong></td>
-        <td>${event.eventDate}</td>
-        <td>${regCount} / ${event.maxRegistrations}</td>
-        <td>${new Date(event.createdAt).toLocaleDateString()}</td>
-        <td><button class="btn btn-danger btn-sm" onclick="deleteEvent('${event.id}')">Delete</button></td>
-      </tr>
-    `;
+    return `<tr><td><strong>${event.eventName}</strong></td><td>${event.eventDate}</td><td>${regCount} / ${event.maxRegistrations}</td><td>${new Date(event.createdAt).toLocaleDateString()}</td><td><button class="btn btn-danger btn-sm" onclick="deleteEvent('${event.id}')">Delete</button></td></tr>`;
+  }).join('');
+}
+
+function renderAdminActivitiesTable() {
+  const tbody = document.getElementById('admin-activities-tbody');
+  if (activitiesList.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8;">No activities created yet</td></tr>'; return; }
+  tbody.innerHTML = activitiesList.map(act => {
+    return `<tr><td><strong>${act.activityName}</strong></td><td>${act.activityDate}</td><td>${act.startTime} - ${act.endTime}</td><td>${act.remarks || '-'}</td><td><button class="btn btn-danger btn-sm" onclick="deleteActivity('${act.id}')">Delete</button></td></tr>`;
   }).join('');
 }
 
 function renderRegistrationsTable() {
   const tbody = document.getElementById('registrations-tbody');
-  if (registrationsList.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#94a3b8;">No registrations yet</td></tr>';
-    return;
-  }
+  if (registrationsList.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#94a3b8;">No registrations yet</td></tr>'; return; }
   const sortedRegs = [...registrationsList].sort((a, b) => b.timestamp - a.timestamp);
   tbody.innerHTML = sortedRegs.map(reg => `
-    <tr>
-      <td><strong>${reg.eventName}</strong></td>
-      <td>${reg.empId}</td>
-      <td>${reg.name}</td>
-      <td>${reg.dept}</td>
-      <td>${new Date(reg.timestamp).toLocaleString()}</td>
-      <td><button class="btn btn-danger btn-sm" onclick="deleteRegistration('${reg.id}')">Remove</button></td>
-    </tr>
+    <tr><td><strong>${reg.eventName}</strong></td><td>${reg.empId}</td><td>${reg.name}</td><td>${reg.dept}</td><td>${new Date(reg.timestamp).toLocaleString()}</td><td><button class="btn btn-danger btn-sm" onclick="deleteRegistration('${reg.id}')">Remove</button></td></tr>
   `).join('');
 }
 
+function renderAdminAttendanceTable() {
+  const tbody = document.getElementById('admin-attendance-tbody');
+  const monthFilter = document.getElementById('admin-att-month').value;
+  const yearFilter = document.getElementById('admin-att-year').value;
+  const actFilter = document.getElementById('admin-att-activity').value;
+
+  let filtered = attendanceList;
+  if (monthFilter !== 'all') filtered = filtered.filter(a => a.month === monthFilter);
+  if (yearFilter !== 'all') filtered = filtered.filter(a => a.year === yearFilter);
+  if (actFilter !== 'all') filtered = filtered.filter(a => a.activityName === actFilter);
+
+  if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8;">No attendance records found</td></tr>'; return; }
+  
+  const sortedAtt = [...filtered].sort((a, b) => b.timestamp - a.timestamp);
+  tbody.innerHTML = sortedAtt.map(att => `
+    <tr><td><strong>${att.activityName}</strong></td><td>${att.empId}</td><td>${att.name}</td><td>${att.dept}</td><td>${new Date(att.timestamp).toLocaleString()}</td></tr>
+  `).join('');
+}
+
+// ==========================================
+// DRAG AND DROP FILE UPLOAD
+// ==========================================
 function setupDragAndDrop(elementId, fileInputId) {
   const uploadArea = document.getElementById(elementId);
   const fileInput = document.getElementById(fileInputId);
@@ -445,10 +551,7 @@ function setupDragAndDrop(elementId, fileInputId) {
   });
   uploadArea.addEventListener('drop', (e) => {
     const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      fileInput.files = files;
-      handleFileSelect(fileInputId);
-    }
+    if (files.length > 0) { fileInput.files = files; handleFileSelect(fileInputId); }
   }, false);
 }
 
@@ -456,11 +559,7 @@ function handleFileSelect(inputId) {
   const fileInput = document.getElementById(inputId);
   const file = fileInput.files[0];
   if (file) {
-    if (file.size > 5 * 1024 * 1024) {
-      showAlert('File size must be less than 5MB', 'error');
-      fileInput.value = '';
-      return;
-    }
+    if (file.size > 5 * 1024 * 1024) { showAlert('File size must be less than 5MB', 'error'); fileInput.value = ''; return; }
     const reader = new FileReader();
     reader.onload = function(e) {
       const previewId = inputId.replace('-file', '-preview');
@@ -471,38 +570,89 @@ function handleFileSelect(inputId) {
   }
 }
 
+// ==========================================
+// EMPLOYEE ACTIONS
+// ==========================================
+function showEmpTab(tab) {
+  document.querySelectorAll('.emp-tab-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+  if (tab === 'registration') {
+    document.getElementById('registration-view').classList.remove('hidden');
+    document.getElementById('attendance-view').classList.add('hidden');
+  } else {
+    document.getElementById('registration-view').classList.add('hidden');
+    document.getElementById('attendance-view').classList.remove('hidden');
+  }
+}
+
 function handleRegistration(e) {
   e.preventDefault();
   const eventId = document.getElementById('reg-event-select').value;
   if (!eventId) { showAlert('Please select an event.', 'error'); return; }
-  
   const event = eventsList.find(e => e.id === eventId);
   const empId = document.getElementById('reg-empid').value.trim().toUpperCase();
   const name = document.getElementById('reg-name').value.trim();
   const dept = document.getElementById('reg-dept').value;
   
-  const eventRegistrations = registrationsList.filter(r => r.eventId === eventId).length;
-  if (eventRegistrations >= event.maxRegistrations) {
-    showAlert('Sorry, this event is already full.', 'error');
-    return;
+  if (registrationsList.filter(r => r.eventId === eventId).length >= event.maxRegistrations) {
+    showAlert('Sorry, this event is already full.', 'error'); return;
   }
-  
-  const isDuplicate = registrationsList.some(r => r.eventId === eventId && r.empId === empId);
-  if (isDuplicate) {
-    showAlert('You are already registered for this event.', 'error');
-    return;
+  if (registrationsList.some(r => r.eventId === eventId && r.empId === empId)) {
+    showAlert('You are already registered for this event.', 'error'); return;
   }
   
   const newReg = { eventId, eventName: event.eventName, eventDate: event.eventDate, empId, name, dept, timestamp: Date.now() };
-  
   db.ref('event/registrations').push(newReg).then((ref) => {
     lastRegistration = { ...newReg, id: ref.key };
     showAlert('✅ Registration successful!', 'success');
     document.getElementById('registration-form').classList.add('hidden');
     document.getElementById('download-confirmation-section').classList.remove('hidden');
-  }).catch(err => {
-    showAlert('Error: ' + err.message, 'error');
-  });
+  }).catch(err => { showAlert('Error: ' + err.message, 'error'); });
+}
+
+function handleAttendance(e) {
+  e.preventDefault();
+  const actId = document.getElementById('att-activity').value;
+  const activity = activitiesList.find(a => a.id === actId);
+  
+  if (!activity) { showAlert('Please select a valid activity.', 'error'); return; }
+  
+  // Time Validation
+  const now = new Date();
+  const actDateStr = activity.activityDate; // YYYY-MM-DD
+  const startTimeStr = `${actDateStr}T${activity.startTime}:00`;
+  const endTimeStr = `${actDateStr}T${activity.endTime}:00`;
+  
+  const startTime = new Date(startTimeStr);
+  const endTime = new Date(endTimeStr);
+  
+  if (now < startTime) {
+    showAlert(`Attendance submission opens at ${activity.startTime}. Please try again later.`, 'error');
+    return;
+  }
+  if (now > endTime) {
+    showAlert(`Attendance submission closed at ${activity.endTime}.`, 'error');
+    return;
+  }
+
+  const empId = document.getElementById('att-empid').value.trim().toUpperCase();
+  const name = document.getElementById('att-name').value.trim();
+  const dept = document.getElementById('att-dept').value;
+  const month = now.toLocaleString('default', { month: 'long', year: 'numeric' }).split(' ')[0]; // e.g., "October"
+  const year = now.getFullYear().toString();
+
+  // Check if already submitted for this activity
+  if (attendanceList.some(a => a.activityId === actId && a.empId === empId)) {
+    showAlert('You have already submitted attendance for this activity.', 'error');
+    return;
+  }
+
+  const newAtt = { activityId: actId, activityName: activity.activityName, empId, name, dept, timestamp: Date.now(), month, year };
+  db.ref('event/attendance').push(newAtt).then(() => {
+    showAlert('✅ Attendance submitted successfully!', 'success');
+    document.getElementById('attendance-form').reset();
+    document.getElementById('att-remarks-display').classList.add('hidden');
+  }).catch(err => { showAlert('Error: ' + err.message, 'error'); });
 }
 
 function downloadConfirmation() {
@@ -512,39 +662,30 @@ function downloadConfirmation() {
   doc.setFillColor(15, 118, 110);
   doc.rect(0, 0, 210, 40, 'F');
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(22);
-  doc.setFont(undefined, 'bold');
+  doc.setFontSize(22); doc.setFont(undefined, 'bold');
   doc.text(currentSettings.hotelName || 'Event Registration', 105, 20, {align: 'center'});
   doc.setFontSize(14);
   doc.text('Event Registration Confirmation', 105, 32, {align: 'center'});
   
-  doc.setTextColor(0, 0, 0);
-  doc.setFontSize(12);
+  doc.setTextColor(0, 0, 0); doc.setFontSize(12);
   let y = 60;
   const details = [
-    ['Event Name:', lastRegistration.eventName],
-    ['Event Date:', lastRegistration.eventDate],
-    ['Employee ID:', lastRegistration.empId],
-    ['Full Name:', lastRegistration.name],
-    ['Department:', lastRegistration.dept],
-    ['Registration Time:', new Date(lastRegistration.timestamp).toLocaleString()]
+    ['Event Name:', lastRegistration.eventName], ['Event Date:', lastRegistration.eventDate],
+    ['Employee ID:', lastRegistration.empId], ['Full Name:', lastRegistration.name],
+    ['Department:', lastRegistration.dept], ['Registration Time:', new Date(lastRegistration.timestamp).toLocaleString()]
   ];
   details.forEach(([label, value]) => {
-    doc.setFont(undefined, 'bold');
-    doc.text(label, 20, y);
-    doc.setFont(undefined, 'normal');
-    doc.text(String(value), 80, y);
+    doc.setFont(undefined, 'bold'); doc.text(label, 20, y);
+    doc.setFont(undefined, 'normal'); doc.text(String(value), 80, y);
     y += 12;
   });
-  
-  doc.setFontSize(10);
-  doc.setTextColor(100, 100, 100);
+  doc.setFontSize(10); doc.setTextColor(100, 100, 100);
   doc.text('Thank you for registering! We look forward to seeing you.', 105, 270, {align: 'center'});
   doc.save(`Registration_${lastRegistration.empId}_${lastRegistration.eventName.replace(/\s+/g, '_')}.pdf`);
   showAlert('✅ Confirmation downloaded!', 'success');
 }
 
-function resetForm() {
+function resetRegForm() {
   document.getElementById('registration-form').reset();
   document.getElementById('registration-form').classList.remove('hidden');
   document.getElementById('download-confirmation-section').classList.add('hidden');
@@ -552,6 +693,9 @@ function resetForm() {
   lastRegistration = null;
 }
 
+// ==========================================
+// ADMIN ACTIONS
+// ==========================================
 function toggleAdmin() {
   if (isAdmin) {
     isAdmin = false;
@@ -575,7 +719,6 @@ function addEvent() {
   const eventDate = document.getElementById('admin-new-event-date').value;
   const maxRegistrations = parseInt(document.getElementById('admin-new-max-reg').value) || 100;
   if (!eventName || !eventDate) { showAlert('Please fill in event name and date.', 'error'); return; }
-  
   db.ref('event/events').push({ eventName, eventDate, maxRegistrations, createdAt: Date.now() }).then(() => {
     showAlert('✅ Event added successfully!', 'success');
     document.getElementById('admin-new-event-name').value = '';
@@ -585,8 +728,34 @@ function addEvent() {
 }
 
 function deleteEvent(eventId) {
-  if (!confirm('Delete this event? (Existing registrations will remain in the database)')) return;
+  if (!confirm('Delete this event? (Existing registrations will remain)')) return;
   db.ref('event/events/' + eventId).remove().then(() => showAlert('Event deleted', 'success'));
+}
+
+function addActivity() {
+  const activityName = document.getElementById('admin-act-name').value.trim();
+  const activityDate = document.getElementById('admin-act-date').value;
+  const startTime = document.getElementById('admin-act-start').value;
+  const endTime = document.getElementById('admin-act-end').value;
+  const remarks = document.getElementById('admin-act-remarks').value.trim();
+  
+  if (!activityName || !activityDate || !startTime || !endTime) {
+    showAlert('Please fill in all activity fields.', 'error'); return;
+  }
+  
+  db.ref('event/activities').push({ activityName, activityDate, startTime, endTime, remarks, createdAt: Date.now() }).then(() => {
+    showAlert('✅ Activity added successfully!', 'success');
+    document.getElementById('admin-act-name').value = '';
+    document.getElementById('admin-act-date').value = '';
+    document.getElementById('admin-act-start').value = '';
+    document.getElementById('admin-act-end').value = '';
+    document.getElementById('admin-act-remarks').value = '';
+  });
+}
+
+function deleteActivity(actId) {
+  if (!confirm('Delete this activity?')) return;
+  db.ref('event/activities/' + actId).remove().then(() => showAlert('Activity deleted', 'success'));
 }
 
 function saveAdminSettings() {
@@ -621,6 +790,37 @@ function downloadExcelReport() {
   showAlert('✅ Excel report downloaded!', 'success');
 }
 
+function downloadAttendanceExcel() {
+  const monthFilter = document.getElementById('admin-att-month').value;
+  const yearFilter = document.getElementById('admin-att-year').value;
+  const actFilter = document.getElementById('admin-att-activity').value;
+
+  let filtered = attendanceList;
+  if (monthFilter !== 'all') filtered = filtered.filter(a => a.month === monthFilter);
+  if (yearFilter !== 'all') filtered = filtered.filter(a => a.year === yearFilter);
+  if (actFilter !== 'all') filtered = filtered.filter(a => a.activityName === actFilter);
+
+  if (filtered.length === 0) { showAlert('No attendance data matches the filters', 'warning'); return; }
+
+  const exportData = filtered.map(a => ({
+    'Activity Name': a.activityName,
+    'Employee ID': a.empId,
+    'Full Name': a.name,
+    'Department': a.dept,
+    'Month': a.month,
+    'Year': a.year,
+    'Submission Time': new Date(a.timestamp).toLocaleString()
+  }));
+  
+  const ws = XLSX.utils.json_to_sheet(exportData);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Attendance");
+  
+  const fileName = `Attendance_Report_${monthFilter !== 'all' ? monthFilter : 'All'}_${yearFilter !== 'all' ? yearFilter : 'Year'}.xlsx`;
+  XLSX.writeFile(wb, fileName);
+  showAlert('✅ Attendance Excel report downloaded!', 'success');
+}
+
 function showAlert(msg, type) {
   document.querySelectorAll('.alert').forEach(el => el.style.display = 'none');
   const el = document.getElementById('alert-' + type);
@@ -634,6 +834,11 @@ function showAlert(msg, type) {
 document.addEventListener('DOMContentLoaded', () => {
   setupDragAndDrop('logo-upload-area', 'logo-file');
   setupDragAndDrop('bg-upload-area', 'bg-file');
+  
+  // Add listeners for attendance filters to auto-refresh table
+  document.getElementById('admin-att-month').addEventListener('change', renderAdminAttendanceTable);
+  document.getElementById('admin-att-year').addEventListener('change', renderAdminAttendanceTable);
+  document.getElementById('admin-att-activity').addEventListener('change', renderAdminAttendanceTable);
 });
 </script>
 </body>
