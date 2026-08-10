@@ -99,14 +99,56 @@ tr:hover { background: #f8fafc; }
 .upload-preview { max-width: 150px; max-height: 150px; margin-top: 10px; border-radius: 8px; display: none; object-fit: contain; }
 .upload-preview.show { display: block; }
 
-/* Employee Tab Navigation & Animations */
-.emp-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
-.emp-tab-btn {
-  padding: 10px 20px; border: none; background: transparent; color: #64748b;
-  font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s;
+/* Home Options & Animations */
+.home-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
 }
-.emp-tab-btn.active { color: var(--brand); border-bottom-color: var(--brand); }
-.emp-tab-btn:hover { color: var(--brand-light); }
+.home-option-card {
+  background: linear-gradient(135deg, var(--brand), var(--brand-light));
+  color: #fff;
+  padding: 40px 20px;
+  border-radius: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border: none;
+  font-family: inherit;
+  width: 100%;
+}
+.home-option-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(15,118,110,0.3);
+}
+.home-option-card .icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  display: block;
+}
+.home-option-card .title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: block;
+}
+.back-btn {
+  background: transparent;
+  border: none;
+  color: var(--brand);
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 15px;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+}
+.back-btn:hover {
+  color: var(--brand-dark);
+}
 
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(15px); }
@@ -120,7 +162,6 @@ tr:hover { background: #f8fafc; }
   .header-info h1 { font-size: 1.5rem; }
   .container { padding: 0 15px; }
   .card { padding: 20px; }
-  .emp-tabs { flex-direction: column; gap: 5px; }
 }
 </style>
 </head>
@@ -141,101 +182,113 @@ tr:hover { background: #f8fafc; }
   <div id="alert-error" class="alert alert-error"></div>
   <div id="alert-warning" class="alert alert-warning"></div>
 
-  <!-- EMPLOYEE VIEW -->
-  <div id="employee-view" class="card">
-    <div class="emp-tabs">
-      <button class="emp-tab-btn active" onclick="showEmpTab('registration', this)">📝 Event Registration</button>
-      <button class="emp-tab-btn" onclick="showEmpTab('attendance', this)">✅ Submit Attendance</button>
+  <!-- HOME VIEW -->
+  <div id="home-view" class="card view-animate">
+    <h2 style="text-align: center; border-bottom: none; margin-bottom: 10px;">Welcome!</h2>
+    <p style="text-align: center; color: #64748b; margin-bottom: 30px; font-size: 1.1rem;">Please select an option below to proceed.</p>
+    <div class="home-options">
+      <button class="home-option-card" onclick="showMainView('registration')">
+        <span class="icon">📝</span>
+        <span class="title">Event Registration</span>
+        <p style="margin-top: 10px; opacity: 0.9; font-size: 0.9rem;">Register for upcoming hotel events</p>
+      </button>
+      <button class="home-option-card" onclick="showMainView('attendance')">
+        <span class="icon">✅</span>
+        <span class="title">Mark Your Attendance</span>
+        <p style="margin-top: 10px; opacity: 0.9; font-size: 0.9rem;">Submit your attendance for activities</p>
+      </button>
     </div>
+  </div>
 
-    <!-- REGISTRATION TAB -->
-    <div id="registration-view" class="view-animate">
-      <h2>📝 Event Registration</h2>
-      <form id="registration-form" onsubmit="handleRegistration(event)">
-        <div class="form-group">
-          <label>Select Event *</label>
-          <select id="reg-event-select" required onchange="updateEventDetails()">
-            <option value="">Loading events...</option>
-          </select>
-        </div>
-        <div style="background: #f0fdfa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--brand);">
-          <p><strong>Event:</strong> <span id="display-event-name">-</span></p>
-          <p><strong>Date:</strong> <span id="display-event-date">-</span></p>
-          <p><strong>Available Seats:</strong> <span id="display-seats-left">-</span></p>
-        </div>
-        <div class="form-group"><label>Employee ID *</label><input type="text" id="reg-empid" required placeholder="Enter your Employee ID"></div>
-        <div class="form-group"><label>Full Name *</label><input type="text" id="reg-name" required placeholder="Enter your full name"></div>
-        <div class="form-group">
-          <label>Department *</label>
-          <select id="reg-dept" required>
-            <option value="">Select Department</option>
-            <option value="Executive Office">Executive Office</option>
-            <option value="Front Office">Front Office</option>
-            <option value="Human Resources">Human Resources</option>
-            <option value="F&B Service">F&B Service</option>
-            <option value="Kitchen">Kitchen</option>
-            <option value="Housekeeping & Laundry">Housekeeping & Laundry</option>
-            <option value="Security">Security</option>
-            <option value="Sales & Marketing">Sales & Marketing</option>
-            <option value="Engineering">Engineering</option>
-            <option value="Finance & IT">Finance & IT</option>
-            <option value="Spa">Spa</option>
-            <option value="Finance">Finance</option>
-            <option value="Landscaping">Landscaping</option>
-          </select>
-        </div>
-        <input type="hidden" id="reg-event-name">
-        <input type="hidden" id="reg-event-date">
-        <button type="submit" class="btn btn-primary btn-full">✅ Register for Event</button>
-      </form>
-      
-      <div id="download-confirmation-section" class="hidden" style="margin-top: 20px; padding: 25px; background: #d1fae5; border-radius: 10px; text-align: center; border: 2px solid var(--success);">
-        <h3 style="color: var(--success); margin-bottom: 10px;">✅ Registration Successful!</h3>
-        <p style="margin-bottom: 20px; color: #065f46;">Your registration has been confirmed.</p>
-        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-          <button class="btn btn-success" onclick="downloadConfirmation()">📥 Download Confirmation PDF</button>
-          <button class="btn btn-outline" onclick="resetRegForm()">🔄 New Registration</button>
-        </div>
+  <!-- REGISTRATION VIEW -->
+  <div id="registration-view" class="card hidden view-animate">
+    <button class="back-btn" onclick="showMainView('home')">← Back to Home</button>
+    <h2>📝 Event Registration</h2>
+    <form id="registration-form" onsubmit="handleRegistration(event)">
+      <div class="form-group">
+        <label>Select Event *</label>
+        <select id="reg-event-select" required onchange="updateEventDetails()">
+          <option value="">Loading events...</option>
+        </select>
+      </div>
+      <div style="background: #f0fdfa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--brand);">
+        <p><strong>Event:</strong> <span id="display-event-name">-</span></p>
+        <p><strong>Date:</strong> <span id="display-event-date">-</span></p>
+        <p><strong>Available Seats:</strong> <span id="display-seats-left">-</span></p>
+      </div>
+      <div class="form-group"><label>Employee ID *</label><input type="text" id="reg-empid" required placeholder="Enter your Employee ID"></div>
+      <div class="form-group"><label>Full Name *</label><input type="text" id="reg-name" required placeholder="Enter your full name"></div>
+      <div class="form-group">
+        <label>Department *</label>
+        <select id="reg-dept" required>
+          <option value="">Select Department</option>
+          <option value="Executive Office">Executive Office</option>
+          <option value="Front Office">Front Office</option>
+          <option value="Human Resources">Human Resources</option>
+          <option value="F&B Service">F&B Service</option>
+          <option value="Kitchen">Kitchen</option>
+          <option value="Housekeeping & Laundry">Housekeeping & Laundry</option>
+          <option value="Security">Security</option>
+          <option value="Sales & Marketing">Sales & Marketing</option>
+          <option value="Engineering">Engineering</option>
+          <option value="Finance & IT">Finance & IT</option>
+          <option value="Spa">Spa</option>
+          <option value="Finance">Finance</option>
+          <option value="Landscaping">Landscaping</option>
+        </select>
+      </div>
+      <input type="hidden" id="reg-event-name">
+      <input type="hidden" id="reg-event-date">
+      <button type="submit" class="btn btn-primary btn-full">✅ Register for Event</button>
+    </form>
+    
+    <div id="download-confirmation-section" class="hidden" style="margin-top: 20px; padding: 25px; background: #d1fae5; border-radius: 10px; text-align: center; border: 2px solid var(--success);">
+      <h3 style="color: var(--success); margin-bottom: 10px;">✅ Registration Successful!</h3>
+      <p style="margin-bottom: 20px; color: #065f46;">Your registration has been confirmed.</p>
+      <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+        <button class="btn btn-success" onclick="downloadConfirmation()">📥 Download Confirmation PDF</button>
+        <button class="btn btn-outline" onclick="resetRegForm()">🔄 New Registration</button>
       </div>
     </div>
+  </div>
 
-    <!-- ATTENDANCE TAB -->
-    <div id="attendance-view" class="hidden view-animate">
-      <h2>✅ Submit Attendance</h2>
-      <form id="attendance-form" onsubmit="handleAttendance(event)">
-        <div class="form-group"><label>Employee ID *</label><input type="text" id="att-empid" required placeholder="Enter your Employee ID"></div>
-        <div class="form-group"><label>Full Name *</label><input type="text" id="att-name" required placeholder="Enter your full name"></div>
-        <div class="form-group">
-          <label>Department *</label>
-          <select id="att-dept" required>
-            <option value="">Select Department</option>
-            <option value="Executive Office">Executive Office</option>
-            <option value="Front Office">Front Office</option>
-            <option value="Human Resources">Human Resources</option>
-            <option value="F&B Service">F&B Service</option>
-            <option value="Kitchen">Kitchen</option>
-            <option value="Housekeeping & Laundry">Housekeeping & Laundry</option>
-            <option value="Security">Security</option>
-            <option value="Sales & Marketing">Sales & Marketing</option>
-            <option value="Engineering">Engineering</option>
-            <option value="Finance & IT">Finance & IT</option>
-            <option value="Spa">Spa</option>
-            <option value="Finance">Finance</option>
-            <option value="Landscaping">Landscaping</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Select Activity *</label>
-          <select id="att-activity" required onchange="showActivityRemarks()">
-            <option value="">Loading activities...</option>
-          </select>
-        </div>
-        <div id="att-remarks-display" class="hidden" style="background: #fffbeb; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--gold);">
-          <p><strong>📌 Admin Remarks:</strong> <span id="att-remarks-text">-</span></p>
-        </div>
-        <button type="submit" class="btn btn-primary btn-full">✅ Submit Attendance</button>
-      </form>
-    </div>
+  <!-- ATTENDANCE VIEW -->
+  <div id="attendance-view" class="card hidden view-animate">
+    <button class="back-btn" onclick="showMainView('home')">← Back to Home</button>
+    <h2>✅ Submit Attendance</h2>
+    <form id="attendance-form" onsubmit="handleAttendance(event)">
+      <div class="form-group"><label>Employee ID *</label><input type="text" id="att-empid" required placeholder="Enter your Employee ID"></div>
+      <div class="form-group"><label>Full Name *</label><input type="text" id="att-name" required placeholder="Enter your full name"></div>
+      <div class="form-group">
+        <label>Department *</label>
+        <select id="att-dept" required>
+          <option value="">Select Department</option>
+          <option value="Executive Office">Executive Office</option>
+          <option value="Front Office">Front Office</option>
+          <option value="Human Resources">Human Resources</option>
+          <option value="F&B Service">F&B Service</option>
+          <option value="Kitchen">Kitchen</option>
+          <option value="Housekeeping & Laundry">Housekeeping & Laundry</option>
+          <option value="Security">Security</option>
+          <option value="Sales & Marketing">Sales & Marketing</option>
+          <option value="Engineering">Engineering</option>
+          <option value="Finance & IT">Finance & IT</option>
+          <option value="Spa">Spa</option>
+          <option value="Finance">Finance</option>
+          <option value="Landscaping">Landscaping</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Select Activity *</label>
+        <select id="att-activity" required onchange="showActivityRemarks()">
+          <option value="">Loading activities...</option>
+        </select>
+      </div>
+      <div id="att-remarks-display" class="hidden" style="background: #fffbeb; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--gold);">
+        <p><strong>📌 Admin Remarks:</strong> <span id="att-remarks-text">-</span></p>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full">✅ Submit Attendance</button>
+    </form>
   </div>
 
   <!-- ADMIN DASHBOARD VIEW -->
@@ -628,29 +681,28 @@ function handleFileSelect(inputId) {
 }
 
 // ==========================================
-// EMPLOYEE ACTIONS
+// NAVIGATION ACTIONS
 // ==========================================
-function showEmpTab(tab, btnElement) {
-  document.querySelectorAll('.emp-tab-btn').forEach(btn => btn.classList.remove('active'));
-  if(btnElement) btnElement.classList.add('active');
-  
+function showMainView(view) {
+  const homeView = document.getElementById('home-view');
   const regView = document.getElementById('registration-view');
   const attView = document.getElementById('attendance-view');
   
-  if (tab === 'registration') {
-    regView.classList.remove('hidden');
-    attView.classList.add('hidden');
+  homeView.classList.add('hidden');
+  regView.classList.add('hidden');
+  attView.classList.add('hidden');
+  
+  let targetView;
+  if (view === 'home') targetView = homeView;
+  else if (view === 'registration') targetView = regView;
+  else if (view === 'attendance') targetView = attView;
+  
+  if (targetView) {
+    targetView.classList.remove('hidden');
     // Re-trigger animation
-    regView.classList.remove('view-animate');
-    void regView.offsetWidth; // trigger reflow
-    regView.classList.add('view-animate');
-  } else {
-    regView.classList.add('hidden');
-    attView.classList.remove('hidden');
-    // Re-trigger animation
-    attView.classList.remove('view-animate');
-    void attView.offsetWidth; // trigger reflow
-    attView.classList.add('view-animate');
+    targetView.classList.remove('view-animate');
+    void targetView.offsetWidth; // trigger reflow
+    targetView.classList.add('view-animate');
   }
 }
 
@@ -769,12 +821,14 @@ function toggleAdmin() {
   if (isAdmin) {
     isAdmin = false;
     document.getElementById('admin-view').classList.add('hidden');
-    document.getElementById('employee-view').classList.remove('hidden');
+    showMainView('home');
   } else {
     const pwd = prompt('Enter Admin Password:');
     if (pwd === 'Admin@2026') {
       isAdmin = true;
-      document.getElementById('employee-view').classList.add('hidden');
+      document.getElementById('home-view').classList.add('hidden');
+      document.getElementById('registration-view').classList.add('hidden');
+      document.getElementById('attendance-view').classList.add('hidden');
       document.getElementById('admin-view').classList.remove('hidden');
       showAlert('✅ Admin Access Granted', 'success');
     } else if (pwd !== null) {
