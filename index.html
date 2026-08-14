@@ -8,148 +8,295 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --brand: #0f766e; --brand-light: #14b8a6; --brand-dark: #0d5c56;
-  --gold: #f59e0b; --bg: #f0fdfa; --card: #fff; --text: #1e293b; --border: #e2e8f0;
-  --success: #10b981; --danger: #ef4444;
+  --brand: #0f766e; --brand-light: #14b8a6; --brand-dark: #0d5c56; --brand-50: #f0fdfa; --brand-100: #ccfbf1;
+  --gold: #f59e0b; --gold-light: #fbbf24; --gold-dark: #d97706;
+  --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --text-muted: #64748b; --text-subtle: #94a3b8;
+  --border: #e2e8f0; --border-strong: #cbd5e1;
+  --success: #10b981; --success-light: #d1fae5; --success-dark: #059669;
+  --danger: #ef4444; --danger-light: #fee2e2; --danger-dark: #dc2626;
+  --warning: #f59e0b; --warning-light: #fef3c7;
+  --shadow-sm: 0 1px 2px 0 rgba(15,23,42,0.05);
+  --shadow: 0 1px 3px 0 rgba(15,23,42,0.08),0 1px 2px -1px rgba(15,23,42,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(15,23,42,0.08),0 2px 4px -2px rgba(15,23,42,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(15,23,42,0.08),0 4px 6px -4px rgba(15,23,42,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(15,23,42,0.1),0 8px 10px -6px rgba(15,23,42,0.05);
+  --radius-sm: 6px; --radius: 10px; --radius-md: 14px; --radius-lg: 20px; --radius-xl: 24px;
 }
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 body {
-  font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text);
-  min-height: 100vh; transition: background 0.5s; background-size: cover; background-attachment: fixed; background-position: center;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; transition: background 0.4s ease;
+  background-size: cover; background-attachment: fixed; background-position: center;
+  font-size: 15px; line-height: 1.5;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
 }
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background: rgba(248, 250, 252, 0.82); backdrop-filter: blur(2px);
+  z-index: -1;
+}
+
+h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; font-weight: 700; letter-spacing: -0.02em; }
+
+/* ============ HEADER ============ */
 .header {
-  background: linear-gradient(135deg, var(--brand-dark), var(--brand)); color: #fff;
-  padding: 30px 20px; text-align: center; position: relative;
+  background: linear-gradient(135deg, var(--brand-dark) 0%, var(--brand) 50%, var(--brand-light) 100%);
+  color: #fff; padding: 40px 24px; text-align: center;
+  position: relative; overflow: hidden;
+  box-shadow: 0 8px 24px -8px rgba(15,118,110,0.4);
 }
-.header-content { max-width: 800px; margin: 0 auto; }
+.header::before {
+  content: ''; position: absolute; top: -50%; right: -10%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+  border-radius: 50%; animation: float 8s ease-in-out infinite;
+}
+.header::after {
+  content: ''; position: absolute; bottom: -60%; left: -15%;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+  border-radius: 50%; animation: float 10s ease-in-out infinite reverse;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-30px) rotate(5deg); }
+}
+.header-content { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
 .logo-circle {
-  width: 90px; height: 90px; background: #fff; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center; font-size: 2.5rem;
-  margin: 0 auto 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow: hidden;
+  width: 100px; height: 100px; background: #fff; border-radius: 24px;
+  display: flex; align-items: center; justify-content: center; font-size: 2.8rem;
+  margin: 0 auto 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.15), 0 0 0 4px rgba(255,255,255,0.15);
+  overflow: hidden;
 }
 .logo-circle img { width: 100%; height: 100%; object-fit: cover; }
-.header-info h1 { font-size: 2rem; margin-bottom: 5px; }
-.header-info p { opacity: 0.9; font-size: 1.1rem; }
+.header-info h1 {
+  font-size: clamp(1.5rem, 4vw, 2.25rem); margin-bottom: 8px; font-weight: 800;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.header-info p { opacity: 0.92; font-size: 1.05rem; font-weight: 500; }
 
-.container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+/* ============ CONTAINER ============ */
+.container { max-width: 1100px; margin: 32px auto; padding: 0 24px; }
+
+/* ============ CARD ============ */
 .card {
-  background: var(--card); border-radius: 15px; padding: 30px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.06); margin-bottom: 25px; border: 1px solid var(--border);
+  background: var(--card); border-radius: var(--radius-lg); padding: 36px;
+  box-shadow: var(--shadow); margin-bottom: 28px;
+  border: 1px solid var(--border);
+  animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: box-shadow 0.3s, transform 0.3s;
 }
-.card h2 { color: var(--brand); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 3px solid var(--brand-light); font-size: 1.5rem; }
+.card:hover { box-shadow: var(--shadow-md); }
+@keyframes slideIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+.card h2 {
+  color: var(--text); margin-bottom: 24px; padding-bottom: 16px;
+  border-bottom: 2px solid var(--border); font-size: 1.5rem;
+  display: flex; align-items: center; gap: 10px; position: relative;
+}
+.card h2::after {
+  content: ''; position: absolute; bottom: -2px; left: 0;
+  width: 60px; height: 2px;
+  background: linear-gradient(90deg, var(--brand), var(--brand-light));
+  border-radius: 2px;
+}
 
+/* ============ FORMS ============ */
 .form-group { margin-bottom: 20px; }
-label { display: block; margin-bottom: 6px; font-weight: 600; color: #475569; font-size: 0.9rem; }
+label {
+  display: block; margin-bottom: 8px; font-weight: 600;
+  color: var(--text); font-size: 0.875rem; letter-spacing: -0.01em;
+}
 input, select, textarea {
-  width: 100%; padding: 12px 15px; border: 2px solid var(--border); border-radius: 8px;
-  font-family: inherit; font-size: 1rem; background: #fff; transition: all 0.3s;
+  width: 100%; padding: 12px 14px; border: 1.5px solid var(--border);
+  border-radius: var(--radius); font-family: inherit; font-size: 0.95rem;
+  background: #fff; transition: all 0.2s; color: var(--text);
 }
-input:focus, select:focus, textarea:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
-input[readonly] { background: #f8fafc; color: #64748b; cursor: not-allowed; }
+input:focus, select:focus, textarea:focus {
+  outline: none; border-color: var(--brand);
+  box-shadow: 0 0 0 4px rgba(15,118,110,0.1);
+}
+input[readonly] { background: #f8fafc; color: var(--text-muted); cursor: not-allowed; }
+input::placeholder, textarea::placeholder { color: var(--text-subtle); }
+textarea { resize: vertical; min-height: 90px; }
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center;
+  padding-right: 40px;
+}
 
+/* ============ BUTTONS ============ */
 .btn {
-  padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer;
-  font-weight: 600; font-size: 1rem; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 24px; border: none; border-radius: var(--radius); cursor: pointer;
+  font-weight: 600; font-size: 0.95rem; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: inherit; white-space: nowrap; letter-spacing: -0.01em;
 }
-.btn-primary { background: var(--brand); color: #fff; }
-.btn-primary:hover { background: var(--brand-dark); transform: translateY(-2px); }
-.btn-success { background: var(--success); color: #fff; }
-.btn-danger { background: var(--danger); color: #fff; }
-.btn-outline { background: transparent; border: 2px solid var(--brand); color: var(--brand); }
-.btn-outline:hover { background: var(--brand); color: #fff; }
-.btn-full { width: 100%; margin-top: 10px; }
-.btn-sm { padding: 8px 14px; font-size: 0.85rem; }
+.btn:active { transform: translateY(0) scale(0.98); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+.btn-primary { background: var(--brand); color: #fff; box-shadow: var(--shadow-sm); }
+.btn-primary:hover { background: var(--brand-dark); transform: translateY(-1px); box-shadow: 0 6px 16px -4px rgba(15,118,110,0.4); }
+.btn-success { background: var(--success); color: #fff; box-shadow: var(--shadow-sm); }
+.btn-success:hover { background: var(--success-dark); transform: translateY(-1px); box-shadow: 0 6px 16px -4px rgba(16,185,129,0.4); }
+.btn-danger { background: var(--danger); color: #fff; box-shadow: var(--shadow-sm); }
+.btn-danger:hover { background: var(--danger-dark); transform: translateY(-1px); box-shadow: 0 6px 16px -4px rgba(239,68,68,0.4); }
+.btn-outline { background: transparent; border: 1.5px solid var(--brand); color: var(--brand); }
+.btn-outline:hover { background: var(--brand); color: #fff; transform: translateY(-1px); }
+.btn-full { width: 100%; margin-top: 12px; }
+.btn-sm { padding: 8px 14px; font-size: 0.85rem; border-radius: 8px; }
 
+/* ============ ALERTS ============ */
 .alert {
-  padding: 15px 20px; border-radius: 10px; margin-bottom: 20px; display: none; font-weight: 500;
+  padding: 14px 20px; border-radius: var(--radius); margin-bottom: 20px;
+  display: none; font-weight: 500; animation: slideIn 0.35s;
+  border: 1px solid; font-size: 0.9rem;
 }
-.alert-success { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
-.alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
-.alert-warning { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+.alert-success { background: var(--success-light); color: #065f46; border-color: #6ee7b7; }
+.alert-error { background: var(--danger-light); color: #991b1b; border-color: #fca5a5; }
+.alert-warning { background: var(--warning-light); color: #92400e; border-color: #fde68a; }
 
+/* ============ ADMIN TOGGLE ============ */
 .admin-toggle {
-  position: fixed; bottom: 20px; right: 20px; background: var(--brand-dark); color: #fff;
-  padding: 12px 20px; border-radius: 30px; cursor: pointer; font-weight: 600;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 1000; border: none;
+  position: fixed; bottom: 24px; right: 24px;
+  background: linear-gradient(135deg, var(--brand-dark), var(--brand));
+  color: #fff; padding: 14px 24px; border-radius: 50px;
+  cursor: pointer; font-weight: 700; font-size: 0.95rem;
+  box-shadow: 0 8px 24px -4px rgba(15,118,110,0.5);
+  z-index: 1000; border: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex; align-items: center; gap: 8px;
+  font-family: inherit;
+}
+.admin-toggle:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 12px 28px -4px rgba(15,118,110,0.6);
+}
+.admin-toggle::before {
+  content: '⚙️'; font-size: 1.2rem;
 }
 
-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #fff; border-radius: 8px; overflow: hidden; }
-th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
-th { background: var(--brand); color: #fff; font-weight: 600; }
-tr:hover { background: #f8fafc; }
+/* ============ TABLES ============ */
+.table-wrap { overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--border); background: #fff; }
+table { width: 100%; border-collapse: collapse; background: #fff; min-width: 640px; }
+th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+th {
+  background: linear-gradient(180deg, var(--brand) 0%, var(--brand-dark) 100%);
+  color: #fff; font-weight: 600; font-size: 0.8rem; text-transform: uppercase;
+  letter-spacing: 0.05em; position: sticky; top: 0; z-index: 2;
+}
+tbody tr { transition: background 0.15s; }
+tbody tr:hover { background: var(--brand-50); }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:nth-child(even) { background: #f8fafc; }
+tbody tr:nth-child(even):hover { background: var(--brand-50); }
 
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+/* ============ STATS GRID ============ */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 28px; }
 .stat-card {
-  background: linear-gradient(135deg, var(--brand), var(--brand-light)); color: #fff;
-  padding: 20px; border-radius: 12px; text-align: center;
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%);
+  color: #fff; padding: 28px; border-radius: var(--radius-md); text-align: center;
+  position: relative; overflow: hidden;
+  box-shadow: 0 8px 20px -8px rgba(15,118,110,0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.stat-card .number { font-size: 2rem; font-weight: bold; margin-bottom: 5px; }
-.stat-card .label { font-size: 0.9rem; opacity: 0.9; }
+.stat-card::before {
+  content: ''; position: absolute; top: -50%; right: -30%;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.stat-card:hover { transform: translateY(-4px); box-shadow: 0 14px 28px -10px rgba(15,118,110,0.5); }
+.stat-card .number {
+  font-size: 2.6rem; font-weight: 800; margin-bottom: 6px;
+  letter-spacing: -0.03em; position: relative; z-index: 1;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.stat-card .label {
+  font-size: 0.95rem; opacity: 0.95; font-weight: 500;
+  position: relative; z-index: 1;
+}
 
 .hidden { display: none !important; }
 
+/* ============ UPLOAD AREA ============ */
 .upload-area {
-  border: 2px dashed var(--border); border-radius: 10px; padding: 30px; text-align: center;
-  cursor: pointer; transition: all 0.3s; background: #fafafa; margin-bottom: 15px;
+  border: 2px dashed var(--border-strong); border-radius: var(--radius-md);
+  padding: 36px; text-align: center; cursor: pointer;
+  transition: all 0.25s; background: #f8fafc; margin-bottom: 16px;
 }
-.upload-area:hover, .upload-area.dragover { border-color: var(--brand); background: #f0fdfa; }
+.upload-area:hover, .upload-area.dragover {
+  border-color: var(--brand); background: var(--brand-50);
+  transform: translateY(-2px); box-shadow: var(--shadow-md);
+}
 .upload-area input[type="file"] { display: none; }
-.upload-preview { max-width: 150px; max-height: 150px; margin-top: 10px; border-radius: 8px; display: none; object-fit: contain; }
+.upload-preview {
+  max-width: 150px; max-height: 150px; margin-top: 12px;
+  border-radius: var(--radius); display: none; object-fit: contain;
+  box-shadow: var(--shadow-md);
+}
 .upload-preview.show { display: block; }
 
-/* Home Options & Animations */
+/* ============ HOME OPTIONS ============ */
 .home-options {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px; margin-top: 24px;
 }
 .home-option-card {
-  background: linear-gradient(135deg, var(--brand), var(--brand-light));
-  color: #fff;
-  padding: 40px 20px;
-  border-radius: 15px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  border: none;
-  font-family: inherit;
-  width: 100%;
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%);
+  color: #fff; padding: 48px 28px; border-radius: var(--radius-lg);
+  text-align: center; cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 20px -8px rgba(15,118,110,0.4);
+  border: none; font-family: inherit; width: 100%;
+  position: relative; overflow: hidden;
+}
+.home-option-card::before {
+  content: ''; position: absolute; top: -50%; right: -30%;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+  border-radius: 50%;
 }
 .home-option-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(15,118,110,0.3);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px -8px rgba(15,118,110,0.5);
 }
 .home-option-card .icon {
-  font-size: 3rem;
-  margin-bottom: 15px;
-  display: block;
+  font-size: 3.5rem; margin-bottom: 18px; display: block;
+  position: relative; z-index: 1;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
 }
 .home-option-card .title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  display: block;
+  font-size: 1.5rem; font-weight: 700; display: block;
+  position: relative; z-index: 1; margin-bottom: 8px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
-.back-btn {
-  background: transparent;
-  border: none;
-  color: var(--brand);
-  font-weight: 600;
-  cursor: pointer;
-  margin-bottom: 15px;
-  font-size: 1rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 0;
-}
-.back-btn:hover {
-  color: var(--brand-dark);
+.home-option-card p {
+  margin-top: 10px; opacity: 0.92; font-size: 0.95rem;
+  position: relative; z-index: 1; line-height: 1.5;
 }
 
+/* ============ BACK BUTTON ============ */
+.back-btn {
+  background: transparent; border: none; color: var(--brand);
+  font-weight: 600; cursor: pointer; margin-bottom: 20px;
+  font-size: 1rem; display: inline-flex; align-items: center;
+  gap: 6px; padding: 8px 12px; border-radius: var(--radius);
+  transition: all 0.2s; font-family: inherit;
+}
+.back-btn:hover {
+  color: var(--brand-dark); background: var(--brand-50);
+}
+
+/* ============ ANIMATIONS ============ */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
@@ -158,9 +305,124 @@ tr:hover { background: #f8fafc; }
   animation: fadeInUp 0.4s ease-out forwards;
 }
 
+/* ============ ADMIN FORM GRID ============ */
+.admin-form-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 16px; align-items: end;
+  margin-bottom: 24px; padding: 20px;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+.admin-form-grid-5 {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  gap: 12px; align-items: end;
+  margin-bottom: 20px; padding: 20px;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+/* ============ INFO BOX ============ */
+.info-box {
+  background: linear-gradient(135deg, var(--brand-50), #f0fdf4);
+  padding: 18px; border-radius: var(--radius);
+  margin-bottom: 24px;
+  border-left: 4px solid var(--brand);
+  box-shadow: var(--shadow-sm);
+}
+.info-box p { margin-bottom: 6px; }
+.info-box p:last-child { margin-bottom: 0; }
+.info-box strong { color: var(--brand-dark); }
+
+/* ============ REMARKS BOX ============ */
+.remarks-box {
+  background: linear-gradient(135deg, #fffbeb, var(--warning-light));
+  padding: 18px; border-radius: var(--radius);
+  margin-bottom: 24px;
+  border-left: 4px solid var(--gold);
+  box-shadow: var(--shadow-sm);
+}
+.remarks-box strong { color: var(--gold-dark); }
+
+/* ============ CONFIRMATION BOX ============ */
+.confirmation-box {
+  margin-top: 24px; padding: 32px;
+  background: linear-gradient(135deg, var(--success-light), #d1fae5);
+  border-radius: var(--radius-lg); text-align: center;
+  border: 2px solid var(--success);
+  box-shadow: 0 8px 20px -8px rgba(16,185,129,0.3);
+}
+.confirmation-box h3 {
+  color: var(--success-dark); margin-bottom: 12px;
+  font-size: 1.5rem;
+}
+.confirmation-box p { margin-bottom: 24px; color: #065f46; }
+.confirmation-actions {
+  display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+}
+
+/* ============ FILTER BAR ============ */
+.filter-bar {
+  display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
+  align-items: flex-end; padding: 18px;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+.filter-bar .form-group { margin-bottom: 0; flex: 1; min-width: 160px; }
+
+/* ============ RESPONSIVE ============ */
+@media(max-width: 1024px) {
+  .container { padding: 0 20px; }
+  .card { padding: 28px; }
+}
+
 @media(max-width: 768px) {
+  body { font-size: 14px; }
+  .header { padding: 32px 20px; }
   .header-info h1 { font-size: 1.5rem; }
-  .container { padding: 0 15px; }
+  .header-info p { font-size: 0.95rem; }
+  .logo-circle { width: 80px; height: 80px; border-radius: 18px; font-size: 2.2rem; }
+  
+  .container { margin: 24px auto; padding: 0 18px; }
+  .card { padding: 24px; border-radius: var(--radius-md); margin-bottom: 22px; }
+  .card h2 { font-size: 1.3rem; padding-bottom: 14px; margin-bottom: 20px; }
+  
+  .admin-form-grid, .admin-form-grid-5 {
+    grid-template-columns: 1fr; gap: 12px;
+  }
+  .admin-form-grid .form-group, .admin-form-grid-5 .form-group { margin-bottom: 0; }
+  
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .stat-card { padding: 22px; }
+  .stat-card .number { font-size: 2rem; }
+  .stat-card .label { font-size: 0.85rem; }
+  
+  .home-options { grid-template-columns: 1fr; gap: 18px; }
+  .home-option-card { padding: 36px 24px; }
+  .home-option-card .icon { font-size: 3rem; }
+  .home-option-card .title { font-size: 1.3rem; }
+  
+  .filter-bar { flex-direction: column; padding: 16px; }
+  .filter-bar .form-group { width: 100%; min-width: 0; }
+  
+  .admin-toggle { bottom: 18px; right: 18px; padding: 12px 20px; font-size: 0.9rem; }
+  
+  table { font-size: 0.85rem; }
+  th, td { padding: 11px 13px; }
+  
+  .confirmation-actions { flex-direction: column; }
+  .confirmation-actions .btn { width: 100%; }
+}
+
+@media(max-width: 480px) {
+  .header { padding: 28px 16px; }
+  .logo-circle { width: 70px; height: 70px; font-size: 2rem; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .container { padding: 0 14px; }
   .card { padding: 20px; }
 }
 </style>
@@ -184,18 +446,18 @@ tr:hover { background: #f8fafc; }
 
   <!-- HOME VIEW -->
   <div id="home-view" class="card view-animate">
-    <h2 style="text-align: center; border-bottom: none; margin-bottom: 10px;">Welcome!</h2>
-    <p style="text-align: center; color: #64748b; margin-bottom: 30px; font-size: 1.1rem;">Please select an option below to proceed.</p>
+    <h2 style="text-align: center; border-bottom: none; margin-bottom: 12px; justify-content: center;">Welcome!</h2>
+    <p style="text-align: center; color: var(--text-muted); margin-bottom: 32px; font-size: 1.1rem;">Please select an option below to proceed.</p>
     <div class="home-options">
       <button class="home-option-card" onclick="showMainView('registration')">
         <span class="icon">📝</span>
         <span class="title">Event Registration</span>
-        <p style="margin-top: 10px; opacity: 0.9; font-size: 0.9rem;">Register for upcoming hotel events</p>
+        <p>Register for upcoming hotel events</p>
       </button>
       <button class="home-option-card" onclick="showMainView('attendance')">
         <span class="icon">✅</span>
         <span class="title">Mark Your Attendance</span>
-        <p style="margin-top: 10px; opacity: 0.9; font-size: 0.9rem;">Submit your attendance for activities</p>
+        <p>Submit your attendance for activities</p>
       </button>
     </div>
   </div>
@@ -211,7 +473,7 @@ tr:hover { background: #f8fafc; }
           <option value="">Loading events...</option>
         </select>
       </div>
-      <div style="background: #f0fdfa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--brand);">
+      <div class="info-box">
         <p><strong>Event:</strong> <span id="display-event-name">-</span></p>
         <p><strong>Date:</strong> <span id="display-event-date">-</span></p>
         <p><strong>Available Seats:</strong> <span id="display-seats-left">-</span></p>
@@ -242,10 +504,10 @@ tr:hover { background: #f8fafc; }
       <button type="submit" class="btn btn-primary btn-full">✅ Register for Event</button>
     </form>
     
-    <div id="download-confirmation-section" class="hidden" style="margin-top: 20px; padding: 25px; background: #d1fae5; border-radius: 10px; text-align: center; border: 2px solid var(--success);">
-      <h3 style="color: var(--success); margin-bottom: 10px;">✅ Registration Successful!</h3>
-      <p style="margin-bottom: 20px; color: #065f46;">Your registration has been confirmed.</p>
-      <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+    <div id="download-confirmation-section" class="confirmation-box hidden">
+      <h3>✅ Registration Successful!</h3>
+      <p>Your registration has been confirmed.</p>
+      <div class="confirmation-actions">
         <button class="btn btn-success" onclick="downloadConfirmation()">📥 Download Confirmation PDF</button>
         <button class="btn btn-outline" onclick="resetRegForm()">🔄 New Registration</button>
       </div>
@@ -284,7 +546,7 @@ tr:hover { background: #f8fafc; }
           <option value="">Loading activities...</option>
         </select>
       </div>
-      <div id="att-remarks-display" class="hidden" style="background: #fffbeb; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--gold);">
+      <div id="att-remarks-display" class="remarks-box hidden">
         <p><strong>📌 Admin Remarks:</strong> <span id="att-remarks-text">-</span></p>
       </div>
       <button type="submit" class="btn btn-primary btn-full">✅ Submit Attendance</button>
@@ -295,31 +557,31 @@ tr:hover { background: #f8fafc; }
   <div id="admin-view" class="hidden">
     <div class="stats-grid">
       <div class="stat-card"><div class="number" id="stat-total-events">0</div><div class="label">Total Events</div></div>
-      <div class="stat-card" style="background: linear-gradient(135deg, var(--gold), #fbbf24);"><div class="number" id="stat-total-reg">0</div><div class="label">Total Registrations</div></div>
-      <div class="stat-card" style="background: linear-gradient(135deg, var(--success), #34d399);"><div class="number" id="stat-total-att">0</div><div class="label">Total Attendance</div></div>
+      <div class="stat-card" style="background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);"><div class="number" id="stat-total-reg">0</div><div class="label">Total Registrations</div></div>
+      <div class="stat-card" style="background: linear-gradient(135deg, var(--success) 0%, #34d399 100%);"><div class="number" id="stat-total-att">0</div><div class="label">Total Attendance</div></div>
     </div>
 
     <!-- Event Management -->
     <div class="card">
       <h2>📅 Event Management</h2>
-      <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 15px; align-items: end; margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px;">
+      <div class="admin-form-grid">
         <div class="form-group" style="margin-bottom: 0;"><label>Event Name</label><input type="text" id="admin-new-event-name" placeholder="e.g., Annual Gala"></div>
         <div class="form-group" style="margin-bottom: 0;"><label>Event Date</label><input type="date" id="admin-new-event-date"></div>
         <div class="form-group" style="margin-bottom: 0;"><label>Max Registrations</label><input type="number" id="admin-new-max-reg" min="1" value="100"></div>
         <button class="btn btn-primary" onclick="addEvent()" style="height: 46px;">➕ Add Event</button>
       </div>
-      <div style="overflow-x: auto;">
+      <div class="table-wrap">
         <table>
           <thead><tr><th>Event Name</th><th>Date</th><th>Registrations</th><th>Created</th><th>Action</th></tr></thead>
-          <tbody id="admin-events-tbody"><tr><td colspan="5" style="text-align:center; color:#94a3b8;">Loading...</td></tr></tbody>
+          <tbody id="admin-events-tbody"><tr><td colspan="5" style="text-align:center; color:var(--text-subtle);">Loading...</td></tr></tbody>
         </table>
       </div>
     </div>
 
-    <!-- Activity Management (For Attendance) -->
+    <!-- Activity Management -->
     <div class="card">
       <h2>📋 Activity Management (For Attendance)</h2>
-      <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 10px; align-items: end; margin-bottom: 15px; padding: 15px; background: #f8fafc; border-radius: 8px;">
+      <div class="admin-form-grid-5">
         <div class="form-group" style="margin-bottom: 0;"><label>Activity Name</label><input type="text" id="admin-act-name"></div>
         <div class="form-group" style="margin-bottom: 0;"><label>Date</label><input type="date" id="admin-act-date"></div>
         <div class="form-group" style="margin-bottom: 0;"><label>Start Time</label><input type="time" id="admin-act-start"></div>
@@ -327,10 +589,10 @@ tr:hover { background: #f8fafc; }
         <button class="btn btn-primary" onclick="addActivity()" style="height: 46px;">➕ Add</button>
       </div>
       <div class="form-group"><label>Remarks for Employees (Visible when they select this activity)</label><textarea id="admin-act-remarks" rows="2" placeholder="e.g., Please bring your ID card and arrive 15 mins early"></textarea></div>
-      <div style="overflow-x: auto;">
+      <div class="table-wrap">
         <table>
           <thead><tr><th>Activity Name</th><th>Date</th><th>Time Window</th><th>Remarks</th><th>Action</th></tr></thead>
-          <tbody id="admin-activities-tbody"><tr><td colspan="5" style="text-align:center; color:#94a3b8;">Loading...</td></tr></tbody>
+          <tbody id="admin-activities-tbody"><tr><td colspan="5" style="text-align:center; color:var(--text-subtle);">Loading...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -338,28 +600,28 @@ tr:hover { background: #f8fafc; }
     <!-- Attendance Records -->
     <div class="card">
       <h2>📊 Attendance Records</h2>
-      <div style="display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; align-items: end;">
+      <div class="filter-bar">
         <div class="form-group" style="margin-bottom: 0; flex: 1;"><label>Month</label><select id="admin-att-month"><option value="all">All Months</option></select></div>
         <div class="form-group" style="margin-bottom: 0; flex: 1;"><label>Year</label><select id="admin-att-year"><option value="all">All Years</option></select></div>
         <div class="form-group" style="margin-bottom: 0; flex: 2;"><label>Activity (Optional)</label><select id="admin-att-activity"><option value="all">All Activities</option></select></div>
         <button class="btn btn-success" onclick="downloadAttendanceExcel()" style="height: 46px;">📥 Download Excel</button>
       </div>
-      <div style="overflow-x: auto;">
+      <div class="table-wrap">
         <table>
           <thead><tr><th>Activity</th><th>Employee ID</th><th>Name</th><th>Department</th><th>Submission Time</th></tr></thead>
-          <tbody id="admin-attendance-tbody"><tr><td colspan="5" style="text-align:center; color:#94a3b8;">Loading...</td></tr></tbody>
+          <tbody id="admin-attendance-tbody"><tr><td colspan="5" style="text-align:center; color:var(--text-subtle);">Loading...</td></tr></tbody>
         </table>
       </div>
     </div>
 
-    <!-- Branding & Registrations -->
+    <!-- Branding -->
     <div class="card">
       <h2>🎨 Branding Settings</h2>
       <div class="form-group"><label>Hotel / Company Name</label><input type="text" id="admin-hotel-name" placeholder="e.g., Six Senses"></div>
       <div class="form-group">
         <label>Logo Image</label>
         <div class="upload-area" id="logo-upload-area" onclick="document.getElementById('logo-file').click()">
-          <p style="font-size: 2rem; margin-bottom: 10px;">🏨</p><p><strong>Click to browse or drag & drop</strong></p>
+          <p style="font-size: 2.5rem; margin-bottom: 10px;">🏨</p><p><strong>Click to browse or drag & drop</strong></p>
           <input type="file" id="logo-file" accept="image/*" onchange="handleFileSelect('logo-file')">
           <img id="logo-preview" class="upload-preview" alt="Logo Preview">
         </div>
@@ -367,7 +629,7 @@ tr:hover { background: #f8fafc; }
       <div class="form-group">
         <label>Background Image</label>
         <div class="upload-area" id="bg-upload-area" onclick="document.getElementById('bg-file').click()">
-          <p style="font-size: 2rem; margin-bottom: 10px;">🌄</p><p><strong>Click to browse or drag & drop</strong></p>
+          <p style="font-size: 2.5rem; margin-bottom: 10px;">🌄</p><p><strong>Click to browse or drag & drop</strong></p>
           <input type="file" id="bg-file" accept="image/*" onchange="handleFileSelect('bg-file')">
           <img id="bg-preview" class="upload-preview" alt="Background Preview">
         </div>
@@ -375,26 +637,26 @@ tr:hover { background: #f8fafc; }
       <button class="btn btn-primary" onclick="saveAdminSettings()">💾 Save Branding Settings</button>
     </div>
 
+    <!-- All Registrations -->
     <div class="card">
       <h2>📋 All Registrations</h2>
-      <!-- NEW: Registration Filters -->
-      <div style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: end;">
+      <div class="filter-bar">
         <div class="form-group" style="margin-bottom: 0; flex: 1;"><label>Month</label><select id="admin-reg-month"><option value="all">All Months</option></select></div>
         <div class="form-group" style="margin-bottom: 0; flex: 1;"><label>Year</label><select id="admin-reg-year"><option value="all">All Years</option></select></div>
         <button class="btn btn-success" onclick="downloadExcelReport()" style="height: 46px;">📥 Download Registration Excel</button>
         <button class="btn btn-danger" onclick="clearAllRegistrations()" style="height: 46px;">🗑️ Clear All</button>
       </div>
-      <div style="overflow-x: auto;">
+      <div class="table-wrap">
         <table>
           <thead><tr><th>Event</th><th>Employee ID</th><th>Name</th><th>Department</th><th>Registration Time</th><th>Action</th></tr></thead>
-          <tbody id="registrations-tbody"><tr><td colspan="6" style="text-align:center; color:#94a3b8;">Loading...</td></tr></tbody>
+          <tbody id="registrations-tbody"><tr><td colspan="6" style="text-align:center; color:var(--text-subtle);">Loading...</td></tr></tbody>
         </table>
       </div>
     </div>
   </div>
 </div>
 
-<button class="admin-toggle" onclick="toggleAdmin()">⚙️ Admin Access</button>
+<button class="admin-toggle" onclick="toggleAdmin()">Admin Access</button>
 
 <script>
 const firebaseConfig = {
@@ -466,8 +728,6 @@ function updateUI() {
   renderAdminEventsTable();
   document.getElementById('stat-total-events').innerText = eventsList.length;
   document.getElementById('stat-total-reg').innerText = registrationsList.length;
-  
-  // Populate Registration Filters dynamically
   populateRegistrationFilters();
 }
 
@@ -475,7 +735,6 @@ function populateRegistrationFilters() {
   const regMonthSelect = document.getElementById('admin-reg-month');
   const regYearSelect = document.getElementById('admin-reg-year');
   
-  // Extract unique months and years from registrations
   const regMonths = [...new Set(registrationsList.map(r => new Date(r.timestamp).toLocaleString('default', { month: 'long' })))];
   const regYears = [...new Set(registrationsList.map(r => new Date(r.timestamp).getFullYear().toString()))];
   
@@ -533,7 +792,6 @@ function updateAttendanceUI() {
     adminActSelect.appendChild(option);
   });
 
-  // FIX: Populate Month/Year filters with actual standard values
   const monthSelect = document.getElementById('admin-att-month');
   monthSelect.innerHTML = '<option value="all">All Months</option>';
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -589,7 +847,7 @@ function updateBranding() {
 
 function renderAdminEventsTable() {
   const tbody = document.getElementById('admin-events-tbody');
-  if (eventsList.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8;">No events created yet</td></tr>'; return; }
+  if (eventsList.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-subtle);">No events created yet</td></tr>'; return; }
   tbody.innerHTML = eventsList.map(event => {
     const regCount = registrationsList.filter(r => r.eventId === event.id).length;
     return `<tr><td><strong>${event.eventName}</strong></td><td>${event.eventDate}</td><td>${regCount} / ${event.maxRegistrations}</td><td>${new Date(event.createdAt).toLocaleDateString()}</td><td><button class="btn btn-danger btn-sm" onclick="deleteEvent('${event.id}')">Delete</button></td></tr>`;
@@ -598,7 +856,7 @@ function renderAdminEventsTable() {
 
 function renderAdminActivitiesTable() {
   const tbody = document.getElementById('admin-activities-tbody');
-  if (activitiesList.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8;">No activities created yet</td></tr>'; return; }
+  if (activitiesList.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-subtle);">No activities created yet</td></tr>'; return; }
   tbody.innerHTML = activitiesList.map(act => {
     return `<tr><td><strong>${act.activityName}</strong></td><td>${act.activityDate}</td><td>${act.startTime} - ${act.endTime}</td><td>${act.remarks || '-'}</td><td><button class="btn btn-danger btn-sm" onclick="deleteActivity('${act.id}')">Delete</button></td></tr>`;
   }).join('');
@@ -617,7 +875,7 @@ function renderRegistrationsTable() {
     filtered = filtered.filter(r => new Date(r.timestamp).getFullYear().toString() === yearFilter);
   }
 
-  if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#94a3b8;">No registrations found for selected filters</td></tr>'; return; }
+  if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-subtle);">No registrations found for selected filters</td></tr>'; return; }
   
   const sortedRegs = [...filtered].sort((a, b) => b.timestamp - a.timestamp);
   tbody.innerHTML = sortedRegs.map(reg => `
@@ -636,7 +894,7 @@ function renderAdminAttendanceTable() {
   if (yearFilter !== 'all') filtered = filtered.filter(a => a.year === yearFilter);
   if (actFilter !== 'all') filtered = filtered.filter(a => a.activityName === actFilter);
 
-  if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8;">No attendance records found</td></tr>'; return; }
+  if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-subtle);">No attendance records found</td></tr>'; return; }
   
   const sortedAtt = [...filtered].sort((a, b) => b.timestamp - a.timestamp);
   tbody.innerHTML = sortedAtt.map(att => `
@@ -699,9 +957,8 @@ function showMainView(view) {
   
   if (targetView) {
     targetView.classList.remove('hidden');
-    // Re-trigger animation
     targetView.classList.remove('view-animate');
-    void targetView.offsetWidth; // trigger reflow
+    void targetView.offsetWidth;
     targetView.classList.add('view-animate');
   }
 }
@@ -738,9 +995,8 @@ function handleAttendance(e) {
   
   if (!activity) { showAlert('Please select a valid activity.', 'error'); return; }
   
-  // Time Validation
   const now = new Date();
-  const actDateStr = activity.activityDate; // YYYY-MM-DD
+  const actDateStr = activity.activityDate;
   const startTimeStr = `${actDateStr}T${activity.startTime}:00`;
   const endTimeStr = `${actDateStr}T${activity.endTime}:00`;
   
@@ -762,7 +1018,6 @@ function handleAttendance(e) {
   const month = now.toLocaleString('default', { month: 'long' });
   const year = now.getFullYear().toString();
 
-  // Check if already submitted for this activity
   if (attendanceList.some(a => a.activityId === actId && a.empId === empId)) {
     showAlert('You have already submitted attendance for this activity.', 'error');
     return;
@@ -894,7 +1149,6 @@ function deleteRegistration(id) {
   if (!confirm('Remove this registration?')) return;
   db.ref('event/registrations/' + id).remove().then(() => {
     showAlert('Registration removed', 'success');
-    // Re-render to update counts
     renderRegistrationsTable();
     updateUI();
   });
@@ -981,12 +1235,10 @@ document.addEventListener('DOMContentLoaded', () => {
   setupDragAndDrop('logo-upload-area', 'logo-file');
   setupDragAndDrop('bg-upload-area', 'bg-file');
   
-  // Add listeners for attendance filters to auto-refresh table
   document.getElementById('admin-att-month').addEventListener('change', renderAdminAttendanceTable);
   document.getElementById('admin-att-year').addEventListener('change', renderAdminAttendanceTable);
   document.getElementById('admin-att-activity').addEventListener('change', renderAdminAttendanceTable);
   
-  // Add listeners for registration filters to auto-refresh table
   document.getElementById('admin-reg-month').addEventListener('change', renderRegistrationsTable);
   document.getElementById('admin-reg-year').addEventListener('change', renderRegistrationsTable);
 });
