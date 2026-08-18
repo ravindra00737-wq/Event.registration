@@ -374,6 +374,33 @@ tbody tr:nth-child(even):hover { background: var(--brand-50); }
 }
 .filter-bar .form-group { margin-bottom: 0; flex: 1; min-width: 160px; }
 
+/* ============ ADMIN TABS ============ */
+.admin-tabs {
+  display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 2px solid var(--border); flex-wrap: wrap;
+}
+.admin-tab {
+  padding: 12px 20px; background: transparent; border: none; border-bottom: 3px solid transparent;
+  cursor: pointer; font-weight: 600; font-size: 0.95rem; color: var(--text-muted);
+  transition: all 0.2s; font-family: inherit;
+}
+.admin-tab:hover { color: var(--brand); background: var(--brand-50); border-radius: 8px 8px 0 0; }
+.admin-tab.active { color: var(--brand); border-bottom-color: var(--brand); }
+.admin-tab-content { display: none; animation: fadeInUp 0.3s ease-out forwards; }
+.admin-tab-content.active { display: block; }
+
+/* ============ MODAL ============ */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center; z-index: 2000;
+}
+.modal-overlay.hidden { display: none; }
+.modal-content {
+  background: #fff; padding: 32px; border-radius: var(--radius-lg);
+  width: 90%; max-width: 500px; box-shadow: var(--shadow-xl);
+  animation: fadeInUp 0.3s ease-out forwards;
+}
+.modal-content h3 { margin-bottom: 20px; color: var(--brand); }
+
 /* ============ RESPONSIVE ============ */
 @media(max-width: 1024px) {
   .container { padding: 0 20px; }
@@ -561,8 +588,17 @@ tbody tr:nth-child(even):hover { background: var(--brand-50); }
       <div class="stat-card" style="background: linear-gradient(135deg, var(--success) 0%, #34d399 100%);"><div class="number" id="stat-total-att">0</div><div class="label">Total Attendance</div></div>
     </div>
 
-    <!-- Event Management -->
-    <div class="card">
+    <!-- Admin Tabs Navigation -->
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchAdminTab('events')">📅 Event Management</button>
+      <button class="admin-tab" onclick="switchAdminTab('activities')">📋 Activity Management</button>
+      <button class="admin-tab" onclick="switchAdminTab('attendance')">📊 Attendance Record</button>
+      <button class="admin-tab" onclick="switchAdminTab('branding')">🎨 Branding Setting</button>
+      <button class="admin-tab" onclick="switchAdminTab('registrations')">📋 All Registrations</button>
+    </div>
+
+    <!-- Event Management Tab -->
+    <div id="tab-events" class="admin-tab-content active card">
       <h2>📅 Event Management</h2>
       <div class="admin-form-grid">
         <div class="form-group" style="margin-bottom: 0;"><label>Event Name</label><input type="text" id="admin-new-event-name" placeholder="e.g., Annual Gala"></div>
@@ -578,8 +614,8 @@ tbody tr:nth-child(even):hover { background: var(--brand-50); }
       </div>
     </div>
 
-    <!-- Activity Management -->
-    <div class="card">
+    <!-- Activity Management Tab -->
+    <div id="tab-activities" class="admin-tab-content card">
       <h2>📋 Activity Management (For Attendance)</h2>
       <div class="admin-form-grid-5">
         <div class="form-group" style="margin-bottom: 0;"><label>Activity Name</label><input type="text" id="admin-act-name"></div>
@@ -597,8 +633,8 @@ tbody tr:nth-child(even):hover { background: var(--brand-50); }
       </div>
     </div>
 
-    <!-- Attendance Records -->
-    <div class="card">
+    <!-- Attendance Record Tab -->
+    <div id="tab-attendance" class="admin-tab-content card">
       <h2>📊 Attendance Records</h2>
       <div class="filter-bar">
         <div class="form-group" style="margin-bottom: 0; flex: 1;"><label>Month</label><select id="admin-att-month"><option value="all">All Months</option></select></div>
@@ -608,14 +644,14 @@ tbody tr:nth-child(even):hover { background: var(--brand-50); }
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Activity</th><th>Employee ID</th><th>Name</th><th>Department</th><th>Submission Time</th></tr></thead>
-          <tbody id="admin-attendance-tbody"><tr><td colspan="5" style="text-align:center; color:var(--text-subtle);">Loading...</td></tr></tbody>
+          <thead><tr><th>Activity</th><th>Employee ID</th><th>Name</th><th>Department</th><th>Submission Time</th><th>Actions</th></tr></thead>
+          <tbody id="admin-attendance-tbody"><tr><td colspan="6" style="text-align:center; color:var(--text-subtle);">Loading...</td></tr></tbody>
         </table>
       </div>
     </div>
 
-    <!-- Branding -->
-    <div class="card">
+    <!-- Branding Setting Tab -->
+    <div id="tab-branding" class="admin-tab-content card">
       <h2>🎨 Branding Settings</h2>
       <div class="form-group"><label>Hotel / Company Name</label><input type="text" id="admin-hotel-name" placeholder="e.g., Six Senses"></div>
       <div class="form-group">
@@ -637,8 +673,8 @@ tbody tr:nth-child(even):hover { background: var(--brand-50); }
       <button class="btn btn-primary" onclick="saveAdminSettings()">💾 Save Branding Settings</button>
     </div>
 
-    <!-- All Registrations -->
-    <div class="card">
+    <!-- All Registrations Tab -->
+    <div id="tab-registrations" class="admin-tab-content card">
       <h2>📋 All Registrations</h2>
       <div class="filter-bar">
         <div class="form-group" style="margin-bottom: 0; flex: 1;"><label>Month</label><select id="admin-reg-month"><option value="all">All Months</option></select></div>
@@ -657,6 +693,39 @@ tbody tr:nth-child(even):hover { background: var(--brand-50); }
 </div>
 
 <button class="admin-toggle" onclick="toggleAdmin()">Admin Access</button>
+
+<!-- Edit Attendance Modal -->
+<div id="attendance-edit-modal" class="modal-overlay hidden">
+  <div class="modal-content">
+    <h3>✏️ Edit Attendance Record</h3>
+    <input type="hidden" id="edit-att-id">
+    <div class="form-group"><label>Activity Name</label><input type="text" id="edit-att-activity"></div>
+    <div class="form-group"><label>Employee ID</label><input type="text" id="edit-att-empid"></div>
+    <div class="form-group"><label>Full Name</label><input type="text" id="edit-att-name"></div>
+    <div class="form-group">
+      <label>Department</label>
+      <select id="edit-att-dept">
+        <option value="Executive Office">Executive Office</option>
+        <option value="Front Office">Front Office</option>
+        <option value="Human Resources">Human Resources</option>
+        <option value="F&B Service">F&B Service</option>
+        <option value="Kitchen">Kitchen</option>
+        <option value="Housekeeping & Laundry">Housekeeping & Laundry</option>
+        <option value="Security">Security</option>
+        <option value="Sales & Marketing">Sales & Marketing</option>
+        <option value="Engineering">Engineering</option>
+        <option value="Finance & IT">Finance & IT</option>
+        <option value="Spa">Spa</option>
+        <option value="Finance">Finance</option>
+        <option value="Landscaping">Landscaping</option>
+      </select>
+    </div>
+    <div style="display: flex; gap: 12px; margin-top: 20px;">
+      <button class="btn btn-primary" onclick="saveEditedAttendance()">💾 Save Changes</button>
+      <button class="btn btn-outline" onclick="document.getElementById('attendance-edit-modal').classList.add('hidden')">Cancel</button>
+    </div>
+  </div>
+</div>
 
 <script>
 const firebaseConfig = {
@@ -894,11 +963,21 @@ function renderAdminAttendanceTable() {
   if (yearFilter !== 'all') filtered = filtered.filter(a => a.year === yearFilter);
   if (actFilter !== 'all') filtered = filtered.filter(a => a.activityName === actFilter);
 
-  if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-subtle);">No attendance records found</td></tr>'; return; }
+  if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-subtle);">No attendance records found</td></tr>'; return; }
   
   const sortedAtt = [...filtered].sort((a, b) => b.timestamp - a.timestamp);
   tbody.innerHTML = sortedAtt.map(att => `
-    <tr><td><strong>${att.activityName}</strong></td><td>${att.empId}</td><td>${att.name}</td><td>${att.dept}</td><td>${new Date(att.timestamp).toLocaleString()}</td></tr>
+    <tr>
+      <td><strong>${att.activityName}</strong></td>
+      <td>${att.empId}</td>
+      <td>${att.name}</td>
+      <td>${att.dept}</td>
+      <td>${new Date(att.timestamp).toLocaleString()}</td>
+      <td>
+        <button class="btn btn-primary btn-sm" onclick="editAttendance('${att.id}')">✏️ Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteAttendance('${att.id}')">🗑️ Delete</button>
+      </td>
+    </tr>
   `).join('');
 }
 
@@ -961,6 +1040,20 @@ function showMainView(view) {
     void targetView.offsetWidth;
     targetView.classList.add('view-animate');
   }
+}
+
+function switchAdminTab(tabName) {
+  document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
+  document.querySelectorAll('.admin-tab-content').forEach(content => content.classList.remove('active'));
+  
+  const tabs = document.querySelectorAll('.admin-tab');
+  tabs.forEach(tab => {
+    if(tab.getAttribute('onclick').includes(tabName)) {
+      tab.classList.add('active');
+    }
+  });
+  
+  document.getElementById('tab-' + tabName).classList.add('active');
 }
 
 function handleRegistration(e) {
@@ -1134,6 +1227,42 @@ function addActivity() {
 function deleteActivity(actId) {
   if (!confirm('Delete this activity?')) return;
   db.ref('event/activities/' + actId).remove().then(() => showAlert('Activity deleted', 'success'));
+}
+
+function editAttendance(id) {
+  const att = attendanceList.find(a => a.id === id);
+  if (!att) return;
+  
+  document.getElementById('edit-att-id').value = att.id;
+  document.getElementById('edit-att-empid').value = att.empId;
+  document.getElementById('edit-att-name').value = att.name;
+  document.getElementById('edit-att-dept').value = att.dept;
+  document.getElementById('edit-att-activity').value = att.activityName;
+  document.getElementById('attendance-edit-modal').classList.remove('hidden');
+}
+
+function saveEditedAttendance() {
+  const id = document.getElementById('edit-att-id').value;
+  const empId = document.getElementById('edit-att-empid').value.trim().toUpperCase();
+  const name = document.getElementById('edit-att-name').value.trim();
+  const dept = document.getElementById('edit-att-dept').value;
+  const activityName = document.getElementById('edit-att-activity').value;
+  
+  if (!empId || !name || !dept || !activityName) {
+    showAlert('Please fill all fields', 'error'); return;
+  }
+  
+  db.ref('event/attendance/' + id).update({ empId, name, dept, activityName }).then(() => {
+    showAlert('Attendance record updated successfully!', 'success');
+    document.getElementById('attendance-edit-modal').classList.add('hidden');
+  }).catch(err => showAlert('Error: ' + err.message, 'error'));
+}
+
+function deleteAttendance(id) {
+  if (!confirm('Are you sure you want to delete this attendance record?')) return;
+  db.ref('event/attendance/' + id).remove().then(() => {
+    showAlert('Attendance record deleted', 'success');
+  });
 }
 
 function saveAdminSettings() {
