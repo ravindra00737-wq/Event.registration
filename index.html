@@ -1614,12 +1614,18 @@ function updateUI() {
   const eventSelect = document.getElementById('reg-event-select');
   const currentVal = eventSelect.value;
   eventSelect.innerHTML = '<option value="">Select an Event</option>';
+  
+  // Filter to show only today's events or future active events
+  const today = new Date().toISOString().split('T')[0];
   eventsList.forEach(event => {
-    const option = document.createElement('option');
-    option.value = event.id;
-    option.textContent = event.eventName;
-    eventSelect.appendChild(option);
+    if (event.eventDate >= today) {
+      const option = document.createElement('option');
+      option.value = event.id;
+      option.textContent = event.eventName;
+      eventSelect.appendChild(option);
+    }
   });
+  
   eventSelect.value = currentVal;
   updateEventDetails();
   renderAdminEventsTable();
@@ -1689,11 +1695,16 @@ function updateEventDetails() {
 function updateAttendanceUI() {
   const actSelect = document.getElementById('att-activity');
   actSelect.innerHTML = '<option value="">Select an Activity</option>';
+  
+  // Filter to show only activities scheduled for today
+  const today = new Date().toISOString().split('T')[0];
   activitiesList.forEach(act => {
-    const option = document.createElement('option');
-    option.value = act.id;
-    option.textContent = `${act.activityName} (${act.activityDate})`;
-    actSelect.appendChild(option);
+    if (act.activityDate === today) {
+      const option = document.createElement('option');
+      option.value = act.id;
+      option.textContent = `${act.activityName} (${act.activityDate})`;
+      actSelect.appendChild(option);
+    }
   });
   
   const adminActSelect = document.getElementById('admin-att-activity');
@@ -2053,8 +2064,9 @@ function handleAttendance(e) {
   const month = now.toLocaleString('default', { month: 'long' });
   const year = now.getFullYear().toString();
 
+  // Prevent duplicate attendance entries
   if (attendanceList.some(a => a.activityId === actId && a.empId === empId)) {
-    showAlert('You have already submitted attendance for this activity.', 'error');
+    showAlert('You have already marked your attendance for this event.', 'error');
     return;
   }
 
