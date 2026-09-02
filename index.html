@@ -230,6 +230,13 @@ tbody tr:nth-child(even):hover { background: var(--brand-50); }
 .color-picker-wrapper input[type="color"] { width: 60px; height: 60px; border: 2px solid var(--border); border-radius: var(--radius); cursor: pointer; padding: 0; }
 .color-preview { flex: 1; height: 60px; border-radius: var(--radius); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: 600; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); transition: all 0.3s ease; }
 
+.filter-row {
+  display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: flex-end;
+  padding: 18px; background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: var(--radius-md); border: 1px solid var(--border);
+}
+.filter-row .form-group { margin-bottom: 0; min-width: 140px; flex: 1; }
+.filter-row .form-group label { margin-bottom: 6px; }
+
 @media(max-width: 1024px) { .container { padding: 0 20px; } .card { padding: 28px; } }
 @media(max-width: 768px) {
   body { font-size: 14px; } .header { padding: 32px 20px; } .header-info h1 { font-size: 1.5rem; } .header-info p { font-size: 0.9rem; }
@@ -238,6 +245,8 @@ tbody tr:nth-child(even):hover { background: var(--brand-50); }
   .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } .stat-card { padding: 22px; } .stat-card .number { font-size: 2rem; } .stat-card .label { font-size: 0.85rem; }
   .home-options { grid-template-columns: 1fr; gap: 18px; } .home-option-card { padding: 36px 24px; } .home-option-card .icon { font-size: 3rem; } .home-option-card .title { font-size: 1.3rem; }
   .admin-tabs { gap: 4px; } .admin-tab { padding: 10px 14px; font-size: 0.85rem; }
+  .filter-row { padding: 14px; }
+  .filter-row .form-group { min-width: 100%; }
 }
 @media(max-width: 480px) {
   .header { padding: 28px 16px; } .logo-circle { width: 70px; height: 70px; font-size: 1.8rem; } .stats-grid { grid-template-columns: 1fr; }
@@ -290,6 +299,7 @@ tbody tr:nth-child(even):hover { background: var(--brand-50); }
         <select id="reg-event-select" required onchange="updateEventDetails()">
           <option value="">Loading events...</option>
         </select>
+        <small style="color:var(--text-muted);margin-top:6px;display:block;">Only current and upcoming events are shown.</small>
       </div>
       <div class="form-group"><label>Employee ID *</label><input type="text" id="reg-empid" required placeholder="Enter your Employee ID"></div>
       <div class="form-group"><label>Full Name *</label><input type="text" id="reg-name" required placeholder="Enter your full name"></div>
@@ -326,6 +336,7 @@ tbody tr:nth-child(even):hover { background: var(--brand-50); }
         <select id="att-activity-select" required onchange="updateActivityDetails()">
           <option value="">Loading activities...</option>
         </select>
+        <small style="color:var(--text-muted);margin-top:6px;display:block;">Only activities scheduled for today are shown.</small>
       </div>
       <div class="form-group"><label>Employee ID *</label><input type="text" id="att-empid" required placeholder="Enter your Employee ID"></div>
       <div class="form-group"><label>Full Name *</label><input type="text" id="att-name" required placeholder="Enter your full name"></div>
@@ -365,7 +376,7 @@ tbody tr:nth-child(even):hover { background: var(--brand-50); }
       <button class="admin-tab" onclick="switchAdminTab('activities')">✅ Activities</button>
       <button class="admin-tab" onclick="switchAdminTab('registrations')">📝 Registrations</button>
       <button class="admin-tab" onclick="switchAdminTab('attendance')">📊 Attendance</button>
-      <button class="admin-tab" onclick="switchAdminTab('branding')"> Branding</button>
+      <button class="admin-tab" onclick="switchAdminTab('branding')">🎨 Branding</button>
     </div>
 
     <!-- Events Tab -->
@@ -377,6 +388,42 @@ tbody tr:nth-child(even):hover { background: var(--brand-50); }
         <div class="form-group" style="margin-bottom: 0;"><label>Max Registrations</label><input type="number" id="admin-new-max-reg" min="1" value="100"></div>
         <button class="btn btn-primary" onclick="addEvent()" style="height: 46px;">➕ Add Event</button>
       </div>
+
+      <!-- Events Filter Row -->
+      <div class="filter-row">
+        <div class="form-group">
+          <label>Filter by Month</label>
+          <select id="events-filter-month" onchange="renderEventsTable()">
+            <option value="all">All Months</option>
+            <option value="1">January</option><option value="2">February</option>
+            <option value="3">March</option><option value="4">April</option>
+            <option value="5">May</option><option value="6">June</option>
+            <option value="7">July</option><option value="8">August</option>
+            <option value="9">September</option><option value="10">October</option>
+            <option value="11">November</option><option value="12">December</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Filter by Year</label>
+          <select id="events-filter-year" onchange="renderEventsTable()">
+            <option value="all">All Years</option>
+            <option value="2024">2024</option><option value="2025">2025</option>
+            <option value="2026">2026</option><option value="2027">2027</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Sort By</label>
+          <select id="events-sort" onchange="renderEventsTable()">
+            <option value="date-desc">Date (Newest First)</option>
+            <option value="date-asc">Date (Oldest First)</option>
+            <option value="name-asc">Name (A-Z)</option>
+            <option value="name-desc">Name (Z-A)</option>
+          </select>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="resetEventsFilters()" style="height:46px;margin-bottom:0;">🔄 Reset</button>
+        <button class="btn btn-success btn-sm" onclick="downloadEventsExcel()" style="height:46px;margin-bottom:0;">📥 Download Excel</button>
+      </div>
+
       <div class="table-wrap">
         <table>
           <thead><tr><th>Event Name</th><th>Date</th><th>Registrations</th><th>Action</th></tr></thead>
@@ -395,6 +442,42 @@ tbody tr:nth-child(even):hover { background: var(--brand-50); }
         <div class="form-group" style="margin-bottom: 0;"><label>End Time</label><input type="time" id="admin-new-act-end"></div>
         <button class="btn btn-success" onclick="addActivity()" style="height: 46px;">➕ Add Activity</button>
       </div>
+
+      <!-- Activities Filter Row -->
+      <div class="filter-row">
+        <div class="form-group">
+          <label>Filter by Month</label>
+          <select id="activities-filter-month" onchange="renderActivitiesTable()">
+            <option value="all">All Months</option>
+            <option value="1">January</option><option value="2">February</option>
+            <option value="3">March</option><option value="4">April</option>
+            <option value="5">May</option><option value="6">June</option>
+            <option value="7">July</option><option value="8">August</option>
+            <option value="9">September</option><option value="10">October</option>
+            <option value="11">November</option><option value="12">December</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Filter by Year</label>
+          <select id="activities-filter-year" onchange="renderActivitiesTable()">
+            <option value="all">All Years</option>
+            <option value="2024">2024</option><option value="2025">2025</option>
+            <option value="2026">2026</option><option value="2027">2027</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Sort By</label>
+          <select id="activities-sort" onchange="renderActivitiesTable()">
+            <option value="date-desc">Date (Newest First)</option>
+            <option value="date-asc">Date (Oldest First)</option>
+            <option value="name-asc">Name (A-Z)</option>
+            <option value="name-desc">Name (Z-A)</option>
+          </select>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="resetActivitiesFilters()" style="height:46px;margin-bottom:0;">🔄 Reset</button>
+        <button class="btn btn-success btn-sm" onclick="downloadActivitiesExcel()" style="height:46px;margin-bottom:0;">📥 Download Excel</button>
+      </div>
+
       <div class="table-wrap">
         <table>
           <thead><tr><th>Activity Name</th><th>Date</th><th>Time Window</th><th>Action</th></tr></thead>
@@ -406,11 +489,53 @@ tbody tr:nth-child(even):hover { background: var(--brand-50); }
     <!-- Registrations Tab -->
     <div id="tab-registrations" class="admin-tab-content card">
       <h2>📝 Event Registrations</h2>
-      <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: flex-end; padding: 18px; background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: var(--radius-md); border: 1px solid var(--border);">
-        <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 160px;"><label>Filter by Event</label><select id="reg-filter-event" onchange="renderRegistrationsTable()"><option value="all">All Events</option></select></div>
-        <button class="btn btn-success btn-sm" onclick="downloadRegistrationsExcel()" style="height: 46px; margin-bottom: 0;">📥 Download Excel</button>
-        <button class="btn btn-danger btn-sm" onclick="clearAllRegistrations()" style="height: 46px; margin-bottom: 0;">🗑️ Clear All Registrations</button>
+      <div class="filter-row">
+        <div class="form-group">
+          <label>Filter by Event</label>
+          <select id="reg-filter-event" onchange="renderRegistrationsTable()">
+            <option value="all">All Events</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Filter by Month</label>
+          <select id="reg-filter-month" onchange="renderRegistrationsTable()">
+            <option value="all">All Months</option>
+            <option value="1">January</option><option value="2">February</option>
+            <option value="3">March</option><option value="4">April</option>
+            <option value="5">May</option><option value="6">June</option>
+            <option value="7">July</option><option value="8">August</option>
+            <option value="9">September</option><option value="10">October</option>
+            <option value="11">November</option><option value="12">December</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Filter by Year</label>
+          <select id="reg-filter-year" onchange="renderRegistrationsTable()">
+            <option value="all">All Years</option>
+            <option value="2024">2024</option><option value="2025">2025</option>
+            <option value="2026">2026</option><option value="2027">2027</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Sort By</label>
+          <select id="reg-sort" onchange="renderRegistrationsTable()">
+            <option value="time-desc">Time (Newest First)</option>
+            <option value="time-asc">Time (Oldest First)</option>
+            <option value="name-asc">Name (A-Z)</option>
+            <option value="name-desc">Name (Z-A)</option>
+            <option value="dept-asc">Department (A-Z)</option>
+          </select>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="resetRegistrationsFilters()" style="height:46px;margin-bottom:0;">🔄 Reset</button>
       </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+        <button class="btn btn-success btn-sm" onclick="downloadRegistrationsExcel()">📥 Download Excel (Filtered)</button>
+        <button class="btn btn-primary btn-sm" onclick="downloadRegistrationsMonthWise()">📅 Download Month-wise</button>
+        <button class="btn btn-primary btn-sm" onclick="downloadRegistrationsEventWise()">🎯 Download Event-wise</button>
+        <button class="btn btn-danger btn-sm" onclick="clearAllRegistrations()">🗑️ Clear All Registrations</button>
+      </div>
+
       <div class="table-wrap">
         <table>
           <thead><tr><th>Event</th><th>Employee ID</th><th>Name</th><th>Department</th><th>Registration Time</th><th>Action</th></tr></thead>
@@ -422,10 +547,52 @@ tbody tr:nth-child(even):hover { background: var(--brand-50); }
     <!-- Attendance Tab -->
     <div id="tab-attendance" class="admin-tab-content card">
       <h2>📊 Attendance Records</h2>
-      <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: flex-end; padding: 18px; background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: var(--radius-md); border: 1px solid var(--border);">
-        <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 160px;"><label>Filter by Activity</label><select id="att-filter-activity" onchange="renderAttendanceTable()"><option value="all">All Activities</option></select></div>
-        <button class="btn btn-success btn-sm" onclick="downloadAttendanceExcel()" style="height: 46px; margin-bottom: 0;"> Download Excel</button>
+      <div class="filter-row">
+        <div class="form-group">
+          <label>Filter by Activity</label>
+          <select id="att-filter-activity" onchange="renderAttendanceTable()">
+            <option value="all">All Activities</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Filter by Month</label>
+          <select id="att-filter-month" onchange="renderAttendanceTable()">
+            <option value="all">All Months</option>
+            <option value="1">January</option><option value="2">February</option>
+            <option value="3">March</option><option value="4">April</option>
+            <option value="5">May</option><option value="6">June</option>
+            <option value="7">July</option><option value="8">August</option>
+            <option value="9">September</option><option value="10">October</option>
+            <option value="11">November</option><option value="12">December</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Filter by Year</label>
+          <select id="att-filter-year" onchange="renderAttendanceTable()">
+            <option value="all">All Years</option>
+            <option value="2024">2024</option><option value="2025">2025</option>
+            <option value="2026">2026</option><option value="2027">2027</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Sort By</label>
+          <select id="att-sort" onchange="renderAttendanceTable()">
+            <option value="time-desc">Time (Newest First)</option>
+            <option value="time-asc">Time (Oldest First)</option>
+            <option value="name-asc">Name (A-Z)</option>
+            <option value="name-desc">Name (Z-A)</option>
+            <option value="dept-asc">Department (A-Z)</option>
+          </select>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="resetAttendanceFilters()" style="height:46px;margin-bottom:0;">🔄 Reset</button>
       </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+        <button class="btn btn-success btn-sm" onclick="downloadAttendanceExcel()">📥 Download Excel (Filtered)</button>
+        <button class="btn btn-primary btn-sm" onclick="downloadAttendanceMonthWise()">📅 Download Month-wise</button>
+        <button class="btn btn-primary btn-sm" onclick="downloadAttendanceActivityWise()">🎯 Download Activity-wise</button>
+      </div>
+
       <div class="table-wrap">
         <table>
           <thead><tr><th>Activity</th><th>Employee ID</th><th>Name</th><th>Department</th><th>Submission Time</th></tr></thead>
@@ -457,7 +624,7 @@ tbody tr:nth-child(even):hover { background: var(--brand-50); }
       <div class="form-group">
         <label>Background Image</label>
         <div class="upload-area" id="bg-upload-area" onclick="document.getElementById('bg-file').click()">
-          <p style="font-size: 2.5rem; margin-bottom: 10px;"></p><p><strong>Click to browse or drag & drop</strong></p>
+          <p style="font-size: 2.5rem; margin-bottom: 10px;">🌄</p><p><strong>Click to browse or drag & drop</strong></p>
           <input type="file" id="bg-file" accept="image/*" onchange="handleFileSelect('bg-file')">
           <img id="brand-bg-preview" class="upload-preview" alt="Background Preview">
         </div>
@@ -526,55 +693,92 @@ db.ref('event/settings').on('value', (snap) => {
 });
 
 // ==========================================
+// HELPER: GET TODAY'S DATE STRING
+// ==========================================
+function getTodayString() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+// ==========================================
 // UI UPDATE FUNCTIONS
 // ==========================================
 function updateUI() {
-  // Update event dropdowns
+  const today = getTodayString();
+
+  // --- Event Registration dropdown: show only current & upcoming events ---
   const regEventSelect = document.getElementById('reg-event-select');
   const currentRegEvent = regEventSelect.value;
   regEventSelect.innerHTML = '<option value="">Select an Event</option>';
-  eventsList.forEach(event => {
+  const upcomingEvents = eventsList
+    .filter(ev => ev.eventDate && ev.eventDate >= today)
+    .sort((a, b) => (a.eventDate || '').localeCompare(b.eventDate || ''));
+  upcomingEvents.forEach(event => {
     const option = document.createElement('option');
     option.value = event.id;
-    option.textContent = event.eventName;
+    option.textContent = `${event.eventName} (${event.eventDate})`;
     regEventSelect.appendChild(option);
   });
+  if (upcomingEvents.length === 0) {
+    const opt = document.createElement('option');
+    opt.textContent = 'No upcoming events available';
+    opt.disabled = true;
+    opt.selected = true;
+    regEventSelect.appendChild(opt);
+  }
   regEventSelect.value = currentRegEvent;
 
-  // Update activity dropdowns
+  // --- Attendance dropdown: show only today's activities ---
   const attActivitySelect = document.getElementById('att-activity-select');
   const currentAttActivity = attActivitySelect.value;
   attActivitySelect.innerHTML = '<option value="">Select an Activity</option>';
-  activitiesList.forEach(act => {
+  const todaysActivities = activitiesList
+    .filter(act => act.activityDate === today)
+    .sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
+  todaysActivities.forEach(act => {
     const option = document.createElement('option');
     option.value = act.id;
-    option.textContent = act.activityName;
+    option.textContent = `${act.activityName} (${act.startTime} - ${act.endTime})`;
     attActivitySelect.appendChild(option);
   });
+  if (todaysActivities.length === 0) {
+    const opt = document.createElement('option');
+    opt.textContent = 'No activities scheduled for today';
+    opt.disabled = true;
+    opt.selected = true;
+    attActivitySelect.appendChild(opt);
+  }
   attActivitySelect.value = currentAttActivity;
 
-  // Update filter dropdowns
+  // --- Admin filter dropdowns (keep ALL events/activities for admin filters) ---
   const regFilterEvent = document.getElementById('reg-filter-event');
-  const currentRegFilter = regFilterEvent.value;
-  regFilterEvent.innerHTML = '<option value="all">All Events</option>';
-  eventsList.forEach(event => {
-    const option = document.createElement('option');
-    option.value = event.id;
-    option.textContent = event.eventName;
-    regFilterEvent.appendChild(option);
-  });
-  regFilterEvent.value = currentRegFilter;
+  if (regFilterEvent) {
+    const currentRegFilter = regFilterEvent.value;
+    regFilterEvent.innerHTML = '<option value="all">All Events</option>';
+    [...eventsList].sort((a, b) => (b.eventDate || '').localeCompare(a.eventDate || '')).forEach(event => {
+      const option = document.createElement('option');
+      option.value = event.id;
+      option.textContent = `${event.eventName} (${event.eventDate})`;
+      regFilterEvent.appendChild(option);
+    });
+    regFilterEvent.value = currentRegFilter;
+  }
 
   const attFilterActivity = document.getElementById('att-filter-activity');
-  const currentAttFilter = attFilterActivity.value;
-  attFilterActivity.innerHTML = '<option value="all">All Activities</option>';
-  activitiesList.forEach(act => {
-    const option = document.createElement('option');
-    option.value = act.id;
-    option.textContent = act.activityName;
-    attFilterActivity.appendChild(option);
-  });
-  attFilterActivity.value = currentAttFilter;
+  if (attFilterActivity) {
+    const currentAttFilter = attFilterActivity.value;
+    attFilterActivity.innerHTML = '<option value="all">All Activities</option>';
+    [...activitiesList].sort((a, b) => (b.activityDate || '').localeCompare(a.activityDate || '')).forEach(act => {
+      const option = document.createElement('option');
+      option.value = act.id;
+      option.textContent = `${act.activityName} (${act.activityDate})`;
+      attFilterActivity.appendChild(option);
+    });
+    attFilterActivity.value = currentAttFilter;
+  }
 
   // Update stats
   document.getElementById('stat-total-events').innerText = eventsList.length;
@@ -645,14 +849,14 @@ function toggleAdmin() {
     showMainView('home');
   } else {
     const pwd = prompt('Enter Admin Password:');
-    if(pwd === 'Admin@2026') {
+    if(pwd === '872171') {
       isAdmin = true;
       document.getElementById('home-view').classList.add('hidden');
       document.getElementById('registration-view').classList.add('hidden');
       document.getElementById('attendance-view').classList.add('hidden');
       document.getElementById('admin-view').classList.remove('hidden');
       showAlert('✅ Admin Access Granted', 'success');
-      updateUI(); // Refresh tables
+      updateUI();
     } else if(pwd !== null) {
       showAlert('Invalid Password', 'error');
     }
@@ -736,14 +940,11 @@ function addActivity() {
 }
 
 // ==========================================
-// SAFE BRANDING & SETTINGS SAVE (FIXED)
+// SAFE BRANDING & SETTINGS SAVE
 // ==========================================
 function saveBranding() {
-  // 1. Fetch existing settings first to prevent accidental overwrites
   db.ref('event/settings').once('value').then((snapshot) => {
     const existing = snapshot.val() || {};
-    
-    // 2. Build the update object, explicitly preserving ALL settings
     const updates = {
       hotelName: document.getElementById('brand-hotel-name').value.trim(),
       tagline: document.getElementById('brand-tagline').value.trim(),
@@ -753,23 +954,21 @@ function saveBranding() {
     const logoPreview = document.getElementById('brand-logo-preview');
     const bgPreview = document.getElementById('brand-bg-preview');
     
-    if (logoPreview && logoPreview.src && logoPreview.style.display !== 'none') {
+    if (logoPreview && logoPreview.src && logoPreview.classList.contains('show')) {
       updates.logo = logoPreview.src;
     } else if (existing.logo) {
       updates.logo = existing.logo;
     }
 
-    if (bgPreview && bgPreview.src && bgPreview.style.display !== 'none') {
+    if (bgPreview && bgPreview.src && bgPreview.classList.contains('show')) {
       updates.background = bgPreview.src;
     } else if (existing.background) {
       updates.background = existing.background;
     }
 
-    // 3. Save the merged object safely
     return db.ref('event/settings').set(updates);
   }).then(() => {
     showAlert('✅ All settings and branding saved successfully!', 'success');
-    // 4. Refresh local state to ensure UI matches database
     db.ref('event/settings').once('value').then(snap => {
       currentSettings = snap.val() || {};
       applyBranding();
@@ -780,12 +979,54 @@ function saveBranding() {
 }
 
 // ==========================================
-// ADMIN TABLES & EXPORTS
+// HELPER: PARSE DATE STRING TO PARTS
 // ==========================================
+function getDateParts(dateStr) {
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return null;
+  return { year: d.getFullYear(), month: d.getMonth() + 1, day: d.getDate() };
+}
+
+// ==========================================
+// ADMIN TABLES - EVENTS
+// ==========================================
+function resetEventsFilters() {
+  document.getElementById('events-filter-month').value = 'all';
+  document.getElementById('events-filter-year').value = 'all';
+  document.getElementById('events-sort').value = 'date-desc';
+  renderEventsTable();
+}
+
 function renderEventsTable() {
   const tbody = document.getElementById('admin-events-tbody');
-  if(eventsList.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-subtle);">No events created yet</td></tr>'; return; }
-  tbody.innerHTML = eventsList.map(event => {
+  const monthFilter = document.getElementById('events-filter-month').value;
+  const yearFilter = document.getElementById('events-filter-year').value;
+  const sortVal = document.getElementById('events-sort').value;
+
+  let filtered = [...eventsList];
+  filtered = filtered.filter(ev => {
+    const parts = getDateParts(ev.eventDate);
+    if (!parts) return false;
+    if (monthFilter !== 'all' && parts.month !== parseInt(monthFilter)) return false;
+    if (yearFilter !== 'all' && parts.year !== parseInt(yearFilter)) return false;
+    return true;
+  });
+
+  // Sorting
+  switch(sortVal) {
+    case 'date-asc':
+      filtered.sort((a, b) => (a.eventDate || '').localeCompare(b.eventDate || '')); break;
+    case 'name-asc':
+      filtered.sort((a, b) => (a.eventName || '').localeCompare(b.eventName || '')); break;
+    case 'name-desc':
+      filtered.sort((a, b) => (b.eventName || '').localeCompare(a.eventName || '')); break;
+    default: // date-desc
+      filtered.sort((a, b) => (b.eventDate || '').localeCompare(a.eventDate || ''));
+  }
+
+  if(filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-subtle);">No events found</td></tr>'; return; }
+  tbody.innerHTML = filtered.map(event => {
     const regCount = registrationsList.filter(r => r.eventId === event.id).length;
     return `<tr>
       <td><strong>${event.eventName}</strong></td>
@@ -796,10 +1037,73 @@ function renderEventsTable() {
   }).join('');
 }
 
+function downloadEventsExcel() {
+  const monthFilter = document.getElementById('events-filter-month').value;
+  const yearFilter = document.getElementById('events-filter-year').value;
+
+  let filtered = [...eventsList];
+  filtered = filtered.filter(ev => {
+    const parts = getDateParts(ev.eventDate);
+    if (!parts) return false;
+    if (monthFilter !== 'all' && parts.month !== parseInt(monthFilter)) return false;
+    if (yearFilter !== 'all' && parts.year !== parseInt(yearFilter)) return false;
+    return true;
+  });
+  filtered.sort((a, b) => (a.eventDate || '').localeCompare(b.eventDate || ''));
+
+  if(filtered.length === 0) return showAlert('No events to export', 'warning');
+
+  const exportData = filtered.map(ev => ({
+    'Event Name': ev.eventName,
+    'Event Date': ev.eventDate,
+    'Max Registrations': ev.maxRegistrations,
+    'Current Registrations': registrationsList.filter(r => r.eventId === ev.id).length
+  }));
+  const ws = XLSX.utils.json_to_sheet(exportData);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Events");
+  XLSX.writeFile(wb, `Events_${new Date().toISOString().slice(0,10)}.xlsx`);
+  showAlert('✅ Events Excel downloaded!', 'success');
+}
+
+// ==========================================
+// ADMIN TABLES - ACTIVITIES
+// ==========================================
+function resetActivitiesFilters() {
+  document.getElementById('activities-filter-month').value = 'all';
+  document.getElementById('activities-filter-year').value = 'all';
+  document.getElementById('activities-sort').value = 'date-desc';
+  renderActivitiesTable();
+}
+
 function renderActivitiesTable() {
   const tbody = document.getElementById('admin-activities-tbody');
-  if(activitiesList.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-subtle);">No activities created yet</td></tr>'; return; }
-  tbody.innerHTML = activitiesList.map(act => {
+  const monthFilter = document.getElementById('activities-filter-month').value;
+  const yearFilter = document.getElementById('activities-filter-year').value;
+  const sortVal = document.getElementById('activities-sort').value;
+
+  let filtered = [...activitiesList];
+  filtered = filtered.filter(act => {
+    const parts = getDateParts(act.activityDate);
+    if (!parts) return false;
+    if (monthFilter !== 'all' && parts.month !== parseInt(monthFilter)) return false;
+    if (yearFilter !== 'all' && parts.year !== parseInt(yearFilter)) return false;
+    return true;
+  });
+
+  switch(sortVal) {
+    case 'date-asc':
+      filtered.sort((a, b) => (a.activityDate || '').localeCompare(b.activityDate || '')); break;
+    case 'name-asc':
+      filtered.sort((a, b) => (a.activityName || '').localeCompare(b.activityName || '')); break;
+    case 'name-desc':
+      filtered.sort((a, b) => (b.activityName || '').localeCompare(a.activityName || '')); break;
+    default:
+      filtered.sort((a, b) => (b.activityDate || '').localeCompare(a.activityDate || ''));
+  }
+
+  if(filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-subtle);">No activities found</td></tr>'; return; }
+  tbody.innerHTML = filtered.map(act => {
     return `<tr>
       <td><strong>${act.activityName}</strong></td>
       <td>${act.activityDate}</td>
@@ -809,13 +1113,82 @@ function renderActivitiesTable() {
   }).join('');
 }
 
+function downloadActivitiesExcel() {
+  const monthFilter = document.getElementById('activities-filter-month').value;
+  const yearFilter = document.getElementById('activities-filter-year').value;
+
+  let filtered = [...activitiesList];
+  filtered = filtered.filter(act => {
+    const parts = getDateParts(act.activityDate);
+    if (!parts) return false;
+    if (monthFilter !== 'all' && parts.month !== parseInt(monthFilter)) return false;
+    if (yearFilter !== 'all' && parts.year !== parseInt(yearFilter)) return false;
+    return true;
+  });
+  filtered.sort((a, b) => (a.activityDate || '').localeCompare(b.activityDate || ''));
+
+  if(filtered.length === 0) return showAlert('No activities to export', 'warning');
+
+  const exportData = filtered.map(act => ({
+    'Activity Name': act.activityName,
+    'Activity Date': act.activityDate,
+    'Start Time': act.startTime,
+    'End Time': act.endTime,
+    'Attendance Count': attendanceList.filter(a => a.activityId === act.id).length
+  }));
+  const ws = XLSX.utils.json_to_sheet(exportData);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Activities");
+  XLSX.writeFile(wb, `Activities_${new Date().toISOString().slice(0,10)}.xlsx`);
+  showAlert('✅ Activities Excel downloaded!', 'success');
+}
+
+// ==========================================
+// ADMIN TABLES - REGISTRATIONS
+// ==========================================
+function resetRegistrationsFilters() {
+  document.getElementById('reg-filter-event').value = 'all';
+  document.getElementById('reg-filter-month').value = 'all';
+  document.getElementById('reg-filter-year').value = 'all';
+  document.getElementById('reg-sort').value = 'time-desc';
+  renderRegistrationsTable();
+}
+
+function getFilteredRegistrations() {
+  const filterEvent = document.getElementById('reg-filter-event').value;
+  const monthFilter = document.getElementById('reg-filter-month').value;
+  const yearFilter = document.getElementById('reg-filter-year').value;
+  const sortVal = document.getElementById('reg-sort').value;
+
+  let filtered = [...registrationsList];
+  if(filterEvent !== 'all') filtered = filtered.filter(r => r.eventId === filterEvent);
+  if (monthFilter !== 'all' || yearFilter !== 'all') {
+    filtered = filtered.filter(r => {
+      const d = new Date(r.timestamp);
+      if (monthFilter !== 'all' && (d.getMonth() + 1) !== parseInt(monthFilter)) return false;
+      if (yearFilter !== 'all' && d.getFullYear() !== parseInt(yearFilter)) return false;
+      return true;
+    });
+  }
+
+  switch(sortVal) {
+    case 'time-asc':
+      filtered.sort((a, b) => a.timestamp - b.timestamp); break;
+    case 'name-asc':
+      filtered.sort((a, b) => (a.name || '').localeCompare(b.name || '')); break;
+    case 'name-desc':
+      filtered.sort((a, b) => (b.name || '').localeCompare(a.name || '')); break;
+    case 'dept-asc':
+      filtered.sort((a, b) => (a.dept || '').localeCompare(b.dept || '')); break;
+    default:
+      filtered.sort((a, b) => b.timestamp - a.timestamp);
+  }
+  return filtered;
+}
+
 function renderRegistrationsTable() {
   const tbody = document.getElementById('admin-registrations-tbody');
-  const filterEvent = document.getElementById('reg-filter-event').value;
-  
-  let filtered = registrationsList;
-  if(filterEvent !== 'all') filtered = filtered.filter(r => r.eventId === filterEvent);
-  filtered.sort((a, b) => b.timestamp - a.timestamp);
+  const filtered = getFilteredRegistrations();
 
   if(filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-subtle);">No registrations found</td></tr>'; return; }
   
@@ -831,37 +1204,6 @@ function renderRegistrationsTable() {
   `).join('');
 }
 
-function renderAttendanceTable() {
-  const tbody = document.getElementById('admin-attendance-tbody');
-  const filterActivity = document.getElementById('att-filter-activity').value;
-  
-  let filtered = attendanceList;
-  if(filterActivity !== 'all') filtered = filtered.filter(a => a.activityId === filterActivity);
-  filtered.sort((a, b) => b.timestamp - a.timestamp);
-
-  if(filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-subtle);">No attendance records found</td></tr>'; return; }
-  
-  tbody.innerHTML = filtered.map(att => `
-    <tr>
-      <td><strong>${att.activityName}</strong></td>
-      <td>${att.empId}</td>
-      <td>${att.name}</td>
-      <td>${att.dept}</td>
-      <td>${new Date(att.timestamp).toLocaleString()}</td>
-    </tr>
-  `).join('');
-}
-
-function deleteEvent(id) {
-  if(!confirm('Delete this event?')) return;
-  db.ref('event/events/' + id).remove().then(() => showAlert('Event deleted', 'success'));
-}
-
-function deleteActivity(id) {
-  if(!confirm('Delete this activity?')) return;
-  db.ref('event/activities/' + id).remove().then(() => showAlert('Activity deleted', 'success'));
-}
-
 function deleteRegistration(id) {
   if(!confirm('Remove this registration?')) return;
   db.ref('event/registrations/' + id).remove().then(() => {
@@ -870,7 +1212,6 @@ function deleteRegistration(id) {
   });
 }
 
-// SAFE CLEAR ALL: Strictly targets ONLY registrations
 function clearAllRegistrations() {
   const confirmation = prompt('⚠️ DANGER: This will permanently delete ALL registration records ONLY.\nBranding, Events, and Activities will NOT be affected.\n\nTo confirm, please type DELETE in all caps:');
   if(confirmation === 'DELETE') {
@@ -885,11 +1226,9 @@ function clearAllRegistrations() {
   }
 }
 
+// Download filtered registrations
 function downloadRegistrationsExcel() {
-  const filterEvent = document.getElementById('reg-filter-event').value;
-  let filtered = registrationsList;
-  if(filterEvent !== 'all') filtered = filtered.filter(r => r.eventId === filterEvent);
-  
+  const filtered = getFilteredRegistrations();
   if(filtered.length === 0) return showAlert('No data to export', 'warning');
 
   const exportData = filtered.map(r => ({
@@ -898,15 +1237,131 @@ function downloadRegistrationsExcel() {
   const ws = XLSX.utils.json_to_sheet(exportData);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Registrations");
-  XLSX.writeFile(wb, `Registrations_Export_${new Date().toISOString().slice(0,10)}.xlsx`);
+  XLSX.writeFile(wb, `Registrations_${new Date().toISOString().slice(0,10)}.xlsx`);
   showAlert('✅ Excel report downloaded!', 'success');
 }
 
-function downloadAttendanceExcel() {
+// Download registrations grouped by month
+function downloadRegistrationsMonthWise() {
+  if (registrationsList.length === 0) return showAlert('No registrations to export', 'warning');
+  const wb = XLSX.utils.book_new();
+  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  // Group by "Month Year"
+  const grouped = {};
+  registrationsList.forEach(r => {
+    const d = new Date(r.timestamp);
+    const key = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+    const sortKey = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    if (!grouped[key]) grouped[key] = { sortKey, data: [] };
+    grouped[key].data.push(r);
+  });
+
+  const sortedKeys = Object.keys(grouped).sort((a, b) => grouped[b].sortKey.localeCompare(grouped[a].sortKey));
+
+  sortedKeys.forEach(monthKey => {
+    const rows = grouped[monthKey].data.map(r => ({
+      'Event Name': r.eventName, 'Employee ID': r.empId, 'Full Name': r.name, 'Department': r.dept, 'Registration Time': new Date(r.timestamp).toLocaleString()
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    let sheetName = monthKey.replace(' ', '_');
+    if (sheetName.length > 31) sheetName = sheetName.substring(0, 31);
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+  });
+
+  XLSX.writeFile(wb, `Registrations_MonthWise_${new Date().toISOString().slice(0,10)}.xlsx`);
+  showAlert('✅ Month-wise registrations downloaded!', 'success');
+}
+
+// Download registrations grouped by event
+function downloadRegistrationsEventWise() {
+  if (registrationsList.length === 0) return showAlert('No registrations to export', 'warning');
+  const wb = XLSX.utils.book_new();
+
+  const grouped = {};
+  registrationsList.forEach(r => {
+    const key = r.eventName || 'Unknown Event';
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(r);
+  });
+
+  Object.keys(grouped).sort().forEach(eventName => {
+    const rows = grouped[eventName].map(r => ({
+      'Event Name': r.eventName, 'Employee ID': r.empId, 'Full Name': r.name, 'Department': r.dept, 'Registration Time': new Date(r.timestamp).toLocaleString()
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    let sheetName = eventName.replace(/[\\\/\?\*\[\]:]/g, '_');
+    if (sheetName.length > 31) sheetName = sheetName.substring(0, 31);
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+  });
+
+  XLSX.writeFile(wb, `Registrations_EventWise_${new Date().toISOString().slice(0,10)}.xlsx`);
+  showAlert('✅ Event-wise registrations downloaded!', 'success');
+}
+
+// ==========================================
+// ADMIN TABLES - ATTENDANCE
+// ==========================================
+function resetAttendanceFilters() {
+  document.getElementById('att-filter-activity').value = 'all';
+  document.getElementById('att-filter-month').value = 'all';
+  document.getElementById('att-filter-year').value = 'all';
+  document.getElementById('att-sort').value = 'time-desc';
+  renderAttendanceTable();
+}
+
+function getFilteredAttendance() {
   const filterActivity = document.getElementById('att-filter-activity').value;
-  let filtered = attendanceList;
+  const monthFilter = document.getElementById('att-filter-month').value;
+  const yearFilter = document.getElementById('att-filter-year').value;
+  const sortVal = document.getElementById('att-sort').value;
+
+  let filtered = [...attendanceList];
   if(filterActivity !== 'all') filtered = filtered.filter(a => a.activityId === filterActivity);
+  if (monthFilter !== 'all' || yearFilter !== 'all') {
+    filtered = filtered.filter(a => {
+      const d = new Date(a.timestamp);
+      if (monthFilter !== 'all' && (d.getMonth() + 1) !== parseInt(monthFilter)) return false;
+      if (yearFilter !== 'all' && d.getFullYear() !== parseInt(yearFilter)) return false;
+      return true;
+    });
+  }
+
+  switch(sortVal) {
+    case 'time-asc':
+      filtered.sort((a, b) => a.timestamp - b.timestamp); break;
+    case 'name-asc':
+      filtered.sort((a, b) => (a.name || '').localeCompare(b.name || '')); break;
+    case 'name-desc':
+      filtered.sort((a, b) => (b.name || '').localeCompare(a.name || '')); break;
+    case 'dept-asc':
+      filtered.sort((a, b) => (a.dept || '').localeCompare(b.dept || '')); break;
+    default:
+      filtered.sort((a, b) => b.timestamp - a.timestamp);
+  }
+  return filtered;
+}
+
+function renderAttendanceTable() {
+  const tbody = document.getElementById('admin-attendance-tbody');
+  const filtered = getFilteredAttendance();
+
+  if(filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-subtle);">No attendance records found</td></tr>'; return; }
   
+  tbody.innerHTML = filtered.map(att => `
+    <tr>
+      <td><strong>${att.activityName}</strong></td>
+      <td>${att.empId}</td>
+      <td>${att.name}</td>
+      <td>${att.dept}</td>
+      <td>${new Date(att.timestamp).toLocaleString()}</td>
+    </tr>
+  `).join('');
+}
+
+// Download filtered attendance
+function downloadAttendanceExcel() {
+  const filtered = getFilteredAttendance();
   if(filtered.length === 0) return showAlert('No data to export', 'warning');
 
   const exportData = filtered.map(a => ({
@@ -915,8 +1370,75 @@ function downloadAttendanceExcel() {
   const ws = XLSX.utils.json_to_sheet(exportData);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Attendance");
-  XLSX.writeFile(wb, `Attendance_Export_${new Date().toISOString().slice(0,10)}.xlsx`);
+  XLSX.writeFile(wb, `Attendance_${new Date().toISOString().slice(0,10)}.xlsx`);
   showAlert('✅ Excel report downloaded!', 'success');
+}
+
+// Download attendance grouped by month
+function downloadAttendanceMonthWise() {
+  if (attendanceList.length === 0) return showAlert('No attendance to export', 'warning');
+  const wb = XLSX.utils.book_new();
+  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  const grouped = {};
+  attendanceList.forEach(a => {
+    const d = new Date(a.timestamp);
+    const key = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+    const sortKey = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    if (!grouped[key]) grouped[key] = { sortKey, data: [] };
+    grouped[key].data.push(a);
+  });
+
+  const sortedKeys = Object.keys(grouped).sort((a, b) => grouped[b].sortKey.localeCompare(grouped[a].sortKey));
+
+  sortedKeys.forEach(monthKey => {
+    const rows = grouped[monthKey].data.map(a => ({
+      'Activity Name': a.activityName, 'Employee ID': a.empId, 'Full Name': a.name, 'Department': a.dept, 'Submission Time': new Date(a.timestamp).toLocaleString()
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    let sheetName = monthKey.replace(' ', '_');
+    if (sheetName.length > 31) sheetName = sheetName.substring(0, 31);
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+  });
+
+  XLSX.writeFile(wb, `Attendance_MonthWise_${new Date().toISOString().slice(0,10)}.xlsx`);
+  showAlert('✅ Month-wise attendance downloaded!', 'success');
+}
+
+// Download attendance grouped by activity
+function downloadAttendanceActivityWise() {
+  if (attendanceList.length === 0) return showAlert('No attendance to export', 'warning');
+  const wb = XLSX.utils.book_new();
+
+  const grouped = {};
+  attendanceList.forEach(a => {
+    const key = a.activityName || 'Unknown Activity';
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(a);
+  });
+
+  Object.keys(grouped).sort().forEach(activityName => {
+    const rows = grouped[activityName].map(a => ({
+      'Activity Name': a.activityName, 'Employee ID': a.empId, 'Full Name': a.name, 'Department': a.dept, 'Submission Time': new Date(a.timestamp).toLocaleString()
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    let sheetName = activityName.replace(/[\\\/\?\*\[\]:]/g, '_');
+    if (sheetName.length > 31) sheetName = sheetName.substring(0, 31);
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+  });
+
+  XLSX.writeFile(wb, `Attendance_ActivityWise_${new Date().toISOString().slice(0,10)}.xlsx`);
+  showAlert('✅ Activity-wise attendance downloaded!', 'success');
+}
+
+function deleteEvent(id) {
+  if(!confirm('Delete this event?')) return;
+  db.ref('event/events/' + id).remove().then(() => showAlert('Event deleted', 'success'));
+}
+
+function deleteActivity(id) {
+  if(!confirm('Delete this activity?')) return;
+  db.ref('event/activities/' + id).remove().then(() => showAlert('Activity deleted', 'success'));
 }
 
 // ==========================================
@@ -949,6 +1471,10 @@ function showAlert(msg, type) {
     setTimeout(() => { el.style.display = 'none'; }, 4000);
   }
 }
+
+// Placeholder functions referenced in HTML
+function updateEventDetails() { /* reserved for future use */ }
+function updateActivityDetails() { /* reserved for future use */ }
 </script>
 </body>
 </html>
