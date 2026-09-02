@@ -13,1255 +13,235 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --brand: #0f766e; 
-  --brand-light: #14b8a6; 
-  --brand-dark: #0d5c56; 
-  --brand-50: #f0fdfa; 
-  --brand-100: #ccfbf1;
-  --gold: #f59e0b; 
-  --gold-light: #fbbf24; 
-  --gold-dark: #d97706;
-  --bg: #f8fafc; 
-  --card: #ffffff; 
-  --text: #0f172a; 
-  --text-muted: #64748b; 
-  --text-subtle: #94a3b8;
-  --border: #e2e8f0; 
-  --border-strong: #cbd5e1;
-  --success: #10b981; 
-  --success-light: #d1fae5; 
-  --success-dark: #059669;
-  --danger: #ef4444; 
-  --danger-light: #fee2e2; 
-  --danger-dark: #dc2626;
-  --warning: #f59e0b; 
-  --warning-light: #fef3c7;
+  --brand: #0f766e; --brand-light: #14b8a6; --brand-dark: #0d5c56; --brand-50: #f0fdfa; --brand-100: #ccfbf1;
+  --gold: #f59e0b; --gold-light: #fbbf24; --gold-dark: #d97706;
+  --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --text-muted: #64748b; --text-subtle: #94a3b8;
+  --border: #e2e8f0; --border-strong: #cbd5e1;
+  --success: #10b981; --success-light: #d1fae5; --success-dark: #059669;
+  --danger: #ef4444; --danger-light: #fee2e2; --danger-dark: #dc2626;
+  --warning: #f59e0b; --warning-light: #fef3c7;
   --shadow-sm: 0 1px 2px 0 rgba(15,23,42,0.05);
   --shadow: 0 1px 3px 0 rgba(15,23,42,0.08),0 1px 2px -1px rgba(15,23,42,0.05);
   --shadow-md: 0 4px 6px -1px rgba(15,23,42,0.08),0 2px 4px -2px rgba(15,23,42,0.05);
   --shadow-lg: 0 10px 15px -3px rgba(15,23,42,0.08),0 4px 6px -4px rgba(15,23,42,0.05);
   --shadow-xl: 0 20px 25px -5px rgba(15,23,42,0.1),0 8px 10px -6px rgba(15,23,42,0.05);
-  --shadow-glow: 0 0 20px rgba(15,118,110,0.3);
-  --radius-sm: 6px; 
-  --radius: 10px; 
-  --radius-md: 14px; 
-  --radius-lg: 20px; 
-  --radius-xl: 24px;
+  --radius-sm: 6px; --radius: 10px; --radius-md: 14px; --radius-lg: 20px; --radius-xl: 24px;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: var(--bg); 
-  color: var(--text);
-  min-height: 100vh; 
-  transition: background 0.4s ease;
-  background-size: cover; 
-  background-attachment: fixed; 
-  background-position: center;
-  font-size: 15px; 
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased; 
-  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg); color: var(--text); min-height: 100vh;
+  transition: background 0.4s ease; background-size: cover; background-attachment: fixed; background-position: center;
+  font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
 }
-
 body::before {
-  content: ''; 
-  position: fixed; 
-  inset: 0;
-  background: rgba(248, 250, 252, 0.82); 
-  backdrop-filter: blur(2px);
-  z-index: -1;
+  content: ''; position: fixed; inset: 0; background: rgba(248, 250, 252, 0.82); backdrop-filter: blur(2px); z-index: -1;
 }
+h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; font-weight: 700; letter-spacing: -0.02em; }
 
-h1, h2, h3, h4 { 
-  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; 
-  font-weight: 700; 
-  letter-spacing: -0.02em; 
-}
-
-/* ============ HEADER ============ */
 .header {
   background: linear-gradient(135deg, var(--brand-dark) 0%, var(--brand) 50%, var(--brand-light) 100%);
-  color: #fff; 
-  padding: 40px 24px; 
-  text-align: center;
-  position: relative; 
-  overflow: hidden;
+  color: #fff; padding: 40px 24px; text-align: center; position: relative; overflow: hidden;
   box-shadow: 0 8px 24px -8px rgba(15,118,110,0.4);
 }
-
 .header::before {
-  content: ''; 
-  position: absolute; 
-  top: -50%; 
-  right: -10%;
-  width: 400px; 
-  height: 400px;
-  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
-  border-radius: 50%; 
-  animation: float 8s ease-in-out infinite;
+  content: ''; position: absolute; top: -50%; right: -10%; width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%); border-radius: 50%; animation: float 8s ease-in-out infinite;
 }
-
 .header::after {
-  content: ''; 
-  position: absolute; 
-  bottom: -60%; 
-  left: -15%;
-  width: 500px; 
-  height: 500px;
-  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
-  border-radius: 50%; 
-  animation: float 10s ease-in-out infinite reverse;
+  content: ''; position: absolute; bottom: -60%; left: -15%; width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%); border-radius: 50%; animation: float 10s ease-in-out infinite reverse;
 }
-
-@keyframes float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-30px) rotate(5deg); }
-}
-
-.header-content { 
-  max-width: 800px; 
-  margin: 0 auto; 
-  position: relative; 
-  z-index: 1; 
-  animation: fadeInDown 0.6s ease-out;
-}
-
-@keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
+@keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-30px) rotate(5deg); } }
+.header-content { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; animation: fadeInDown 0.6s ease-out; }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
 .logo-circle {
-  width: 100px; 
-  height: 100px; 
-  background: #fff; 
-  border-radius: 24px;
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  font-size: 2.8rem;
-  margin: 0 auto 16px; 
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15), 0 0 0 4px rgba(255,255,255,0.15);
-  overflow: hidden;
-  transition: transform 0.3s ease;
+  width: 100px; height: 100px; background: #fff; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 2.8rem;
+  margin: 0 auto 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.15), 0 0 0 4px rgba(255,255,255,0.15); overflow: hidden; transition: transform 0.3s ease;
 }
+.logo-circle:hover { transform: scale(1.05) rotate(5deg); }
+.logo-circle img { width: 100%; height: 100%; object-fit: cover; }
+.header-info h1 { font-size: clamp(1.5rem, 4vw, 2.25rem); margin-bottom: 8px; font-weight: 800; text-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+.header-info p { opacity: 0.92; font-size: 1.05rem; font-weight: 500; }
 
-.logo-circle:hover {
-  transform: scale(1.05) rotate(5deg);
-}
-
-.logo-circle img { 
-  width: 100%; 
-  height: 100%; 
-  object-fit: cover; 
-}
-
-.header-info h1 {
-  font-size: clamp(1.5rem, 4vw, 2.25rem); 
-  margin-bottom: 8px; 
-  font-weight: 800;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  animation: fadeIn 0.8s ease-out 0.2s both;
-}
-
-.header-info p { 
-  opacity: 0.92; 
-  font-size: 1.05rem; 
-  font-weight: 500; 
-  animation: fadeIn 0.8s ease-out 0.4s both;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* ============ CONTAINER ============ */
-.container { 
-  max-width: 1100px; 
-  margin: 32px auto; 
-  padding: 0 24px; 
-}
-
-/* ============ CARD ============ */
+.container { max-width: 1100px; margin: 32px auto; padding: 0 24px; }
 .card {
-  background: var(--card); 
-  border-radius: var(--radius-lg); 
-  padding: 36px;
-  box-shadow: var(--shadow); 
-  margin-bottom: 28px;
-  border: 1px solid var(--border);
-  animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--card); border-radius: var(--radius-lg); padding: 36px; box-shadow: var(--shadow); margin-bottom: 28px;
+  border: 1px solid var(--border); animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-.card:hover { 
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
-
-@keyframes slideIn { 
-  from { opacity: 0; transform: translateY(16px); } 
-  to { opacity: 1; transform: none; } 
-}
-
+.card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+@keyframes slideIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 .card h2 {
-  color: var(--text); 
-  margin-bottom: 24px; 
-  padding-bottom: 16px;
-  border-bottom: 2px solid var(--border); 
-  font-size: 1.5rem;
-  display: flex; 
-  align-items: center; 
-  gap: 10px; 
-  position: relative;
+  color: var(--text); margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid var(--border); font-size: 1.5rem;
+  display: flex; align-items: center; gap: 10px; position: relative;
 }
-
 .card h2::after {
-  content: ''; 
-  position: absolute; 
-  bottom: -2px; 
-  left: 0;
-  width: 60px; 
-  height: 2px;
-  background: linear-gradient(90deg, var(--brand), var(--brand-light));
-  border-radius: 2px;
-  animation: expandWidth 0.6s ease-out;
+  content: ''; position: absolute; bottom: -2px; left: 0; width: 60px; height: 2px;
+  background: linear-gradient(90deg, var(--brand), var(--brand-light)); border-radius: 2px; animation: expandWidth 0.6s ease-out;
 }
+@keyframes expandWidth { from { width: 0; } to { width: 60px; } }
 
-@keyframes expandWidth {
-  from { width: 0; }
-  to { width: 60px; }
-}
-
-/* ============ FORMS ============ */
-.form-group { 
-  margin-bottom: 20px; 
-  animation: fadeInUp 0.4s ease-out;
-}
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-label {
-  display: block; 
-  margin-bottom: 8px; 
-  font-weight: 600;
-  color: var(--text); 
-  font-size: 0.875rem; 
-  letter-spacing: -0.01em;
-}
-
+.form-group { margin-bottom: 20px; animation: fadeInUp 0.4s ease-out; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text); font-size: 0.875rem; letter-spacing: -0.01em; }
 input, select, textarea {
-  width: 100%; 
-  padding: 12px 14px; 
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius); 
-  font-family: inherit; 
-  font-size: 0.95rem;
-  background: #fff; 
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-  color: var(--text);
+  width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: inherit; font-size: 0.95rem;
+  background: #fff; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: var(--text);
 }
-
-input:focus, select:focus, textarea:focus {
-  outline: none; 
-  border-color: var(--brand);
-  box-shadow: 0 0 0 4px rgba(15,118,110,0.1);
-  transform: translateY(-1px);
-}
-
-input[readonly] { 
-  background: #f8fafc; 
-  color: var(--text-muted); 
-  cursor: not-allowed; 
-}
-
-input::placeholder, textarea::placeholder { 
-  color: var(--text-subtle); 
-}
-
-textarea { 
-  resize: vertical; 
-  min-height: 90px; 
-}
-
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 4px rgba(15,118,110,0.1); transform: translateY(-1px); }
+input[readonly] { background: #f8fafc; color: var(--text-muted); cursor: not-allowed; }
+input::placeholder, textarea::placeholder { color: var(--text-subtle); }
+textarea { resize: vertical; min-height: 90px; }
 select {
   appearance: none;
   background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat; 
-  background-position: right 14px center;
-  padding-right: 40px;
+  background-repeat: no-repeat; background-position: right 14px center; padding-right: 40px;
 }
 
-/* ============ BUTTONS ============ */
 .btn {
-  padding: 12px 24px; 
-  border: none; 
-  border-radius: var(--radius); 
-  cursor: pointer;
-  font-weight: 600; 
-  font-size: 0.95rem; 
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: inline-flex; 
-  align-items: center; 
-  justify-content: center; 
-  gap: 8px;
-  font-family: inherit; 
-  white-space: nowrap; 
-  letter-spacing: -0.01em;
-  position: relative;
-  overflow: hidden;
+  padding: 12px 24px; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600; font-size: 0.95rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: inherit; white-space: nowrap; letter-spacing: -0.01em; position: relative; overflow: hidden;
 }
-
 .btn::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.3);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
+  content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; border-radius: 50%; background: rgba(255,255,255,0.3);
+  transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;
 }
+.btn:hover::before { width: 300px; height: 300px; }
+.btn:active { transform: translateY(0) scale(0.98); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+.btn-primary { background: var(--brand); color: #fff; box-shadow: var(--shadow-sm); }
+.btn-primary:hover { background: var(--brand-dark); transform: translateY(-2px); box-shadow: 0 8px 20px -4px rgba(15,118,110,0.5); }
+.btn-success { background: var(--success); color: #fff; box-shadow: var(--shadow-sm); }
+.btn-success:hover { background: var(--success-dark); transform: translateY(-2px); box-shadow: 0 8px 20px -4px rgba(16,185,129,0.5); }
+.btn-danger { background: var(--danger); color: #fff; box-shadow: var(--shadow-sm); }
+.btn-danger:hover { background: var(--danger-dark); transform: translateY(-2px); box-shadow: 0 8px 20px -4px rgba(239,68,68,0.5); }
+.btn-outline { background: transparent; border: 1.5px solid var(--border-strong); color: var(--text); }
+.btn-outline:hover { background: var(--brand-50); border-color: var(--brand); color: var(--brand-dark); transform: translateY(-2px); }
+.btn-full { width: 100%; margin-top: 12px; }
+.btn-sm { padding: 8px 14px; font-size: 0.85rem; border-radius: 8px; }
 
-.btn:hover::before {
-  width: 300px;
-  height: 300px;
-}
-
-.btn:active { 
-  transform: translateY(0) scale(0.98); 
-}
-
-.btn:disabled { 
-  opacity: 0.5; 
-  cursor: not-allowed; 
-  transform: none !important; 
-}
-
-.btn-primary { 
-  background: var(--brand); 
-  color: #fff; 
-  box-shadow: var(--shadow-sm); 
-}
-
-.btn-primary:hover { 
-  background: var(--brand-dark); 
-  transform: translateY(-2px); 
-  box-shadow: 0 8px 20px -4px rgba(15,118,110,0.5); 
-}
-
-.btn-success { 
-  background: var(--success); 
-  color: #fff; 
-  box-shadow: var(--shadow-sm); 
-}
-
-.btn-success:hover { 
-  background: var(--success-dark); 
-  transform: translateY(-2px); 
-  box-shadow: 0 8px 20px -4px rgba(16,185,129,0.5); 
-}
-
-.btn-danger { 
-  background: var(--danger); 
-  color: #fff; 
-  box-shadow: var(--shadow-sm); 
-}
-
-.btn-danger:hover { 
-  background: var(--danger-dark); 
-  transform: translateY(-2px); 
-  box-shadow: 0 8px 20px -4px rgba(239,68,68,0.5); 
-}
-
-.btn-outline { 
-  background: transparent; 
-  border: 1.5px solid var(--brand); 
-  color: var(--brand); 
-}
-
-.btn-outline:hover { 
-  background: var(--brand); 
-  color: #fff; 
-  transform: translateY(-2px); 
-}
-
-.btn-full { 
-  width: 100%; 
-  margin-top: 12px; 
-}
-
-.btn-sm { 
-  padding: 8px 14px; 
-  font-size: 0.85rem; 
-  border-radius: 8px; 
-}
-
-/* ============ ALERTS ============ */
 .alert {
-  padding: 14px 20px; 
-  border-radius: var(--radius); 
-  margin-bottom: 20px;
-  display: none; 
-  font-weight: 500; 
-  animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1px solid; 
-  font-size: 0.9rem;
-  box-shadow: var(--shadow-md);
+  padding: 14px 20px; border-radius: var(--radius); margin-bottom: 20px; display: none; font-weight: 500;
+  animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid; font-size: 0.9rem;
 }
+@keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+.alert-success { background: var(--success-light); color: #065f46; border-color: #6ee7b7; }
+.alert-error { background: var(--danger-light); color: #991b1b; border-color: #fca5a5; }
+.alert-warning { background: var(--warning-light); color: #92400e; border-color: #fde68a; }
 
-@keyframes slideInRight {
-  from { 
-    opacity: 0; 
-    transform: translateX(30px); 
-  }
-  to { 
-    opacity: 1; 
-    transform: translateX(0); 
-  }
-}
-
-.alert-success { 
-  background: var(--success-light); 
-  color: #065f46; 
-  border-color: #6ee7b7; 
-}
-
-.alert-error { 
-  background: var(--danger-light); 
-  color: #991b1b; 
-  border-color: #fca5a5; 
-}
-
-.alert-warning { 
-  background: var(--warning-light); 
-  color: #92400e; 
-  border-color: #fde68a; 
-}
-
-/* ============ ADMIN TOGGLE ============ */
 .admin-toggle {
-  position: fixed; 
-  bottom: 24px; 
-  right: 24px;
-  background: linear-gradient(135deg, var(--brand-dark), var(--brand));
-  color: #fff; 
-  padding: 14px 24px; 
-  border-radius: 50px;
-  cursor: pointer; 
-  font-weight: 700; 
-  font-size: 0.95rem;
-  box-shadow: 0 8px 24px -4px rgba(15,118,110,0.5);
-  z-index: 1000; 
-  border: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex; 
-  align-items: center; 
-  gap: 8px;
-  font-family: inherit;
-  animation: pulse 2s ease-in-out infinite;
+  position: fixed; bottom: 24px; right: 24px; background: linear-gradient(135deg, var(--brand-dark), var(--brand));
+  color: #fff; padding: 14px 24px; border-radius: 50px; cursor: pointer; font-weight: 700; font-size: 0.95rem;
+  box-shadow: 0 8px 24px -4px rgba(15,118,110,0.5); z-index: 1000; border: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex; align-items: center; gap: 8px; font-family: inherit; animation: pulse 2s ease-in-out infinite;
 }
+@keyframes pulse { 0%, 100% { box-shadow: 0 8px 24px -4px rgba(15,118,110,0.5); } 50% { box-shadow: 0 8px 32px -4px rgba(15,118,110,0.7); } }
+.admin-toggle:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 12px 32px -4px rgba(15,118,110,0.7); animation: none; }
+.admin-toggle::before { content: '⚙️'; font-size: 1.2rem; animation: rotate 4s linear infinite; }
+@keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-@keyframes pulse {
-  0%, 100% { box-shadow: 0 8px 24px -4px rgba(15,118,110,0.5); }
-  50% { box-shadow: 0 8px 32px -4px rgba(15,118,110,0.7); }
-}
-
-.admin-toggle:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 12px 32px -4px rgba(15,118,110,0.7);
-  animation: none;
-}
-
-.admin-toggle::before {
-  content: '⚙️'; 
-  font-size: 1.2rem;
-  animation: rotate 4s linear infinite;
-}
-
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* ============ TABLES ============ */
-.table-wrap { 
-  overflow-x: auto; 
-  border-radius: var(--radius-md); 
-  border: 1px solid var(--border); 
-  background: #fff;
-  box-shadow: var(--shadow-sm);
-}
-
-table { 
-  width: 100%; 
-  border-collapse: collapse; 
-  background: #fff; 
-  min-width: 640px; 
-}
-
-th, td { 
-  padding: 14px 16px; 
-  text-align: left; 
-  border-bottom: 1px solid var(--border); 
-  font-size: 0.9rem; 
-}
-
+.table-wrap { overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--border); background: #fff; box-shadow: var(--shadow-sm); }
+table { width: 100%; border-collapse: collapse; background: #fff; min-width: 640px; }
+th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
 th {
-  background: linear-gradient(180deg, var(--brand) 0%, var(--brand-dark) 100%);
-  color: #fff; 
-  font-weight: 600; 
-  font-size: 0.8rem; 
-  text-transform: uppercase;
-  letter-spacing: 0.05em; 
-  position: sticky; 
-  top: 0; 
-  z-index: 2;
+  background: linear-gradient(180deg, var(--brand) 0%, var(--brand-dark) 100%); color: #fff; font-weight: 600; font-size: 0.8rem;
+  text-transform: uppercase; letter-spacing: 0.05em; position: sticky; top: 0; z-index: 2;
 }
+tbody tr { transition: all 0.2s ease; }
+tbody tr:hover { background: var(--brand-50); transform: scale(1.01); }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:nth-child(even) { background: #f8fafc; }
+tbody tr:nth-child(even):hover { background: var(--brand-50); }
 
-tbody tr { 
-  transition: all 0.2s ease; 
-}
-
-tbody tr:hover { 
-  background: var(--brand-50);
-  transform: scale(1.01);
-}
-
-tbody tr:last-child td { 
-  border-bottom: none; 
-}
-
-tbody tr:nth-child(even) { 
-  background: #f8fafc; 
-}
-
-tbody tr:nth-child(even):hover { 
-  background: var(--brand-50); 
-}
-
-/* ============ STATS GRID ============ */
-.stats-grid { 
-  display: grid; 
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
-  gap: 18px; 
-  margin-bottom: 28px; 
-}
-
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 28px; }
 .stat-card {
-  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%);
-  color: #fff; 
-  padding: 28px; 
-  border-radius: var(--radius-md); 
-  text-align: center;
-  position: relative; 
-  overflow: hidden;
-  box-shadow: 0 8px 20px -8px rgba(15,118,110,0.4);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: fadeInUp 0.6s ease-out;
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%); color: #fff; padding: 28px; border-radius: var(--radius-md);
+  text-align: center; position: relative; overflow: hidden; box-shadow: 0 8px 20px -8px rgba(15,118,110,0.4); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); animation: fadeInUp 0.6s ease-out;
 }
-
 .stat-card::before {
-  content: ''; 
-  position: absolute; 
-  top: -50%; 
-  right: -30%;
-  width: 180px; 
-  height: 180px;
-  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
-  border-radius: 50%;
-  animation: shimmer 3s ease-in-out infinite;
+  content: ''; position: absolute; top: -50%; right: -30%; width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%); border-radius: 50%; animation: shimmer 3s ease-in-out infinite;
 }
+@keyframes shimmer { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-20px, 20px); } }
+.stat-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 16px 32px -10px rgba(15,118,110,0.6); }
+.stat-card .number { font-size: 2.6rem; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.03em; position: relative; z-index: 1; font-family: 'Plus Jakarta Sans', sans-serif; }
+.stat-card .label { font-size: 0.95rem; opacity: 0.95; font-weight: 500; position: relative; z-index: 1; }
 
-@keyframes shimmer {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(-20px, 20px); }
-}
+.hidden { display: none !important; }
 
-.stat-card:hover { 
-  transform: translateY(-6px) scale(1.02); 
-  box-shadow: 0 16px 32px -10px rgba(15,118,110,0.6); 
-}
-
-.stat-card .number {
-  font-size: 2.6rem; 
-  font-weight: 800; 
-  margin-bottom: 6px;
-  letter-spacing: -0.03em; 
-  position: relative; 
-  z-index: 1;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  animation: countUp 0.8s ease-out;
-}
-
-@keyframes countUp {
-  from { 
-    opacity: 0; 
-    transform: translateY(20px); 
-  }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
-  }
-}
-
-.stat-card .label {
-  font-size: 0.95rem; 
-  opacity: 0.95; 
-  font-weight: 500;
-  position: relative; 
-  z-index: 1;
-}
-
-.hidden { 
-  display: none !important; 
-}
-
-/* ============ UPLOAD AREA ============ */
 .upload-area {
-  border: 2px dashed var(--border-strong); 
-  border-radius: var(--radius-md);
-  padding: 36px; 
-  text-align: center; 
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-  background: #f8fafc; 
-  margin-bottom: 16px;
+  border: 2px dashed var(--border-strong); border-radius: var(--radius-md); padding: 36px; text-align: center; cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); background: #f8fafc; margin-bottom: 16px;
 }
+.upload-area:hover, .upload-area.dragover { border-color: var(--brand); background: var(--brand-50); transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.upload-area input[type="file"] { display: none; }
+.upload-preview { max-width: 150px; max-height: 150px; margin: 12px auto 0; border-radius: var(--radius); display: none; object-fit: contain; box-shadow: var(--shadow-md); animation: fadeIn 0.4s ease-out; }
+.upload-preview.show { display: block; }
 
-.upload-area:hover, .upload-area.dragover {
-  border-color: var(--brand); 
-  background: var(--brand-50);
-  transform: translateY(-3px); 
-  box-shadow: var(--shadow-lg);
-}
-
-.upload-area input[type="file"] { 
-  display: none; 
-}
-
-.upload-preview {
-  max-width: 150px; 
-  max-height: 150px; 
-  margin: 12px auto 0;
-  border-radius: var(--radius); 
-  display: none; 
-  object-fit: contain;
-  box-shadow: var(--shadow-md);
-  animation: fadeIn 0.4s ease-out;
-}
-
-.upload-preview.show { 
-  display: block; 
-}
-
-/* ============ HOME OPTIONS ============ */
-.home-options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px; 
-  margin-top: 24px;
-}
-
+.home-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 24px; }
 .home-option-card {
-  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%);
-  color: #fff; 
-  padding: 48px 28px; 
-  border-radius: var(--radius-lg);
-  text-align: center; 
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 8px 20px -8px rgba(15,118,110,0.4);
-  border: none; 
-  font-family: inherit; 
-  width: 100%;
-  position: relative; 
-  overflow: hidden;
-  animation: fadeInUp 0.6s ease-out;
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%); color: #fff; padding: 48px 28px; border-radius: var(--radius-lg);
+  text-align: center; cursor: pointer; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 8px 20px -8px rgba(15,118,110,0.4);
+  border: none; font-family: inherit; width: 100%; position: relative; overflow: hidden; animation: fadeInUp 0.6s ease-out;
 }
-
 .home-option-card::before {
-  content: ''; 
-  position: absolute; 
-  top: -50%; 
-  right: -30%;
-  width: 200px; 
-  height: 200px;
-  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
-  border-radius: 50%;
-  transition: all 0.6s ease;
+  content: ''; position: absolute; top: -50%; right: -30%; width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%); border-radius: 50%; transition: all 0.6s ease;
 }
+.home-option-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 40px -8px rgba(15,118,110,0.6); }
+.home-option-card .icon { font-size: 3.5rem; margin-bottom: 18px; display: block; position: relative; z-index: 1; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); transition: transform 0.3s ease; }
+.home-option-card:hover .icon { transform: scale(1.1) rotate(5deg); }
+.home-option-card .title { font-size: 1.5rem; font-weight: 700; display: block; position: relative; z-index: 1; margin-bottom: 8px; font-family: 'Plus Jakarta Sans', sans-serif; }
+.home-option-card p { margin-top: 10px; opacity: 0.92; font-size: 0.95rem; position: relative; z-index: 1; line-height: 1.5; }
 
-.home-option-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.home-option-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 20px 40px -8px rgba(15,118,110,0.6);
-}
-
-.home-option-card:hover::before {
-  transform: translate(-30px, 30px) scale(1.2);
-}
-
-.home-option-card:hover::after {
-  opacity: 1;
-}
-
-.home-option-card .icon {
-  font-size: 3.5rem; 
-  margin-bottom: 18px; 
-  display: block;
-  position: relative; 
-  z-index: 1;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
-  transition: transform 0.3s ease;
-}
-
-.home-option-card:hover .icon {
-  transform: scale(1.1) rotate(5deg);
-}
-
-.home-option-card .title {
-  font-size: 1.5rem; 
-  font-weight: 700; 
-  display: block;
-  position: relative; 
-  z-index: 1; 
-  margin-bottom: 8px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-}
-
-.home-option-card p {
-  margin-top: 10px; 
-  opacity: 0.92; 
-  font-size: 0.95rem;
-  position: relative; 
-  z-index: 1; 
-  line-height: 1.5;
-}
-
-/* ============ BACK BUTTON ============ */
 .back-btn {
-  background: transparent; 
-  border: none; 
-  color: var(--brand);
-  font-weight: 600; 
-  cursor: pointer; 
-  margin-bottom: 20px;
-  font-size: 1rem; 
-  display: inline-flex; 
-  align-items: center;
-  gap: 6px; 
-  padding: 8px 12px; 
-  border-radius: var(--radius);
-  transition: all 0.2s; 
-  font-family: inherit;
+  background: transparent; border: none; color: var(--brand); font-weight: 600; cursor: pointer; margin-bottom: 20px;
+  font-size: 1rem; display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: var(--radius); transition: all 0.2s; font-family: inherit;
 }
+.back-btn:hover { color: var(--brand-dark); background: var(--brand-50); transform: translateX(-4px); }
 
-.back-btn:hover {
-  color: var(--brand-dark); 
-  background: var(--brand-50);
-  transform: translateX(-4px);
-}
-
-/* ============ ANIMATIONS ============ */
-@keyframes fadeInUp {
-  from { 
-    opacity: 0; 
-    transform: translateY(15px); 
-  }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
-  }
-}
-
-.view-animate {
-  animation: fadeInUp 0.4s ease-out forwards;
-}
-
-/* ============ ADMIN FORM GRID ============ */
-.admin-form-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr auto;
-  gap: 16px; 
-  align-items: end;
-  margin-bottom: 24px; 
-  padding: 20px;
-  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-  animation: fadeIn 0.5s ease-out;
-}
-
-.admin-form-grid-5 {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr auto;
-  gap: 12px; 
-  align-items: end;
-  margin-bottom: 20px; 
-  padding: 20px;
-  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-  animation: fadeIn 0.5s ease-out;
-}
-
-/* ============ INFO BOX ============ */
-.info-box {
-  background: linear-gradient(135deg, var(--brand-50), #f0fdf4);
-  padding: 18px; 
-  border-radius: var(--radius);
-  margin-bottom: 24px;
-  border-left: 4px solid var(--brand);
-  box-shadow: var(--shadow-sm);
-  animation: slideInLeft 0.4s ease-out;
-}
-
-@keyframes slideInLeft {
-  from { 
-    opacity: 0; 
-    transform: translateX(-20px); 
-  }
-  to { 
-    opacity: 1; 
-    transform: translateX(0); 
-  }
-}
-
-.info-box p { 
-  margin-bottom: 6px; 
-}
-
-.info-box p:last-child { 
-  margin-bottom: 0; 
-}
-
-.info-box strong { 
-  color: var(--brand-dark); 
-}
-
-/* ============ REMARKS BOX ============ */
-.remarks-box {
-  background: linear-gradient(135deg, #fffbeb, var(--warning-light));
-  padding: 18px; 
-  border-radius: var(--radius);
-  margin-bottom: 24px;
-  border-left: 4px solid var(--gold);
-  box-shadow: var(--shadow-sm);
-  animation: slideInLeft 0.4s ease-out;
-}
-
-.remarks-box strong { 
-  color: var(--gold-dark); 
-}
-
-/* ============ CONFIRMATION BOX ============ */
-.confirmation-box {
-  margin-top: 24px; 
-  padding: 32px;
-  background: linear-gradient(135deg, var(--success-light), #d1fae5);
-  border-radius: var(--radius-lg); 
-  text-align: center;
-  border: 2px solid var(--success);
-  box-shadow: 0 8px 20px -8px rgba(16,185,129,0.3);
-  animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes scaleIn {
-  from { 
-    opacity: 0; 
-    transform: scale(0.9); 
-  }
-  to { 
-    opacity: 1; 
-    transform: scale(1); 
-  }
-}
-
-.confirmation-box h3 {
-  color: var(--success-dark); 
-  margin-bottom: 12px;
-  font-size: 1.5rem;
-}
-
-.confirmation-box p { 
-  margin-bottom: 24px; 
-  color: #065f46; 
-}
-
-.confirmation-actions {
-  display: flex; 
-  gap: 16px; 
-  justify-content: center; 
-  flex-wrap: wrap;
-}
-
-/* ============ FILTER BAR ============ */
-.filter-bar {
-  display: flex; 
-  gap: 12px; 
-  margin-bottom: 20px; 
-  flex-wrap: wrap;
-  align-items: flex-end; 
-  padding: 18px;
-  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-  animation: fadeIn 0.5s ease-out;
-}
-
-.filter-bar .form-group { 
-  margin-bottom: 0; 
-  flex: 1; 
-  min-width: 160px; 
-}
-
-/* ============ ADMIN TABS ============ */
-.admin-tabs {
-  display: flex; 
-  gap: 8px; 
-  margin-bottom: 24px; 
-  border-bottom: 2px solid var(--border); 
-  flex-wrap: wrap;
-  overflow-x: auto;
-  padding-bottom: 2px;
-}
-
+.admin-tabs { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 2px solid var(--border); flex-wrap: wrap; overflow-x: auto; padding-bottom: 2px; }
 .admin-tab {
-  padding: 12px 20px; 
-  background: transparent; 
-  border: none; 
-  border-bottom: 3px solid transparent;
-  cursor: pointer; 
-  font-weight: 600; 
-  font-size: 0.95rem; 
-  color: var(--text-muted);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-  font-family: inherit;
-  white-space: nowrap;
-  position: relative;
+  padding: 12px 20px; background: transparent; border: none; border-bottom: 3px solid transparent; cursor: pointer; font-weight: 600; font-size: 0.95rem;
+  color: var(--text-muted); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-family: inherit; white-space: nowrap; position: relative;
 }
-
 .admin-tab::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: var(--brand);
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
+  content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 3px; background: var(--brand); transform: scaleX(0); transition: transform 0.3s ease;
 }
+.admin-tab:hover { color: var(--brand); background: var(--brand-50); border-radius: 8px 8px 0 0; }
+.admin-tab.active { color: var(--brand); }
+.admin-tab.active::after { transform: scaleX(1); }
+.admin-tab-content { display: none; animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.admin-tab-content.active { display: block; }
 
-.admin-tab:hover { 
-  color: var(--brand); 
-  background: var(--brand-50); 
-  border-radius: 8px 8px 0 0; 
-}
-
-.admin-tab.active { 
-  color: var(--brand); 
-}
-
-.admin-tab.active::after {
-  transform: scaleX(1);
-}
-
-.admin-tab-content { 
-  display: none; 
-  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
-}
-
-.admin-tab-content.active { 
-  display: block; 
-}
-
-/* ============ MODAL ============ */
 .modal-overlay {
-  position: fixed; 
-  inset: 0; 
-  background: rgba(0,0,0,0.5); 
-  backdrop-filter: blur(4px);
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  z-index: 2000;
-  animation: fadeIn 0.3s ease-out;
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center;
+  z-index: 2000; animation: fadeIn 0.3s ease-out;
 }
-
-.modal-overlay.hidden { 
-  display: none; 
-}
-
+.modal-overlay.hidden { display: none; }
 .modal-content {
-  background: #fff; 
-  padding: 32px; 
-  border-radius: var(--radius-lg);
-  width: 90%; 
-  max-width: 500px; 
-  box-shadow: var(--shadow-xl);
-  animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  background: #fff; padding: 32px; border-radius: var(--radius-lg); width: 90%; max-width: 500px; box-shadow: var(--shadow-xl); animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
-.modal-content h3 { 
-  margin-bottom: 20px; 
-  color: var(--brand); 
-}
+.color-picker-wrapper { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+.color-picker-wrapper input[type="color"] { width: 60px; height: 60px; border: 2px solid var(--border); border-radius: var(--radius); cursor: pointer; padding: 0; }
+.color-preview { flex: 1; height: 60px; border-radius: var(--radius); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: 600; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); transition: all 0.3s ease; }
 
-/* ============ COLOR PICKER ============ */
-.color-picker-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 8px;
-}
-
-.color-picker-wrapper input[type="color"] {
-  width: 60px;
-  height: 60px;
-  border: 2px solid var(--border);
-  border-radius: var(--radius);
-  cursor: pointer;
-  padding: 0;
-}
-
-.color-preview {
-  flex: 1;
-  height: 60px;
-  border-radius: var(--radius);
-  border: 2px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  color: #fff;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-  transition: all 0.3s ease;
-}
-
-/* ============ RESPONSIVE ============ */
-@media(max-width: 1024px) {
-  .container { 
-    padding: 0 20px; 
-  }
-  .card { 
-    padding: 28px; 
-  }
-}
-
+@media(max-width: 1024px) { .container { padding: 0 20px; } .card { padding: 28px; } }
 @media(max-width: 768px) {
-  body { 
-    font-size: 14px; 
-  }
-  
-  .header { 
-    padding: 32px 20px; 
-  }
-  
-  .header-info h1 { 
-    font-size: 1.5rem; 
-  }
-  
-  .header-info p { 
-    font-size: 0.95rem; 
-  }
-  
-  .logo-circle { 
-    width: 80px; 
-    height: 80px; 
-    border-radius: 18px; 
-    font-size: 2.2rem; 
-  }
-  
-  .container { 
-    margin: 24px auto; 
-    padding: 0 18px; 
-  }
-  
-  .card { 
-    padding: 24px; 
-    border-radius: var(--radius-md); 
-    margin-bottom: 22px; 
-  }
-  
-  .card h2 { 
-    font-size: 1.3rem; 
-    padding-bottom: 14px; 
-    margin-bottom: 20px; 
-  }
-  
-  .admin-form-grid, .admin-form-grid-5 {
-    grid-template-columns: 1fr; 
-    gap: 12px;
-  }
-  
-  .admin-form-grid .form-group, .admin-form-grid-5 .form-group { 
-    margin-bottom: 0; 
-  }
-  
-  .stats-grid { 
-    grid-template-columns: repeat(2, 1fr); 
-    gap: 14px; 
-  }
-  
-  .stat-card { 
-    padding: 22px; 
-  }
-  
-  .stat-card .number { 
-    font-size: 2rem; 
-  }
-  
-  .stat-card .label { 
-    font-size: 0.85rem; 
-  }
-  
-  .home-options { 
-    grid-template-columns: 1fr; 
-    gap: 18px; 
-  }
-  
-  .home-option-card { 
-    padding: 36px 24px; 
-  }
-  
-  .home-option-card .icon { 
-    font-size: 3rem; 
-  }
-  
-  .home-option-card .title { 
-    font-size: 1.3rem; 
-  }
-  
-  .filter-bar { 
-    flex-direction: column; 
-    padding: 16px; 
-  }
-  
-  .filter-bar .form-group { 
-    width: 100%; 
-    min-width: 0; 
-  }
-  
-  .admin-toggle { 
-    bottom: 18px; 
-    right: 18px; 
-    padding: 12px 20px; 
-    font-size: 0.9rem; 
-  }
-  
-  table { 
-    font-size: 0.85rem; 
-  }
-  
-  th, td { 
-    padding: 11px 13px; 
-  }
-  
-  .confirmation-actions { 
-    flex-direction: column; 
-  }
-  
-  .confirmation-actions .btn { 
-    width: 100%; 
-  }
-  
-  .admin-tabs {
-    gap: 4px;
-  }
-  
-  .admin-tab {
-    padding: 10px 14px;
-    font-size: 0.85rem;
-  }
+  body { font-size: 14px; } .header { padding: 32px 20px; } .header-info h1 { font-size: 1.5rem; } .header-info p { font-size: 0.9rem; }
+  .logo-circle { width: 80px; height: 80px; border-radius: 16px; font-size: 2rem; } .container { margin: 24px auto; padding: 0 18px; }
+  .card { padding: 24px; border-radius: var(--radius-md); margin-bottom: 22px; } .card h2 { font-size: 1.2rem; padding-bottom: 12px; margin-bottom: 16px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } .stat-card { padding: 22px; } .stat-card .number { font-size: 2rem; } .stat-card .label { font-size: 0.85rem; }
+  .home-options { grid-template-columns: 1fr; gap: 18px; } .home-option-card { padding: 36px 24px; } .home-option-card .icon { font-size: 3rem; } .home-option-card .title { font-size: 1.3rem; }
+  .admin-tabs { gap: 4px; } .admin-tab { padding: 10px 14px; font-size: 0.85rem; }
 }
-
 @media(max-width: 480px) {
-  .header { 
-    padding: 28px 16px; 
-  }
-  
-  .logo-circle { 
-    width: 70px; 
-    height: 70px; 
-    font-size: 2rem; 
-  }
-  
-  .stats-grid { 
-    grid-template-columns: 1fr; 
-  }
-  
-  .container { 
-    padding: 0 14px; 
-  }
-  
-  .card { 
-    padding: 20px; 
-  }
-  
-  .btn {
-    padding: 10px 18px;
-    font-size: 0.9rem;
-  }
-}
-
-/* ============ LOADING SPINNER ============ */
-.loading {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 3px solid rgba(255,255,255,0.3);
-  border-radius: 50%;
-  border-top-color: #fff;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* ============ SEATS INDICATOR ============ */
-.seats-indicator {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.seats-indicator.available {
-  background: var(--success-light);
-  color: var(--success-dark);
-}
-
-.seats-indicator.low {
-  background: var(--warning-light);
-  color: var(--gold-dark);
-}
-
-.seats-indicator.full {
-  background: var(--danger-light);
-  color: var(--danger-dark);
+  .header { padding: 28px 16px; } .logo-circle { width: 70px; height: 70px; font-size: 1.8rem; } .stats-grid { grid-template-columns: 1fr; }
+  .container { padding: 0 14px; } .card { padding: 20px; } .btn { padding: 10px 18px; font-size: 0.9rem; }
 }
 </style>
 </head>
@@ -1311,11 +291,6 @@ tbody tr:nth-child(even):hover {
           <option value="">Loading events...</option>
         </select>
       </div>
-      <div class="info-box">
-        <p><strong>Event:</strong> <span id="display-event-name">-</span></p>
-        <p><strong>Date:</strong> <span id="display-event-date">-</span></p>
-        <p><strong>Available Seats:</strong> <span id="display-seats-left" class="seats-indicator">-</span></p>
-      </div>
       <div class="form-group"><label>Employee ID *</label><input type="text" id="reg-empid" required placeholder="Enter your Employee ID"></div>
       <div class="form-group"><label>Full Name *</label><input type="text" id="reg-name" required placeholder="Enter your full name"></div>
       <div class="form-group">
@@ -1337,26 +312,21 @@ tbody tr:nth-child(even):hover {
           <option value="Landscaping">Landscaping</option>
         </select>
       </div>
-      <input type="hidden" id="reg-event-name">
-      <input type="hidden" id="reg-event-date">
-      <button type="submit" class="btn btn-primary btn-full">✅ Register for Event</button>
+      <button type="submit" class="btn btn-primary btn-full">✅ Register for Event</button are you sure?</button>
     </form>
-    
-    <div id="download-confirmation-section" class="confirmation-box hidden">
-      <h3>✅ Registration Successful!</h3>
-      <p>Your registration has been confirmed.</p>
-      <div class="confirmation-actions">
-        <button class="btn btn-success" onclick="downloadConfirmation()">📥 Download Confirmation PDF</button>
-        <button class="btn btn-outline" onclick="resetRegForm()">🔄 New Registration</button>
-      </div>
-    </div>
   </div>
 
   <!-- ATTENDANCE VIEW -->
   <div id="attendance-view" class="card hidden view-animate">
     <button class="back-btn" onclick="showMainView('home')">← Back to Home</button>
-    <h2>✅ Submit Attendance</h2>
+    <h2>✅ Mark Attendance</h2>
     <form id="attendance-form" onsubmit="handleAttendance(event)">
+      <div class="form-group">
+        <label>Select Activity *</label>
+        <select id="att-activity-select" required onchange="updateActivityDetails()">
+          <option value="">Loading activities...</option>
+        </select>
+      </div>
       <div class="form-group"><label>Employee ID *</label><input type="text" id="att-empid" required placeholder="Enter your Employee ID"></div>
       <div class="form-group"><label>Full Name *</label><input type="text" id="att-name" required placeholder="Enter your full name"></div>
       <div class="form-group">
@@ -1378,16 +348,7 @@ tbody tr:nth-child(even):hover {
           <option value="Landscaping">Landscaping</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>Select Activity *</label>
-        <select id="att-activity" required onchange="showActivityRemarks()">
-          <option value="">Loading activities...</option>
-        </select>
-      </div>
-      <div id="att-remarks-display" class="remarks-box hidden">
-        <p><strong>📌 Admin Remarks:</strong> <span id="att-remarks-text">-</span></p>
-      </div>
-      <button type="submit" class="btn btn-primary btn-full">✅ Submit Attendance</button>
+      <button type="submit" class="btn btn-success btn-full">✅ Submit Attendance</button>
     </form>
   </div>
 
@@ -1399,19 +360,18 @@ tbody tr:nth-child(even):hover {
       <div class="stat-card" style="background: linear-gradient(135deg, var(--success) 0%, #34d399 100%);"><div class="number" id="stat-total-att">0</div><div class="label">Total Attendance</div></div>
     </div>
 
-    <!-- Admin Tabs Navigation -->
     <div class="admin-tabs">
-      <button class="admin-tab active" onclick="switchAdminTab('events')">📅 Event Management</button>
-      <button class="admin-tab" onclick="switchAdminTab('activities')">📋 Activity Management</button>
-      <button class="admin-tab" onclick="switchAdminTab('attendance')">📊 Attendance Record</button>
-      <button class="admin-tab" onclick="switchAdminTab('branding')">🎨 Branding Setting</button>
-      <button class="admin-tab" onclick="switchAdminTab('registrations')">📋 All Registrations</button>
+      <button class="admin-tab active" onclick="switchAdminTab('events')">📅 Events</button>
+      <button class="admin-tab" onclick="switchAdminTab('activities')">✅ Activities</button>
+      <button class="admin-tab" onclick="switchAdminTab('registrations')">📝 Registrations</button>
+      <button class="admin-tab" onclick="switchAdminTab('attendance')">📊 Attendance</button>
+      <button class="admin-tab" onclick="switchAdminTab('branding')">🎨 Branding</button>
     </div>
 
-    <!-- Event Management Tab -->
+    <!-- Events Tab -->
     <div id="tab-events" class="admin-tab-content active card">
-      <h2>📅 Event Management</h2>
-      <div class="admin-form-grid">
+      <h2>📅 Manage Events</h2>
+      <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 16px; align-items: end; margin-bottom: 24px; padding: 20px; background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: var(--radius-md); border: 1px solid var(--border);">
         <div class="form-group" style="margin-bottom: 0;"><label>Event Name</label><input type="text" id="admin-new-event-name" placeholder="e.g., Annual Gala"></div>
         <div class="form-group" style="margin-bottom: 0;"><label>Event Date</label><input type="date" id="admin-new-event-date"></div>
         <div class="form-group" style="margin-bottom: 0;"><label>Max Registrations</label><input type="number" id="admin-new-max-reg" min="1" value="100"></div>
@@ -1419,66 +379,79 @@ tbody tr:nth-child(even):hover {
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Event Name</th><th>Date</th><th>Registrations</th><th>Created</th><th>Action</th></tr></thead>
-          <tbody id="admin-events-tbody"><tr><td colspan="5" style="text-align:center; color:var(--text-subtle);">Loading...</td></tr></tbody>
+          <thead><tr><th>Event Name</th><th>Date</th><th>Registrations</th><th>Action</th></tr></thead>
+          <tbody id="admin-events-tbody"><tr><td colspan="4" style="text-align:center; color:var(--text-subtle);">Loading...</td></tr></tbody>
         </table>
       </div>
     </div>
 
-    <!-- Activity Management Tab -->
+    <!-- Activities Tab -->
     <div id="tab-activities" class="admin-tab-content card">
-      <h2>📋 Activity Management (For Attendance)</h2>
-      <div class="admin-form-grid-5">
-        <div class="form-group" style="margin-bottom: 0;"><label>Activity Name</label><input type="text" id="admin-act-name"></div>
-        <div class="form-group" style="margin-bottom: 0;"><label>Date</label><input type="date" id="admin-act-date"></div>
-        <div class="form-group" style="margin-bottom: 0;"><label>Start Time</label><input type="time" id="admin-act-start"></div>
-        <div class="form-group" style="margin-bottom: 0;"><label>End Time</label><input type="time" id="admin-act-end"></div>
-        <button class="btn btn-primary" onclick="addActivity()" style="height: 46px;">➕ Add</button>
+      <h2>✅ Manage Activities</h2>
+      <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 12px; align-items: end; margin-bottom: 24px; padding: 20px; background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: var(--radius-md); border: 1px solid var(--border);">
+        <div class="form-group" style="margin-bottom: 0;"><label>Activity Name</label><input type="text" id="admin-new-act-name" placeholder="e.g., Morning Briefing"></div>
+        <div class="form-group" style="margin-bottom: 0;"><label>Date</label><input type="date" id="admin-new-act-date"></div>
+        <div class="form-group" style="margin-bottom: 0;"><label>Start Time</label><input type="time" id="admin-new-act-start"></div>
+        <div class="form-group" style="margin-bottom: 0;"><label>End Time</label><input type="time" id="admin-new-act-end"></div>
+        <button class="btn btn-success" onclick="addActivity()" style="height: 46px;">➕ Add Activity</button>
       </div>
-      <div class="form-group"><label>Remarks for Employees (Visible when they select this activity)</label><textarea id="admin-act-remarks" rows="2" placeholder="e.g., Please bring your ID card and arrive 15 mins early"></textarea></div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Activity Name</th><th>Date</th><th>Time Window</th><th>Remarks</th><th>Action</th></tr></thead>
-          <tbody id="admin-activities-tbody"><tr><td colspan="5" style="text-align:center; color:var(--text-subtle);">Loading...</td></tr></tbody>
+          <thead><tr><th>Activity Name</th><th>Date</th><th>Time Window</th><th>Action</th></tr></thead>
+          <tbody id="admin-activities-tbody"><tr><td colspan="4" style="text-align:center; color:var(--text-subtle);">Loading...</td></tr></tbody>
         </table>
       </div>
     </div>
 
-    <!-- Attendance Record Tab -->
+    <!-- Registrations Tab -->
+    <div id="tab-registrations" class="admin-tab-content card">
+      <h2>📝 Event Registrations</h2>
+      <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: flex-end; padding: 18px; background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: var(--radius-md); border: 1px solid var(--border);">
+        <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 160px;"><label>Filter by Event</label><select id="reg-filter-event" onchange="renderRegistrationsTable()"><option value="all">All Events</option></select></div>
+        <button class="btn btn-success btn-sm" onclick="downloadRegistrationsExcel()" style="height: 46px; margin-bottom: 0;">📥 Download Excel</button>
+        <button class="btn btn-danger btn-sm" onclick="clearAllRegistrations()" style="height: 46px; margin-bottom: 0;">🗑️ Clear All Registrations</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Event</th><th>Employee ID</th><th>Name</th><th>Department</th><th>Registration Time</th><th>Action</th></tr></thead>
+          <tbody id="admin-registrations-tbody"><tr><td colspan="6" style="text-align:center; color:var(--text-subtle);">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Attendance Tab -->
     <div id="tab-attendance" class="admin-tab-content card">
       <h2>📊 Attendance Records</h2>
-      <div class="filter-bar">
-        <div class="form-group" style="margin-bottom: 0; flex: 1;"><label>Month</label><select id="admin-att-month"><option value="all">All Months</option></select></div>
-        <div class="form-group" style="margin-bottom: 0; flex: 1;"><label>Year</label><select id="admin-att-year"><option value="all">All Years</option></select></div>
-        <div class="form-group" style="margin-bottom: 0; flex: 2;"><label>Activity (Optional)</label><select id="admin-att-activity"><option value="all">All Activities</option></select></div>
-        <button class="btn btn-success" onclick="downloadAttendanceExcel()" style="height: 46px;">📥 Download Excel</button>
+      <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: flex-end; padding: 18px; background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: var(--radius-md); border: 1px solid var(--border);">
+        <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 160px;"><label>Filter by Activity</label><select id="att-filter-activity" onchange="renderAttendanceTable()"><option value="all">All Activities</option></select></div>
+        <button class="btn btn-success btn-sm" onclick="downloadAttendanceExcel()" style="height: 46px; margin-bottom: 0;">📥 Download Excel</button>
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Activity</th><th>Employee ID</th><th>Name</th><th>Department</th><th>Submission Time</th><th>Actions</th></tr></thead>
-          <tbody id="admin-attendance-tbody"><tr><td colspan="6" style="text-align:center; color:var(--text-subtle);">Loading...</td></tr></tbody>
+          <thead><tr><th>Activity</th><th>Employee ID</th><th>Name</th><th>Department</th><th>Submission Time</th></tr></thead>
+          <tbody id="admin-attendance-tbody"><tr><td colspan="5" style="text-align:center; color:var(--text-subtle);">Loading...</td></tr></tbody>
         </table>
       </div>
     </div>
 
-    <!-- Branding Setting Tab -->
+    <!-- Branding Tab -->
     <div id="tab-branding" class="admin-tab-content card">
-      <h2>🎨 Branding Settings</h2>
-      <div class="form-group"><label>Hotel / Company Name</label><input type="text" id="admin-hotel-name" placeholder="e.g., Six Senses"></div>
+      <h2>🎨 Customize Appearance & Settings</h2>
+      <div class="form-group"><label>Hotel / Company Name</label><input type="text" id="brand-hotel-name"></div>
+      <div class="form-group"><label>Tagline</label><input type="text" id="brand-tagline"></div>
       <div class="form-group">
         <label>Brand Color</label>
         <div class="color-picker-wrapper">
-          <input type="color" id="admin-brand-color" value="#0f766e" onchange="updateColorPreview(this.value)">
+          <input type="color" id="brand-color" value="#0f766e" onchange="updateColorPreview(this.value)">
           <div class="color-preview" id="color-preview" style="background: #0f766e;">#0f766e</div>
         </div>
-        <small style="color: var(--text-muted); display: block; margin-top: 8px;">Choose your brand's primary color. This will be applied throughout the platform.</small>
       </div>
       <div class="form-group">
         <label>Logo Image</label>
         <div class="upload-area" id="logo-upload-area" onclick="document.getElementById('logo-file').click()">
           <p style="font-size: 2.5rem; margin-bottom: 10px;">🏨</p><p><strong>Click to browse or drag & drop</strong></p>
           <input type="file" id="logo-file" accept="image/*" onchange="handleFileSelect('logo-file')">
-          <img id="logo-preview" class="upload-preview" alt="Logo Preview">
+          <img id="brand-logo-preview" class="upload-preview" alt="Logo Preview">
         </div>
       </div>
       <div class="form-group">
@@ -1486,65 +459,20 @@ tbody tr:nth-child(even):hover {
         <div class="upload-area" id="bg-upload-area" onclick="document.getElementById('bg-file').click()">
           <p style="font-size: 2.5rem; margin-bottom: 10px;">🌄</p><p><strong>Click to browse or drag & drop</strong></p>
           <input type="file" id="bg-file" accept="image/*" onchange="handleFileSelect('bg-file')">
-          <img id="bg-preview" class="upload-preview" alt="Background Preview">
+          <img id="brand-bg-preview" class="upload-preview" alt="Background Preview">
         </div>
       </div>
-      <button class="btn btn-primary" onclick="saveAdminSettings()">💾 Save Branding Settings</button>
-    </div>
-
-    <!-- All Registrations Tab -->
-    <div id="tab-registrations" class="admin-tab-content card">
-      <h2>📋 All Registrations</h2>
-      <div class="filter-bar">
-        <div class="form-group" style="margin-bottom: 0; flex: 1;"><label>Month</label><select id="admin-reg-month"><option value="all">All Months</option></select></div>
-        <div class="form-group" style="margin-bottom: 0; flex: 1;"><label>Year</label><select id="admin-reg-year"><option value="all">All Years</option></select></div>
-        <button class="btn btn-success" onclick="downloadExcelReport()" style="height: 46px;">📥 Download Registration Excel</button>
-        <button class="btn btn-danger" onclick="clearAllRegistrations()" style="height: 46px;">🗑️ Clear All</button>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Event</th><th>Employee ID</th><th>Name</th><th>Department</th><th>Registration Time</th><th>Action</th></tr></thead>
-          <tbody id="registrations-tbody"><tr><td colspan="6" style="text-align:center; color:var(--text-subtle);">Loading...</td></tr></tbody>
-        </table>
-      </div>
+      
+      <h3 style="margin-top: 32px; margin-bottom: 16px; color: var(--brand);">🚌 Bus Ticket Customization</h3>
+      <div class="form-group"><label>Bus Operator Name</label><input type="text" id="brand-bus-operator" placeholder="e.g., Hotel Transport Services"></div>
+      <div class="form-group"><label>Ticket Terms & Conditions</label><textarea id="brand-ticket-terms" rows="3" placeholder="e.g., Please arrive 15 minutes before departure. Present this ticket to the driver."></textarea></div>
+      
+      <button class="btn btn-primary btn-full" onclick="saveBranding()">💾 Save All Settings & Branding</button>
     </div>
   </div>
 </div>
 
 <button class="admin-toggle" onclick="toggleAdmin()">Admin Access</button>
-
-<!-- Edit Attendance Modal -->
-<div id="attendance-edit-modal" class="modal-overlay hidden">
-  <div class="modal-content">
-    <h3>✏️ Edit Attendance Record</h3>
-    <input type="hidden" id="edit-att-id">
-    <div class="form-group"><label>Activity Name</label><input type="text" id="edit-att-activity"></div>
-    <div class="form-group"><label>Employee ID</label><input type="text" id="edit-att-empid"></div>
-    <div class="form-group"><label>Full Name</label><input type="text" id="edit-att-name"></div>
-    <div class="form-group">
-      <label>Department</label>
-      <select id="edit-att-dept">
-        <option value="Executive Office">Executive Office</option>
-        <option value="Front Office">Front Office</option>
-        <option value="Human Resources">Human Resources</option>
-        <option value="F&B Service">F&B Service</option>
-        <option value="Kitchen">Kitchen</option>
-        <option value="Housekeeping & Laundry">Housekeeping & Laundry</option>
-        <option value="Security">Security</option>
-        <option value="Sales & Marketing">Sales & Marketing</option>
-        <option value="Engineering">Engineering</option>
-        <option value="Finance & IT">Finance & IT</option>
-        <option value="Spa">Spa</option>
-        <option value="Finance">Finance</option>
-        <option value="Landscaping">Landscaping</option>
-      </select>
-    </div>
-    <div style="display: flex; gap: 12px; margin-top: 20px;">
-      <button class="btn btn-primary" onclick="saveEditedAttendance()">💾 Save Changes</button>
-      <button class="btn btn-outline" onclick="document.getElementById('attendance-edit-modal').classList.add('hidden')">Cancel</button>
-    </div>
-  </div>
-</div>
 
 <script>
 const firebaseConfig = {
@@ -1557,19 +485,14 @@ const firebaseConfig = {
   measurementId: "G-MYSFG9GXF5"
 };
 
-try { 
-  firebase.initializeApp(firebaseConfig); 
-} catch(error) { 
-  console.error('Firebase error:', error); 
-}
-
+try { firebase.initializeApp(firebaseConfig); } catch(error) { console.error('Firebase error:', error); }
 const db = firebase.database();
+
 let isAdmin = false;
 let currentSettings = {};
 let eventsList = [];
-let registrationsList = [];
-let lastRegistration = null;
 let activitiesList = [];
+let registrationsList = [];
 let attendanceList = [];
 
 // ==========================================
@@ -1580,221 +503,118 @@ db.ref('event/events').on('value', (snap) => {
   updateUI();
 });
 
+db.ref('event/activities').on('value', (snap) => {
+  activitiesList = snap.val() ? Object.entries(snap.val()).map(([id, val]) => ({id, ...val})) : [];
+  updateUI();
+});
+
 db.ref('event/registrations').on('value', (snap) => {
   registrationsList = snap.val() ? Object.entries(snap.val()).map(([id, val]) => ({id, ...val})) : [];
   updateUI();
-  renderRegistrationsTable();
-});
-
-db.ref('event/activities').on('value', (snap) => {
-  activitiesList = snap.val() ? Object.entries(snap.val()).map(([id, val]) => ({id, ...val})) : [];
-  updateAttendanceUI();
 });
 
 db.ref('event/attendance').on('value', (snap) => {
   attendanceList = snap.val() ? Object.entries(snap.val()).map(([id, val]) => ({id, ...val})) : [];
-  updateAttendanceUI();
-  renderAdminAttendanceTable();
+  updateUI();
 });
 
 db.ref('event/settings').on('value', (snap) => {
   currentSettings = snap.val() || { 
     hotelName: 'Event & Attendance Platform', 
+    tagline: 'Manage Events and Track Attendance',
+    color: '#0f766e',
     logo: '', 
     background: '',
-    brandColor: '#0f766e'
+    busOperator: '',
+    ticketTerms: ''
   };
-  updateBranding();
+  applyBranding();
 });
 
 // ==========================================
 // UI UPDATE FUNCTIONS
 // ==========================================
 function updateUI() {
-  const eventSelect = document.getElementById('reg-event-select');
-  const currentVal = eventSelect.value;
-  eventSelect.innerHTML = '<option value="">Select an Event</option>';
-  
-  // Filter to show only today's events or future active events
-  const today = new Date().toISOString().split('T')[0];
+  // Update event dropdowns
+  const regEventSelect = document.getElementById('reg-event-select');
+  const currentRegEvent = regEventSelect.value;
+  regEventSelect.innerHTML = '<option value="">Select an Event</option>';
   eventsList.forEach(event => {
-    if (event.eventDate >= today) {
-      const option = document.createElement('option');
-      option.value = event.id;
-      option.textContent = event.eventName;
-      eventSelect.appendChild(option);
-    }
+    const option = document.createElement('option');
+    option.value = event.id;
+    option.textContent = event.eventName;
+    regEventSelect.appendChild(option);
   });
-  
-  eventSelect.value = currentVal;
-  updateEventDetails();
-  renderAdminEventsTable();
-  document.getElementById('stat-total-events').innerText = eventsList.length;
-  document.getElementById('stat-total-reg').innerText = registrationsList.length;
-  populateRegistrationFilters();
-}
+  regEventSelect.value = currentRegEvent;
 
-function populateRegistrationFilters() {
-  const regMonthSelect = document.getElementById('admin-reg-month');
-  const regYearSelect = document.getElementById('admin-reg-year');
-  
-  const regMonths = [...new Set(registrationsList.map(r => new Date(r.timestamp).toLocaleString('default', { month: 'long' })))];
-  const regYears = [...new Set(registrationsList.map(r => new Date(r.timestamp).getFullYear().toString()))];
-  
-  regMonthSelect.innerHTML = '<option value="all">All Months</option>';
-  ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].forEach(m => {
-    if(regMonths.includes(m)) {
-      const opt = document.createElement('option'); 
-      opt.value = m; 
-      opt.textContent = m; 
-      regMonthSelect.appendChild(opt);
-    }
-  });
-  
-  regYearSelect.innerHTML = '<option value="all">All Years</option>';
-  regYears.sort().reverse().forEach(y => {
-    const opt = document.createElement('option'); 
-    opt.value = y; 
-    opt.textContent = y; 
-    regYearSelect.appendChild(opt);
-  });
-}
-
-function updateEventDetails() {
-  const eventId = document.getElementById('reg-event-select').value;
-  const event = eventsList.find(e => e.id === eventId);
-  if (event) {
-    document.getElementById('display-event-name').innerText = event.eventName;
-    document.getElementById('display-event-date').innerText = event.eventDate;
-    document.getElementById('reg-event-name').value = event.eventName;
-    document.getElementById('reg-event-date').value = event.eventDate;
-    const eventRegistrations = registrationsList.filter(r => r.eventId === eventId).length;
-    const left = Math.max(0, event.maxRegistrations - eventRegistrations);
-    const seatsEl = document.getElementById('display-seats-left');
-    seatsEl.innerText = `${left} / ${event.maxRegistrations}`;
-    
-    // Update seats indicator class
-    seatsEl.className = 'seats-indicator';
-    if (left === 0) {
-      seatsEl.classList.add('full');
-    } else if (left < 10) {
-      seatsEl.classList.add('low');
-    } else {
-      seatsEl.classList.add('available');
-    }
-  } else {
-    document.getElementById('display-event-name').innerText = '-';
-    document.getElementById('display-event-date').innerText = '-';
-    document.getElementById('reg-event-name').value = '';
-    document.getElementById('reg-event-date').value = '';
-    document.getElementById('display-seats-left').innerText = '-';
-    document.getElementById('display-seats-left').className = '';
-  }
-}
-
-function updateAttendanceUI() {
-  const actSelect = document.getElementById('att-activity');
-  actSelect.innerHTML = '<option value="">Select an Activity</option>';
-  
-  // Filter to show only activities scheduled for today
-  const today = new Date().toISOString().split('T')[0];
-  activitiesList.forEach(act => {
-    if (act.activityDate === today) {
-      const option = document.createElement('option');
-      option.value = act.id;
-      option.textContent = `${act.activityName} (${act.activityDate})`;
-      actSelect.appendChild(option);
-    }
-  });
-  
-  const adminActSelect = document.getElementById('admin-att-activity');
-  adminActSelect.innerHTML = '<option value="all">All Activities</option>';
+  // Update activity dropdowns
+  const attActivitySelect = document.getElementById('att-activity-select');
+  const currentAttActivity = attActivitySelect.value;
+  attActivitySelect.innerHTML = '<option value="">Select an Activity</option>';
   activitiesList.forEach(act => {
     const option = document.createElement('option');
-    option.value = act.activityName;
+    option.value = act.id;
     option.textContent = act.activityName;
-    adminActSelect.appendChild(option);
+    attActivitySelect.appendChild(option);
   });
+  attActivitySelect.value = currentAttActivity;
 
-  const monthSelect = document.getElementById('admin-att-month');
-  monthSelect.innerHTML = '<option value="all">All Months</option>';
-  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  months.forEach(m => {
-    const opt = document.createElement('option');
-    opt.value = m;
-    opt.textContent = m;
-    monthSelect.appendChild(opt);
+  // Update filter dropdowns
+  const regFilterEvent = document.getElementById('reg-filter-event');
+  const currentRegFilter = regFilterEvent.value;
+  regFilterEvent.innerHTML = '<option value="all">All Events</option>';
+  eventsList.forEach(event => {
+    const option = document.createElement('option');
+    option.value = event.id;
+    option.textContent = event.eventName;
+    regFilterEvent.appendChild(option);
   });
+  regFilterEvent.value = currentRegFilter;
 
-  const yearSelect = document.getElementById('admin-att-year');
-  yearSelect.innerHTML = '<option value="all">All Years</option>';
-  const currentYear = new Date().getFullYear();
-  for (let y = currentYear + 1; y >= currentYear - 2; y--) {
-    const opt = document.createElement('option');
-    opt.value = y.toString();
-    opt.textContent = y.toString();
-    yearSelect.appendChild(opt);
-  }
+  const attFilterActivity = document.getElementById('att-filter-activity');
+  const currentAttFilter = attFilterActivity.value;
+  attFilterActivity.innerHTML = '<option value="all">All Activities</option>';
+  activitiesList.forEach(act => {
+    const option = document.createElement('option');
+    option.value = act.id;
+    option.textContent = act.activityName;
+    attFilterActivity.appendChild(option);
+  });
+  attFilterActivity.value = currentAttFilter;
 
+  // Update stats
+  document.getElementById('stat-total-events').innerText = eventsList.length;
+  document.getElementById('stat-total-reg').innerText = registrationsList.length;
   document.getElementById('stat-total-att').innerText = attendanceList.length;
-  renderAdminActivitiesTable();
-  renderAdminAttendanceTable();
-}
 
-function showActivityRemarks() {
-  const actId = document.getElementById('att-activity').value;
-  const activity = activitiesList.find(a => a.id === actId);
-  const remarksDisplay = document.getElementById('att-remarks-display');
-  if (activity && activity.remarks) {
-    document.getElementById('att-remarks-text').innerText = activity.remarks;
-    remarksDisplay.classList.remove('hidden');
-  } else {
-    remarksDisplay.classList.add('hidden');
+  if(isAdmin) {
+    renderEventsTable();
+    renderActivitiesTable();
+    renderRegistrationsTable();
+    renderAttendanceTable();
   }
 }
 
-function updateBranding() {
-  document.getElementById('app-hotel-name').innerText = currentSettings.hotelName || 'Event & Attendance Platform';
-  
-  // Apply brand color
-  if (currentSettings.brandColor) {
-    document.documentElement.style.setProperty('--brand', currentSettings.brandColor);
-    // Generate lighter and darker variants
-    const color = currentSettings.brandColor;
-    document.documentElement.style.setProperty('--brand-light', adjustColor(color, 20));
-    document.documentElement.style.setProperty('--brand-dark', adjustColor(color, -20));
-    document.documentElement.style.setProperty('--brand-50', adjustColor(color, 90));
-    document.documentElement.style.setProperty('--brand-100', adjustColor(color, 80));
-    
-    // Update color picker if in admin view
-    const colorPicker = document.getElementById('admin-brand-color');
-    if (colorPicker) {
-      colorPicker.value = currentSettings.brandColor;
-      updateColorPreview(currentSettings.brandColor);
-    }
+function applyBranding() {
+  if(currentSettings.hotelName) document.getElementById('app-hotel-name').innerText = currentSettings.hotelName;
+  if(currentSettings.tagline) document.getElementById('app-tagline').innerText = currentSettings.tagline;
+  if(currentSettings.color) {
+    document.documentElement.style.setProperty('--brand', currentSettings.color);
+    document.getElementById('brand-color').value = currentSettings.color;
+    updateColorPreview(currentSettings.color);
   }
-  
-  if (currentSettings.logo) {
+  if(currentSettings.logo) {
     document.getElementById('app-logo').innerHTML = `<img src="${currentSettings.logo}" alt="Logo">`;
-    document.getElementById('logo-preview').src = currentSettings.logo;
-    document.getElementById('logo-preview').classList.add('show');
+    document.getElementById('brand-logo-preview').src = currentSettings.logo;
+    document.getElementById('brand-logo-preview').classList.add('show');
   }
-  if (currentSettings.background) {
+  if(currentSettings.background) {
     document.body.style.backgroundImage = `url(${currentSettings.background})`;
-    document.getElementById('bg-preview').src = currentSettings.background;
-    document.getElementById('bg-preview').classList.add('show');
-  } else {
-    document.body.style.backgroundImage = 'none';
+    document.getElementById('brand-bg-preview').src = currentSettings.background;
+    document.getElementById('brand-bg-preview').classList.add('show');
   }
-}
-
-function adjustColor(color, percent) {
-  const num = parseInt(color.replace("#",""), 16);
-  const amt = Math.round(2.55 * percent);
-  const R = (num >> 16) + amt;
-  const G = (num >> 8 & 0x00FF) + amt;
-  const B = (num & 0x0000FF) + amt;
-  return "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255)).toString(16).slice(1);
+  if(currentSettings.busOperator) document.getElementById('brand-bus-operator').value = currentSettings.busOperator;
+  if(currentSettings.ticketTerms) document.getElementById('brand-ticket-terms').value = currentSettings.ticketTerms;
 }
 
 function updateColorPreview(color) {
@@ -1803,61 +623,214 @@ function updateColorPreview(color) {
   preview.innerText = color;
 }
 
-function renderAdminEventsTable() {
-  const tbody = document.getElementById('admin-events-tbody');
-  if (eventsList.length === 0) { 
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-subtle);">No events created yet</td></tr>'; 
-    return; 
+// ==========================================
+// NAVIGATION & AUTH
+// ==========================================
+function showMainView(view) {
+  document.getElementById('home-view').classList.add('hidden');
+  document.getElementById('registration-view').classList.add('hidden');
+  document.getElementById('attendance-view').classList.add('hidden');
+  
+  if(view === 'home') document.getElementById('home-view').classList.remove('hidden');
+  else if(view === 'registration') document.getElementById('registration-view').classList.remove('hidden');
+  else if(view === 'attendance') document.getElementById('attendance-view').classList.remove('hidden');
+}
+
+function switchAdminTab(tabName) {
+  document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
+  document.querySelectorAll('.admin-tab-content').forEach(content => content.classList.remove('active'));
+  
+  document.querySelectorAll('.admin-tab').forEach(tab => {
+    if(tab.getAttribute('onclick').includes(tabName)) tab.classList.add('active');
+  });
+  document.getElementById('tab-' + tabName).classList.add('active');
+}
+
+function toggleAdmin() {
+  if(isAdmin) {
+    isAdmin = false;
+    document.getElementById('admin-view').classList.add('hidden');
+    showMainView('home');
+  } else {
+    const pwd = prompt('Enter Admin Password:');
+    if(pwd === 'Admin@2026') {
+      isAdmin = true;
+      document.getElementById('home-view').classList.add('hidden');
+      document.getElementById('registration-view').classList.add('hidden');
+      document.getElementById('attendance-view').classList.add('hidden');
+      document.getElementById('admin-view').classList.remove('hidden');
+      showAlert('✅ Admin Access Granted', 'success');
+      updateUI(); // Refresh tables
+    } else if(pwd !== null) {
+      showAlert('Invalid Password', 'error');
+    }
   }
+}
+
+// ==========================================
+// CORE ACTIONS
+// ==========================================
+function handleRegistration(e) {
+  e.preventDefault();
+  const eventId = document.getElementById('reg-event-select').value;
+  const empId = document.getElementById('reg-empid').value.trim().toUpperCase();
+  const name = document.getElementById('reg-name').value.trim();
+  const dept = document.getElementById('reg-dept').value;
+
+  if(!eventId) return showAlert('Please select an event.', 'error');
+
+  const event = eventsList.find(ev => ev.id === eventId);
+  const eventRegs = registrationsList.filter(r => r.eventId === eventId).length;
+  if(eventRegs >= event.maxRegistrations) return showAlert('Sorry, this event is already full.', 'error');
+  if(registrationsList.some(r => r.eventId === eventId && r.empId === empId)) return showAlert('You are already registered for this event.', 'error');
+
+  const newReg = { eventId, eventName: event.eventName, empId, name, dept, timestamp: Date.now() };
+  db.ref('event/registrations').push(newReg).then(() => {
+    showAlert('✅ Registration successful!', 'success');
+    document.getElementById('registration-form').reset();
+    showMainView('home');
+  }).catch(err => showAlert('Error: ' + err.message, 'error'));
+}
+
+function handleAttendance(e) {
+  e.preventDefault();
+  const actId = document.getElementById('att-activity-select').value;
+  const empId = document.getElementById('att-empid').value.trim().toUpperCase();
+  const name = document.getElementById('att-name').value.trim();
+  const dept = document.getElementById('att-dept').value;
+
+  if(!actId) return showAlert('Please select an activity.', 'error');
+
+  const activity = activitiesList.find(a => a.id === actId);
+  if(attendanceList.some(a => a.activityId === actId && a.empId === empId)) {
+    return showAlert('You have already marked attendance for this activity.', 'error');
+  }
+
+  const newAtt = { activityId: actId, activityName: activity.activityName, empId, name, dept, timestamp: Date.now() };
+  db.ref('event/attendance').push(newAtt).then(() => {
+    showAlert('✅ Attendance submitted successfully!', 'success');
+    document.getElementById('attendance-form').reset();
+    showMainView('home');
+  }).catch(err => showAlert('Error: ' + err.message, 'error'));
+}
+
+function addEvent() {
+  const eventName = document.getElementById('admin-new-event-name').value.trim();
+  const eventDate = document.getElementById('admin-new-event-date').value;
+  const maxRegistrations = parseInt(document.getElementById('admin-new-max-reg').value) || 100;
+  if(!eventName || !eventDate) return showAlert('Please fill in event name and date.', 'error');
+
+  db.ref('event/events').push({ eventName, eventDate, maxRegistrations, createdAt: Date.now() }).then(() => {
+    showAlert('✅ Event added successfully!', 'success');
+    document.getElementById('admin-new-event-name').value = '';
+    document.getElementById('admin-new-event-date').value = '';
+  });
+}
+
+function addActivity() {
+  const activityName = document.getElementById('admin-new-act-name').value.trim();
+  const activityDate = document.getElementById('admin-new-act-date').value;
+  const startTime = document.getElementById('admin-new-act-start').value;
+  const endTime = document.getElementById('admin-new-act-end').value;
+  if(!activityName || !activityDate || !startTime || !endTime) return showAlert('Please fill in all activity fields.', 'error');
+
+  db.ref('event/activities').push({ activityName, activityDate, startTime, endTime, createdAt: Date.now() }).then(() => {
+    showAlert('✅ Activity added successfully!', 'success');
+    document.getElementById('admin-new-act-name').value = '';
+    document.getElementById('admin-new-act-date').value = '';
+    document.getElementById('admin-new-act-start').value = '';
+    document.getElementById('admin-new-act-end').value = '';
+  });
+}
+
+// ==========================================
+// SAFE BRANDING & SETTINGS SAVE (FIXED)
+// ==========================================
+function saveBranding() {
+  // 1. Fetch existing settings first to prevent accidental overwrites
+  db.ref('event/settings').once('value').then((snapshot) => {
+    const existing = snapshot.val() || {};
+    
+    // 2. Build the update object, explicitly preserving ALL settings
+    const updates = {
+      hotelName: document.getElementById('brand-hotel-name').value.trim(),
+      tagline: document.getElementById('brand-tagline').value.trim(),
+      color: document.getElementById('brand-color').value,
+      // Preserve bus settings if inputs exist, otherwise keep existing
+      busOperator: document.getElementById('brand-bus-operator') ? document.getElementById('brand-bus-operator').value.trim() : (existing.busOperator || ''),
+      ticketTerms: document.getElementById('brand-ticket-terms') ? document.getElementById('brand-ticket-terms').value.trim() : (existing.ticketTerms || '')
+    };
+
+    const logoPreview = document.getElementById('brand-logo-preview');
+    const bgPreview = document.getElementById('brand-bg-preview');
+    
+    if (logoPreview && logoPreview.src && logoPreview.style.display !== 'none') {
+      updates.logo = logoPreview.src;
+    } else if (existing.logo) {
+      updates.logo = existing.logo;
+    }
+
+    if (bgPreview && bgPreview.src && bgPreview.style.display !== 'none') {
+      updates.background = bgPreview.src;
+    } else if (existing.background) {
+      updates.background = existing.background;
+    }
+
+    // 3. Save the merged object safely
+    return db.ref('event/settings').set(updates);
+  }).then(() => {
+    showAlert('✅ All settings and branding saved successfully!', 'success');
+    // 4. Refresh local state to ensure UI matches database
+    db.ref('event/settings').once('value').then(snap => {
+      currentSettings = snap.val() || {};
+      applyBranding();
+    });
+  }).catch(err => {
+    showAlert('Error saving settings: ' + err.message, 'error');
+  });
+}
+
+// ==========================================
+// ADMIN TABLES & EXPORTS
+// ==========================================
+function renderEventsTable() {
+  const tbody = document.getElementById('admin-events-tbody');
+  if(eventsList.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-subtle);">No events created yet</td></tr>'; return; }
   tbody.innerHTML = eventsList.map(event => {
     const regCount = registrationsList.filter(r => r.eventId === event.id).length;
     return `<tr>
       <td><strong>${event.eventName}</strong></td>
       <td>${event.eventDate}</td>
       <td>${regCount} / ${event.maxRegistrations}</td>
-      <td>${new Date(event.createdAt).toLocaleDateString()}</td>
       <td><button class="btn btn-danger btn-sm" onclick="deleteEvent('${event.id}')">Delete</button></td>
     </tr>`;
   }).join('');
 }
 
-function renderAdminActivitiesTable() {
+function renderActivitiesTable() {
   const tbody = document.getElementById('admin-activities-tbody');
-  if (activitiesList.length === 0) { 
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-subtle);">No activities created yet</td></tr>'; 
-    return; 
-  }
+  if(activitiesList.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-subtle);">No activities created yet</td></tr>'; return; }
   tbody.innerHTML = activitiesList.map(act => {
     return `<tr>
       <td><strong>${act.activityName}</strong></td>
       <td>${act.activityDate}</td>
       <td>${act.startTime} - ${act.endTime}</td>
-      <td>${act.remarks || '-'}</td>
       <td><button class="btn btn-danger btn-sm" onclick="deleteActivity('${act.id}')">Delete</button></td>
     </tr>`;
   }).join('');
 }
 
 function renderRegistrationsTable() {
-  const tbody = document.getElementById('registrations-tbody');
-  const monthFilter = document.getElementById('admin-reg-month').value;
-  const yearFilter = document.getElementById('admin-reg-year').value;
-
-  let filtered = registrationsList;
-  if (monthFilter !== 'all') {
-    filtered = filtered.filter(r => new Date(r.timestamp).toLocaleString('default', { month: 'long' }) === monthFilter);
-  }
-  if (yearFilter !== 'all') {
-    filtered = filtered.filter(r => new Date(r.timestamp).getFullYear().toString() === yearFilter);
-  }
-
-  if (filtered.length === 0) { 
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-subtle);">No registrations found for selected filters</td></tr>'; 
-    return; 
-  }
+  const tbody = document.getElementById('admin-registrations-tbody');
+  const filterEvent = document.getElementById('reg-filter-event').value;
   
-  const sortedRegs = [...filtered].sort((a, b) => b.timestamp - a.timestamp);
-  tbody.innerHTML = sortedRegs.map(reg => `
+  let filtered = registrationsList;
+  if(filterEvent !== 'all') filtered = filtered.filter(r => r.eventId === filterEvent);
+  filtered.sort((a, b) => b.timestamp - a.timestamp);
+
+  if(filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-subtle);">No registrations found</td></tr>'; return; }
+  
+  tbody.innerHTML = filtered.map(reg => `
     <tr>
       <td><strong>${reg.eventName}</strong></td>
       <td>${reg.empId}</td>
@@ -1869,527 +842,124 @@ function renderRegistrationsTable() {
   `).join('');
 }
 
-function renderAdminAttendanceTable() {
+function renderAttendanceTable() {
   const tbody = document.getElementById('admin-attendance-tbody');
-  const monthFilter = document.getElementById('admin-att-month').value;
-  const yearFilter = document.getElementById('admin-att-year').value;
-  const actFilter = document.getElementById('admin-att-activity').value;
-
-  let filtered = attendanceList;
-  if (monthFilter !== 'all') filtered = filtered.filter(a => a.month === monthFilter);
-  if (yearFilter !== 'all') filtered = filtered.filter(a => a.year === yearFilter);
-  if (actFilter !== 'all') filtered = filtered.filter(a => a.activityName === actFilter);
-
-  if (filtered.length === 0) { 
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-subtle);">No attendance records found</td></tr>'; 
-    return; 
-  }
+  const filterActivity = document.getElementById('att-filter-activity').value;
   
-  const sortedAtt = [...filtered].sort((a, b) => b.timestamp - a.timestamp);
-  tbody.innerHTML = sortedAtt.map(att => `
+  let filtered = attendanceList;
+  if(filterActivity !== 'all') filtered = filtered.filter(a => a.activityId === filterActivity);
+  filtered.sort((a, b) => b.timestamp - a.timestamp);
+
+  if(filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-subtle);">No attendance records found</td></tr>'; return; }
+  
+  tbody.innerHTML = filtered.map(att => `
     <tr>
       <td><strong>${att.activityName}</strong></td>
       <td>${att.empId}</td>
       <td>${att.name}</td>
       <td>${att.dept}</td>
       <td>${new Date(att.timestamp).toLocaleString()}</td>
-      <td>
-        <button class="btn btn-primary btn-sm" onclick="editAttendance('${att.id}')">✏️ Edit</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteAttendance('${att.id}')">🗑️ Delete</button>
-      </td>
     </tr>
   `).join('');
 }
 
-// ==========================================
-// DRAG AND DROP FILE UPLOAD
-// ==========================================
-function setupDragAndDrop(elementId, fileInputId) {
-  const uploadArea = document.getElementById(elementId);
-  const fileInput = document.getElementById(fileInputId);
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-    uploadArea.addEventListener(eventName, (e) => { 
-      e.preventDefault(); 
-      e.stopPropagation(); 
-    }, false);
-  });
-  ['dragenter', 'dragover'].forEach(eventName => {
-    uploadArea.addEventListener(eventName, () => { 
-      uploadArea.classList.add('dragover'); 
-    }, false);
-  });
-  ['dragleave', 'drop'].forEach(eventName => {
-    uploadArea.addEventListener(eventName, () => { 
-      uploadArea.classList.remove('dragover'); 
-    }, false);
-  });
-  uploadArea.addEventListener('drop', (e) => {
-    const files = e.dataTransfer.files;
-    if (files.length > 0) { 
-      fileInput.files = files; 
-      handleFileSelect(fileInputId); 
-    }
-  }, false);
+function deleteEvent(id) {
+  if(!confirm('Delete this event?')) return;
+  db.ref('event/events/' + id).remove().then(() => showAlert('Event deleted', 'success'));
 }
 
-function handleFileSelect(inputId) {
-  const fileInput = document.getElementById(inputId);
-  const file = fileInput.files[0];
-  if (file) {
-    if (file.size > 5 * 1024 * 1024) { 
-      showAlert('File size must be less than 5MB', 'error'); 
-      fileInput.value = ''; 
-      return; 
-    }
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const previewId = inputId.replace('-file', '-preview');
-      document.getElementById(previewId).src = e.target.result;
-      document.getElementById(previewId).classList.add('show');
-    };
-    reader.readAsDataURL(file);
-  }
-}
-
-// ==========================================
-// NAVIGATION ACTIONS
-// ==========================================
-function showMainView(view) {
-  const homeView = document.getElementById('home-view');
-  const regView = document.getElementById('registration-view');
-  const attView = document.getElementById('attendance-view');
-  
-  homeView.classList.add('hidden');
-  regView.classList.add('hidden');
-  attView.classList.add('hidden');
-  
-  let targetView;
-  if (view === 'home') targetView = homeView;
-  else if (view === 'registration') targetView = regView;
-  else if (view === 'attendance') targetView = attView;
-  
-  if (targetView) {
-    targetView.classList.remove('hidden');
-    targetView.classList.remove('view-animate');
-    void targetView.offsetWidth; // Trigger reflow
-    targetView.classList.add('view-animate');
-  }
-}
-
-function switchAdminTab(tabName) {
-  document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
-  document.querySelectorAll('.admin-tab-content').forEach(content => content.classList.remove('active'));
-  
-  const tabs = document.querySelectorAll('.admin-tab');
-  tabs.forEach(tab => {
-    if(tab.getAttribute('onclick').includes(tabName)) {
-      tab.classList.add('active');
-    }
-  });
-  
-  document.getElementById('tab-' + tabName).classList.add('active');
-}
-
-function handleRegistration(e) {
-  e.preventDefault();
-  const eventId = document.getElementById('reg-event-select').value;
-  if (!eventId) { 
-    showAlert('Please select an event.', 'error'); 
-    return; 
-  }
-  const event = eventsList.find(e => e.id === eventId);
-  const empId = document.getElementById('reg-empid').value.trim().toUpperCase();
-  const name = document.getElementById('reg-name').value.trim();
-  const dept = document.getElementById('reg-dept').value;
-  
-  if (registrationsList.filter(r => r.eventId === eventId).length >= event.maxRegistrations) {
-    showAlert('Sorry, this event is already full.', 'error'); 
-    return;
-  }
-  if (registrationsList.some(r => r.eventId === eventId && r.empId === empId)) {
-    showAlert('You are already registered for this event.', 'error'); 
-    return;
-  }
-  
-  const newReg = { 
-    eventId, 
-    eventName: event.eventName, 
-    eventDate: event.eventDate, 
-    empId, 
-    name, 
-    dept, 
-    timestamp: Date.now() 
-  };
-  
-  db.ref('event/registrations').push(newReg).then((ref) => {
-    lastRegistration = { ...newReg, id: ref.key };
-    showAlert('✅ Registration successful!', 'success');
-    document.getElementById('registration-form').classList.add('hidden');
-    document.getElementById('download-confirmation-section').classList.remove('hidden');
-  }).catch(err => { 
-    showAlert('Error: ' + err.message, 'error'); 
-  });
-}
-
-function handleAttendance(e) {
-  e.preventDefault();
-  const actId = document.getElementById('att-activity').value;
-  const activity = activitiesList.find(a => a.id === actId);
-  
-  if (!activity) { 
-    showAlert('Please select a valid activity.', 'error'); 
-    return; 
-  }
-  
-  const now = new Date();
-  const actDateStr = activity.activityDate;
-  const startTimeStr = `${actDateStr}T${activity.startTime}:00`;
-  const endTimeStr = `${actDateStr}T${activity.endTime}:00`;
-  
-  const startTime = new Date(startTimeStr);
-  const endTime = new Date(endTimeStr);
-  
-  if (now < startTime) {
-    showAlert(`Attendance submission opens at ${activity.startTime}. Please try again later.`, 'error');
-    return;
-  }
-  if (now > endTime) {
-    showAlert(`Attendance submission closed at ${activity.endTime}.`, 'error');
-    return;
-  }
-
-  const empId = document.getElementById('att-empid').value.trim().toUpperCase();
-  const name = document.getElementById('att-name').value.trim();
-  const dept = document.getElementById('att-dept').value;
-  const month = now.toLocaleString('default', { month: 'long' });
-  const year = now.getFullYear().toString();
-
-  // Prevent duplicate attendance entries
-  if (attendanceList.some(a => a.activityId === actId && a.empId === empId)) {
-    showAlert('You have already marked your attendance for this event.', 'error');
-    return;
-  }
-
-  const newAtt = { 
-    activityId: actId, 
-    activityName: activity.activityName, 
-    empId, 
-    name, 
-    dept, 
-    timestamp: Date.now(), 
-    month, 
-    year 
-  };
-  
-  db.ref('event/attendance').push(newAtt).then(() => {
-    showAlert('✅ Attendance submitted successfully!', 'success');
-    document.getElementById('attendance-form').reset();
-    document.getElementById('att-remarks-display').classList.add('hidden');
-  }).catch(err => { 
-    showAlert('Error: ' + err.message, 'error'); 
-  });
-}
-
-function downloadConfirmation() {
-  if (!lastRegistration) return;
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  doc.setFillColor(15, 118, 110);
-  doc.rect(0, 0, 210, 40, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(22); 
-  doc.setFont(undefined, 'bold');
-  doc.text(currentSettings.hotelName || 'Event Registration', 105, 20, {align: 'center'});
-  doc.setFontSize(14);
-  doc.text('Event Registration Confirmation', 105, 32, {align: 'center'});
-  
-  doc.setTextColor(0, 0, 0); 
-  doc.setFontSize(12);
-  let y = 60;
-  const details = [
-    ['Event Name:', lastRegistration.eventName], 
-    ['Event Date:', lastRegistration.eventDate],
-    ['Employee ID:', lastRegistration.empId], 
-    ['Full Name:', lastRegistration.name],
-    ['Department:', lastRegistration.dept], 
-    ['Registration Time:', new Date(lastRegistration.timestamp).toLocaleString()]
-  ];
-  details.forEach(([label, value]) => {
-    doc.setFont(undefined, 'bold'); 
-    doc.text(label, 20, y);
-    doc.setFont(undefined, 'normal'); 
-    doc.text(String(value), 80, y);
-    y += 12;
-  });
-  doc.setFontSize(10); 
-  doc.setTextColor(100, 100, 100);
-  doc.text('Thank you for registering! We look forward to seeing you.', 105, 270, {align: 'center'});
-  doc.save(`Registration_${lastRegistration.empId}_${lastRegistration.eventName.replace(/\s+/g, '_')}.pdf`);
-  showAlert('✅ Confirmation downloaded!', 'success');
-}
-
-function resetRegForm() {
-  document.getElementById('registration-form').reset();
-  document.getElementById('registration-form').classList.remove('hidden');
-  document.getElementById('download-confirmation-section').classList.add('hidden');
-  updateEventDetails();
-  lastRegistration = null;
-}
-
-// ==========================================
-// ADMIN ACTIONS
-// ==========================================
-function toggleAdmin() {
-  if (isAdmin) {
-    isAdmin = false;
-    document.getElementById('admin-view').classList.add('hidden');
-    showMainView('home');
-  } else {
-    const pwd = prompt('Enter Admin Password:');
-    if (pwd === 'Admin@2026') {
-      isAdmin = true;
-      document.getElementById('home-view').classList.add('hidden');
-      document.getElementById('registration-view').classList.add('hidden');
-      document.getElementById('attendance-view').classList.add('hidden');
-      document.getElementById('admin-view').classList.remove('hidden');
-      showAlert('✅ Admin Access Granted', 'success');
-    } else if (pwd !== null) {
-      showAlert('Invalid Password', 'error');
-    }
-  }
-}
-
-function addEvent() {
-  const eventName = document.getElementById('admin-new-event-name').value.trim();
-  const eventDate = document.getElementById('admin-new-event-date').value;
-  const maxRegistrations = parseInt(document.getElementById('admin-new-max-reg').value) || 100;
-  if (!eventName || !eventDate) { 
-    showAlert('Please fill in event name and date.', 'error'); 
-    return; 
-  }
-  db.ref('event/events').push({ 
-    eventName, 
-    eventDate, 
-    maxRegistrations, 
-    createdAt: Date.now() 
-  }).then(() => {
-    showAlert('✅ Event added successfully!', 'success');
-    document.getElementById('admin-new-event-name').value = '';
-    document.getElementById('admin-new-event-date').value = '';
-    document.getElementById('admin-new-max-reg').value = '100';
-  });
-}
-
-function deleteEvent(eventId) {
-  if (!confirm('Delete this event? (Existing registrations will remain)')) return;
-  db.ref('event/events/' + eventId).remove().then(() => showAlert('Event deleted', 'success'));
-}
-
-function addActivity() {
-  const activityName = document.getElementById('admin-act-name').value.trim();
-  const activityDate = document.getElementById('admin-act-date').value;
-  const startTime = document.getElementById('admin-act-start').value;
-  const endTime = document.getElementById('admin-act-end').value;
-  const remarks = document.getElementById('admin-act-remarks').value.trim();
-  
-  if (!activityName || !activityDate || !startTime || !endTime) {
-    showAlert('Please fill in all activity fields.', 'error'); 
-    return;
-  }
-  
-  db.ref('event/activities').push({ 
-    activityName, 
-    activityDate, 
-    startTime, 
-    endTime, 
-    remarks, 
-    createdAt: Date.now() 
-  }).then(() => {
-    showAlert('✅ Activity added successfully!', 'success');
-    document.getElementById('admin-act-name').value = '';
-    document.getElementById('admin-act-date').value = '';
-    document.getElementById('admin-act-start').value = '';
-    document.getElementById('admin-act-end').value = '';
-    document.getElementById('admin-act-remarks').value = '';
-  });
-}
-
-function deleteActivity(actId) {
-  if (!confirm('Delete this activity?')) return;
-  db.ref('event/activities/' + actId).remove().then(() => showAlert('Activity deleted', 'success'));
-}
-
-function editAttendance(id) {
-  const att = attendanceList.find(a => a.id === id);
-  if (!att) return;
-  
-  document.getElementById('edit-att-id').value = att.id;
-  document.getElementById('edit-att-empid').value = att.empId;
-  document.getElementById('edit-att-name').value = att.name;
-  document.getElementById('edit-att-dept').value = att.dept;
-  document.getElementById('edit-att-activity').value = att.activityName;
-  document.getElementById('attendance-edit-modal').classList.remove('hidden');
-}
-
-function saveEditedAttendance() {
-  const id = document.getElementById('edit-att-id').value;
-  const empId = document.getElementById('edit-att-empid').value.trim().toUpperCase();
-  const name = document.getElementById('edit-att-name').value.trim();
-  const dept = document.getElementById('edit-att-dept').value;
-  const activityName = document.getElementById('edit-att-activity').value;
-  
-  if (!empId || !name || !dept || !activityName) {
-    showAlert('Please fill all fields', 'error'); 
-    return;
-  }
-  
-  db.ref('event/attendance/' + id).update({ 
-    empId, 
-    name, 
-    dept, 
-    activityName 
-  }).then(() => {
-    showAlert('Attendance record updated successfully!', 'success');
-    document.getElementById('attendance-edit-modal').classList.add('hidden');
-  }).catch(err => showAlert('Error: ' + err.message, 'error'));
-}
-
-function deleteAttendance(id) {
-  if (!confirm('Are you sure you want to delete this attendance record?')) return;
-  db.ref('event/attendance/' + id).remove().then(() => {
-    showAlert('Attendance record deleted', 'success');
-  });
-}
-
-function saveAdminSettings() {
-  const settings = {
-    hotelName: document.getElementById('admin-hotel-name').value.trim(),
-    logo: document.getElementById('logo-preview').classList.contains('show') ? document.getElementById('logo-preview').src : '',
-    background: document.getElementById('bg-preview').classList.contains('show') ? document.getElementById('bg-preview').src : '',
-    brandColor: document.getElementById('admin-brand-color').value
-  };
-  db.ref('event/settings').set(settings).then(() => {
-    showAlert('✅ Branding settings saved!', 'success');
-    updateBranding();
-  });
+function deleteActivity(id) {
+  if(!confirm('Delete this activity?')) return;
+  db.ref('event/activities/' + id).remove().then(() => showAlert('Activity deleted', 'success'));
 }
 
 function deleteRegistration(id) {
-  if (!confirm('Remove this registration?')) return;
+  if(!confirm('Remove this registration?')) return;
   db.ref('event/registrations/' + id).remove().then(() => {
     showAlert('Registration removed', 'success');
-    renderRegistrationsTable();
     updateUI();
   });
 }
 
+// SAFE CLEAR ALL: Strictly targets ONLY registrations
 function clearAllRegistrations() {
-  if (!confirm('⚠️ WARNING: Delete ALL registrations?')) return;
-  db.ref('event/registrations').remove().then(() => {
-    showAlert('All registrations cleared', 'success');
-    renderRegistrationsTable();
-    updateUI();
-  });
+  const confirmation = prompt('⚠️ DANGER: This will permanently delete ALL registration records ONLY.\nBranding, Events, and Activities will NOT be affected.\n\nTo confirm, please type DELETE in all caps:');
+  if(confirmation === 'DELETE') {
+    db.ref('event/registrations').remove().then(() => {
+      showAlert('✅ All registrations permanently cleared. Other settings are safe.', 'success');
+      updateUI();
+    }).catch(err => {
+      showAlert('Error clearing data: ' + err.message, 'error');
+    });
+  } else if(confirmation !== null) {
+    showAlert('Action cancelled. Your data is safe.', 'warning');
+  }
 }
 
-function downloadExcelReport() {
-  const monthFilter = document.getElementById('admin-reg-month').value;
-  const yearFilter = document.getElementById('admin-reg-year').value;
-
+function downloadRegistrationsExcel() {
+  const filterEvent = document.getElementById('reg-filter-event').value;
   let filtered = registrationsList;
-  if (monthFilter !== 'all') {
-    filtered = filtered.filter(r => new Date(r.timestamp).toLocaleString('default', { month: 'long' }) === monthFilter);
-  }
-  if (yearFilter !== 'all') {
-    filtered = filtered.filter(r => new Date(r.timestamp).getFullYear().toString() === yearFilter);
-  }
+  if(filterEvent !== 'all') filtered = filtered.filter(r => r.eventId === filterEvent);
+  
+  if(filtered.length === 0) return showAlert('No data to export', 'warning');
 
-  if (filtered.length === 0) { 
-    showAlert('No registration data matches the selected filters', 'warning'); 
-    return; 
-  }
-  
   const exportData = filtered.map(r => ({
-    'Event Name': r.eventName, 
-    'Event Date': r.eventDate, 
-    'Employee ID': r.empId,
-    'Full Name': r.name, 
-    'Department': r.dept, 
-    'Registration Time': new Date(r.timestamp).toLocaleString()
+    'Event Name': r.eventName, 'Employee ID': r.empId, 'Full Name': r.name, 'Department': r.dept, 'Registration Time': new Date(r.timestamp).toLocaleString()
   }));
-  
   const ws = XLSX.utils.json_to_sheet(exportData);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Registrations");
-  
-  const fileName = `Registration_Report_${monthFilter !== 'all' ? monthFilter : 'All'}_${yearFilter !== 'all' ? yearFilter : 'Year'}.xlsx`;
-  XLSX.writeFile(wb, fileName);
-  showAlert('✅ Registration Excel report downloaded!', 'success');
+  XLSX.writeFile(wb, `Registrations_Export_${new Date().toISOString().slice(0,10)}.xlsx`);
+  showAlert('✅ Excel report downloaded!', 'success');
 }
 
 function downloadAttendanceExcel() {
-  const monthFilter = document.getElementById('admin-att-month').value;
-  const yearFilter = document.getElementById('admin-att-year').value;
-  const actFilter = document.getElementById('admin-att-activity').value;
-
+  const filterActivity = document.getElementById('att-filter-activity').value;
   let filtered = attendanceList;
-  if (monthFilter !== 'all') filtered = filtered.filter(a => a.month === monthFilter);
-  if (yearFilter !== 'all') filtered = filtered.filter(a => a.year === yearFilter);
-  if (actFilter !== 'all') filtered = filtered.filter(a => a.activityName === actFilter);
-
-  if (filtered.length === 0) { 
-    showAlert('No attendance data matches the filters', 'warning'); 
-    return; 
-  }
+  if(filterActivity !== 'all') filtered = filtered.filter(a => a.activityId === filterActivity);
+  
+  if(filtered.length === 0) return showAlert('No data to export', 'warning');
 
   const exportData = filtered.map(a => ({
-    'Activity Name': a.activityName,
-    'Employee ID': a.empId,
-    'Full Name': a.name,
-    'Department': a.dept,
-    'Month': a.month,
-    'Year': a.year,
-    'Submission Time': new Date(a.timestamp).toLocaleString()
+    'Activity Name': a.activityName, 'Employee ID': a.empId, 'Full Name': a.name, 'Department': a.dept, 'Submission Time': new Date(a.timestamp).toLocaleString()
   }));
-  
   const ws = XLSX.utils.json_to_sheet(exportData);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Attendance");
-  
-  const fileName = `Attendance_Report_${monthFilter !== 'all' ? monthFilter : 'All'}_${yearFilter !== 'all' ? yearFilter : 'Year'}.xlsx`;
-  XLSX.writeFile(wb, fileName);
-  showAlert('✅ Attendance Excel report downloaded!', 'success');
+  XLSX.writeFile(wb, `Attendance_Export_${new Date().toISOString().slice(0,10)}.xlsx`);
+  showAlert('✅ Excel report downloaded!', 'success');
+}
+
+// ==========================================
+// UTILITIES
+// ==========================================
+function handleFileSelect(inputId) {
+  const fileInput = document.getElementById(inputId);
+  const file = fileInput.files[0];
+  if(!file) return;
+  if(file.size > 5 * 1024 * 1024) {
+    showAlert('File size must be less than 5MB', 'error');
+    fileInput.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const previewId = inputId === 'logo-file' ? 'brand-logo-preview' : 'brand-bg-preview';
+    document.getElementById(previewId).src = e.target.result;
+    document.getElementById(previewId).classList.add('show');
+  };
+  reader.readAsDataURL(file);
 }
 
 function showAlert(msg, type) {
   document.querySelectorAll('.alert').forEach(el => el.style.display = 'none');
   const el = document.getElementById('alert-' + type);
-  if (el) {
+  if(el) {
     el.innerText = msg;
     el.style.display = 'block';
-    setTimeout(() => { 
-      el.style.display = 'none'; 
-    }, 4000);
+    setTimeout(() => { el.style.display = 'none'; }, 4000);
   }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  setupDragAndDrop('logo-upload-area', 'logo-file');
-  setupDragAndDrop('bg-upload-area', 'bg-file');
-  
-  document.getElementById('admin-att-month').addEventListener('change', renderAdminAttendanceTable);
-  document.getElementById('admin-att-year').addEventListener('change', renderAdminAttendanceTable);
-  document.getElementById('admin-att-activity').addEventListener('change', renderAdminAttendanceTable);
-  
-  document.getElementById('admin-reg-month').addEventListener('change', renderRegistrationsTable);
-  document.getElementById('admin-reg-year').addEventListener('change', renderRegistrationsTable);
-  
-  // Initialize color preview
-  const colorPicker = document.getElementById('admin-brand-color');
-  if (colorPicker) {
-    updateColorPreview(colorPicker.value);
-  }
-});
 </script>
 </body>
 </html>
